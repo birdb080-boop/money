@@ -70,6 +70,14 @@
     border:1.5px solid rgba(230,194,90,.4)}
   .now .big{font-size:19px; font-weight:700; line-height:1.3; margin-bottom:4px}
   .now .who{font-size:12.5px; color:var(--gold); letter-spacing:.04em; margin-bottom:12px}
+  /* money card */
+  .money{background:linear-gradient(150deg, rgba(93,255,160,.10), rgba(230,194,90,.05)); border:1.5px solid rgba(93,255,160,.35)}
+  .bigmoney{font-size:42px; font-weight:800; color:#7dffb0; line-height:1; letter-spacing:-.01em; text-shadow:0 0 24px rgba(93,255,160,.35)}
+  .moneysub{font-size:11px; color:var(--dim); letter-spacing:.08em; margin-top:4px}
+  .m3{display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-top:13px}
+  .mcell{background:rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.06); border-radius:13px; padding:9px 4px; text-align:center}
+  .mcell b{display:block; font-size:17px; font-weight:800; color:var(--gold-bright); line-height:1}
+  .mcell span{font-size:8.5px; letter-spacing:.1em; color:var(--dim)}
 
   /* action buttons (text/call) */
   .acts{display:flex; gap:9px}
@@ -123,7 +131,7 @@
   .send{flex:0 0 auto; width:52px; height:52px; border-radius:16px; border:0; cursor:pointer; font-size:20px;
     background:linear-gradient(180deg,var(--gold-bright),var(--gold)); color:#06090f; font-weight:800}
 
-  .mini{display:flex; gap:8px; justify-content:center; margin:2px 0 6px}
+  .mini{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:2px 0 6px}
   .mini button{background:transparent; border:1px solid var(--line); color:var(--dim); font-family:inherit;
     font-size:11px; letter-spacing:.1em; padding:7px 12px; border-radius:20px; cursor:pointer; font-weight:600}
 
@@ -198,7 +206,18 @@
     <div class="stat"><b id="sClosed">0</b><span>CLOSED · GOAL</span></div>
   </div>
 
-  <div id="market" class="muted" style="text-align:center; font-size:11px; letter-spacing:.14em; margin:-7px 0 15px">📈 10-YR TREASURY · loading…</div>
+  <div id="market" class="muted" style="text-align:center; font-size:11px; letter-spacing:.14em; margin:-7px 0 13px">📈 10-YR TREASURY · loading…</div>
+
+  <div class="card money" id="moneyCard">
+    <div class="label"><span class="pip"></span>💰 MONEY ON THE TABLE <span id="commPct" style="margin-left:auto; font-size:9px; color:var(--dim); letter-spacing:.08em; font-weight:600"></span></div>
+    <div class="bigmoney" id="projComm">$0</div>
+    <div class="moneysub" id="projSub">projected commission · live pipeline</div>
+    <div class="m3">
+      <div class="mcell"><b id="mVol">$0</b><span>PIPELINE</span></div>
+      <div class="mcell"><b id="mRisk" style="color:var(--risk)">$0</b><span>AT RISK</span></div>
+      <div class="mcell"><b id="mClosed">$0</b><span>EARNED · MO</span></div>
+    </div>
+  </div>
 
   <div class="card now">
     <div class="label"><span class="pip"></span>⚡ RIGHT NOW</div>
@@ -234,9 +253,11 @@
     <details><summary id="histSum">Past conversations</summary><div id="hist"></div></details>
   </div>
 
+  <input type="file" id="shot" accept="image/*" style="display:none" />
   <div class="mini">
-    <button id="voiceBtn">🔊 VOICE ON</button>
+    <button id="feedBtn" style="border-color:var(--gold); color:var(--gold-bright)">📷 FEED SCREENSHOT</button>
     <button id="rebrief">⟳ BRIEF ME</button>
+    <button id="voiceBtn">🔊 VOICE ON</button>
     <button id="saveBtn">💾 EXPORT</button>
   </div>
 
@@ -252,8 +273,11 @@ window.JARVIS_DATA = {
   operator: "Martin",
   unit: "V.I.P. MORTGAGE",
 
-  // Today's rates — pulled from your Mortgage News Daily screenshot.
-  // Update anytime: share a new screenshot or say "set rates to ...".
+  commissionPct: 1.0,   // your commission % — say "set commission to 1.25"
+  monthVolume: 1150000, // closed loan volume this month (for earned $)
+
+  // Today's rates — from your Mortgage News Daily screenshot.
+  // Update: tap 📷 FEED SCREENSHOT, or say "set rates to ...".
   rates: {
     source: "Mortgage News Daily",
     updated: "Jun 15, 2026",
@@ -263,17 +287,14 @@ window.JARVIS_DATA = {
     commentary: "MBS are moderately stronger today — that upward movement could nudge rates lower. Great moment to reach hesitant buyers and fence-sitters."
   },
 
-  // stage: Lead | App | Processing | Underwriting | CTC | Closed
-  // flag: "risk" (needs you) | "wait" (waiting on others) | "ok"
-  // phone: optional — enables one-tap Text/Call (stays only on your phone)
+  // amount = loan size (drives your money/commission board)
   deals: [
-    { name: "Sarah L.",    type: "Conventional", stage: "Processing",   flag: "risk", next: "Updated paystubs",     phone: "" },
-    { name: "Mendez Fam.", type: "FHA",          stage: "App",          flag: "risk", next: "Bank statements",      phone: "" },
-    { name: "James R.",    type: "VA",           stage: "Underwriting", flag: "wait", next: "Waiting on appraisal", phone: "" },
-    { name: "The Garcias", type: "Refi watch",   stage: "Lead",         flag: "ok",   next: "Quarterly check-in",   phone: "" }
+    { name: "Sarah L.",    type: "Conventional", stage: "Processing",   flag: "risk", next: "Updated paystubs",     amount: 415000, phone: "" },
+    { name: "Mendez Fam.", type: "FHA",          stage: "App",          flag: "risk", next: "Bank statements",      amount: 320000, phone: "" },
+    { name: "James R.",    type: "VA",           stage: "Underwriting", flag: "wait", next: "Waiting on appraisal", amount: 295000, phone: "" },
+    { name: "The Garcias", type: "Refi watch",   stage: "Lead",         flag: "ok",   next: "Quarterly check-in",   amount: 0,      phone: "" }
   ],
 
-  // Follow-ups JARVIS reminds you about (pops up + beeps + speaks when due)
   followups: [
     { id: "demo1", name: "Sarah L.", note: "She asked about her rate", due: 0, done: false, alerted: true }
   ],
@@ -297,6 +318,12 @@ window.JARVIS_DATA = {
   let D; try{const s=JSON.parse(localStorage.getItem("JARVIS_DATA")); D=s?{...DEFAULTS,...s}:structuredClone(DEFAULTS);}catch(e){D=structuredClone(DEFAULTS);}
   ["deals","priorities","notes","history","followups"].forEach(k=>D[k]=D[k]||[]);
   D.followups.forEach(f=>{ if(!f.due){ f.due=Date.now()+25*60000; f.alerted=false; } }); // demo seed → 25m out
+  // migrate older saved data so the money board fills in
+  const _def=Object.fromEntries((DEFAULTS.deals||[]).map(d=>[d.name,d]));
+  D.deals.forEach(d=>{ if(d.amount==null&&_def[d.name]) d.amount=_def[d.name].amount; });
+  if(D.commissionPct==null)D.commissionPct=DEFAULTS.commissionPct!=null?DEFAULTS.commissionPct:1.0;
+  if(D.monthVolume==null)D.monthVolume=DEFAULTS.monthVolume||0;
+  if(!D.rates&&DEFAULTS.rates)D.rates=DEFAULTS.rates;
   function save(){localStorage.setItem("JARVIS_DATA",JSON.stringify(D));}
   const $=id=>document.getElementById(id);
   const enc=encodeURIComponent;
@@ -304,17 +331,47 @@ window.JARVIS_DATA = {
   const TYPES=["conventional","fha","va","jumbo","refi","refinance","usda","heloc"];
   const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
   const first=n=>n.split(" ")[0];
+  const money=n=>{n=+n||0; if(n>=1e6)return "$"+(n/1e6).toFixed(n%1e6?1:0)+"M"; if(n>=1e3)return "$"+Math.round(n/1e3)+"K"; return "$"+Math.round(n);};
+  const moneyFull=n=>"$"+Math.round(+n||0).toLocaleString("en-US");
+  function parseAmount(str){const m=(str||"").match(/\$?\s*([\d][\d,]*\.?\d*)\s*(k|m|thousand|thousands|million|mil|millones)?/i); if(!m)return null;
+    let n=parseFloat(m[1].replace(/,/g,"")); const u=(m[2]||"").toLowerCase();
+    if(/^(k|thousand|thousands|mil)$/.test(u))n*=1e3; if(/^(m|million|millones)$/.test(u))n*=1e6;
+    return Math.round(n);}
+  const commPct=()=>(D.commissionPct!=null?D.commissionPct:1.0);
+  function moneyStats(){
+    const active=D.deals.filter(d=>d.stage!=="Closed");
+    const vol=active.reduce((s,d)=>s+(+d.amount||0),0);
+    const risk=active.filter(d=>d.flag==="risk").reduce((s,d)=>s+(+d.amount||0),0);
+    const proj=vol*commPct()/100;
+    const closedVol=+D.monthVolume||0; const closedComm=closedVol*commPct()/100;
+    return {vol,risk,proj,closedVol,closedComm};
+  }
 
   /* MARTY method: every text = value + a clear yes/no next step (memory/persona.md) */
+  function docES(d){const nx=(d.next||"").toLowerCase();
+    if(/paystub|pay stub|comprob|talon/.test(nx))return "sus comprobantes de pago más recientes";
+    if(/bank|statement|estado/.test(nx))return "sus estados de cuenta bancarios";
+    if(/w-?2/.test(nx))return "sus formularios W-2";
+    if(/tax|return|impuesto/.test(nx))return "sus declaraciones de impuestos";
+    if(/id|licen|identif/.test(nx))return "una copia de su identificación";
+    return "unos documentos para su préstamo";}
+  function procES(d){const nx=(d.next||"").toLowerCase();
+    if(/appraisal|aval/.test(nx))return "el avalúo de la propiedad";
+    if(/title|titulo|título/.test(nx))return "el título de la propiedad";
+    if(/insurance|seguro/.test(nx))return "el seguro de la vivienda";
+    return "los siguientes pasos de su préstamo";}
+  function isDoc(d){return /paystub|w2|w-2|tax|statement|doc|bank|id\b|licen/.test((d.next||"").toLowerCase());}
+  function isProc(d){return /appraisal|title|insurance|aval|seguro/.test((d.next||"").toLowerCase());}
+
   function suggest(d){
-    const f=first(d.name); const nx=(d.next||"").toLowerCase();
-    if(/paystub|w2|w-2|tax|statement|doc|bank/.test(nx))
-      return `Hi ${f}, it's Martin with Team Miranda. Quick one to keep your file on track: I just need ${d.next.toLowerCase()}. Easiest is to text a photo right here — want to send it now, or should I email you a secure upload link?`;
-    if(/appraisal|title|insurance/.test(nx))
-      return `Hi ${f}, Martin with Team Miranda — update: we're working through ${d.next.toLowerCase()}, nothing needed from you yet. One question so I keep you ahead: are you optimizing for fastest close or lowest cash-to-close? I'll prep options either way.`;
+    const f=first(d.name);
+    if(isDoc(d))
+      return `Hi ${f}, it's Martin with Team Miranda. To keep your file moving I just need ${d.next.toLowerCase()}. Easiest is to snap a photo and text it right back to me — want to send it now, or should I email a secure upload link?`;
+    if(isProc(d))
+      return `Hi ${f}, Martin with Team Miranda — quick update: we're handling ${d.next.toLowerCase()} on your file, nothing needed from you right now. I'll text you the moment it clears. Anything you'd like me to double-check while we wait?`;
     if(d.flag==="risk")
-      return `Hi ${f}, it's Martin with Team Miranda. Want to make sure nothing's slowing your loan down. Fastest way to clarity is a 5-minute call — does today or tomorrow work better?`;
-    return `Hi ${f}, Martin with Team Miranda. Would it help to see your file in three clean options — lowest payment, balanced, and lowest long-term cost? I can put those together. Want me to?`;
+      return `Hi ${f}, it's Martin with Team Miranda. I want to make sure nothing slows your loan down. Fastest way to lock in clarity is a quick 5-minute call — does today or tomorrow work better for you?`;
+    return `Hi ${f}, Martin with Team Miranda. Want me to lay your loan out in three clean options — lowest payment, balanced, and lowest long-term cost — so you can choose with confidence? I can have it ready today.`;
   }
 
   function render(){
@@ -367,17 +424,23 @@ window.JARVIS_DATA = {
     $("hist").innerHTML = D.history.slice(-25).reverse().map(h=>`
       <div class="hist"><div class="q">You: ${h.you}</div><div class="a">JARVIS: ${h.jv}</div><div class="tm">${h.t}</div></div>`).join("")
       || '<div class="muted" style="font-size:12px">No history yet.</div>';
-    renderFollowups(); renderRates(); save();
+    renderFollowups(); renderRates(); renderMoney(); save();
+  }
+  function renderMoney(){ if(!$("projComm"))return; const m=moneyStats();
+    $("projComm").textContent=money(m.proj);
+    $("projSub").textContent=`projected commission @ ${commPct()}% · live pipeline`;
+    $("commPct").textContent=`${commPct()}% comm`;
+    $("mVol").textContent=money(m.vol); $("mRisk").textContent=money(m.risk); $("mClosed").textContent=money(m.closedComm);
   }
 
-  function suggestES(d){const f=first(d.name); const nx=(d.next||"").toLowerCase();
-    if(/paystub|w2|w-2|tax|statement|doc|bank/.test(nx))
-      return `Hola ${f}, soy Martin de Team Miranda. Para mantener su préstamo a tiempo solo necesito ${d.next.toLowerCase()}. Lo más fácil es enviarme una foto por aquí — ¿me lo manda ahora o le envío un enlace seguro por correo?`;
-    if(/appraisal|title|insurance/.test(nx))
-      return `Hola ${f}, soy Martin de Team Miranda — actualización: estamos trabajando en ${d.next.toLowerCase()}, no necesito nada de usted aún. Una pregunta para tenerle listo: ¿prefiere cerrar lo más rápido posible o el menor efectivo para cerrar? Preparo opciones de cualquier forma.`;
+  function suggestES(d){const f=first(d.name);
+    if(isDoc(d))
+      return `Hola ${f}, le saluda Martin de Team Miranda. Para mantener su préstamo avanzando, solo necesito ${docES(d)}. Lo más fácil es tomarle una foto y enviármela por mensaje — ¿me la manda ahora o le envío un enlace seguro por correo?`;
+    if(isProc(d))
+      return `Hola ${f}, le saluda Martin de Team Miranda. Una actualización rápida: estamos gestionando ${procES(d)}, por ahora no necesito nada de usted. Le aviso en cuanto se resuelva. ¿Hay algo que quiera que revise mientras tanto?`;
     if(d.flag==="risk")
-      return `Hola ${f}, soy Martin de Team Miranda. Quiero asegurarme de que nada esté retrasando su préstamo. Lo más rápido es una llamada de 5 minutos — ¿le funciona mejor hoy o mañana?`;
-    return `Hola ${f}, soy Martin de Team Miranda. ¿Le ayudaría ver su préstamo en tres opciones claras — pago más bajo, equilibrado, y menor costo a largo plazo? Se las preparo. ¿Quiere?`;}
+      return `Hola ${f}, le saluda Martin de Team Miranda. Quiero asegurarme de que nada retrase su préstamo. La forma más rápida de tener todo claro es una llamada de 5 minutos — ¿le funciona mejor hoy o mañana?`;
+    return `Hola ${f}, le saluda Martin de Team Miranda. ¿Quiere que le presente su préstamo en tres opciones claras — pago más bajo, equilibrado y menor costo a largo plazo — para que elija con confianza? Se lo puedo tener listo hoy.`;}
 
   function actBtns(d, es){
     const ph=(d.phone||"").replace(/[^\d+]/g,"");
@@ -443,6 +506,39 @@ window.JARVIS_DATA = {
     o.start(); o.stop(a.currentTime+.5);}catch(e){}}
   function notify(title,body){try{if("Notification"in window&&Notification.permission==="granted")new Notification(title,{body});}catch(e){}}
   $("popX").onclick=()=>$("popup").classList.remove("show");
+
+  /* ===== feed-by-screenshot: free on-device OCR ===== */
+  function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement("script"); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s);});}
+  async function ocrImage(file){
+    showPopup("📷","Reading your screenshot… hang tight."); toast("📷 Reading screenshot…");
+    try{
+      if(!window.Tesseract) await loadScript("https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js");
+      const {data}=await Tesseract.recognize(file,"eng");
+      const txt=((data&&data.text)||"").trim();
+      $("popup").classList.remove("show");
+      if(!txt){ toast("Couldn't read it — share it to Martin in chat to sync"); return; }
+      if(parseRatesFromText(txt)){ jarvis("Got your rate screenshot — I pulled the numbers into your board.", "📷 rate screenshot"); toast("📈 Rates updated from screenshot"); return; }
+      $("say").value=txt.replace(/\s+/g," ").slice(0,260); $("say").focus();
+      toast("Captured the text — edit if needed, then tap ➤");
+    }catch(err){ $("popup").classList.remove("show"); toast("Reader busy — share the screenshot to Martin in chat and it'll sync"); }
+  }
+  function parseRatesFromText(txt){
+    const t=txt.toLowerCase().replace(/,/g," ");
+    const grab=re=>{const m=t.match(re); return m?parseFloat(m[1]):null;};
+    const r=D.rates?{...D.rates}:{source:"Screenshot"};
+    let any=false;
+    const c30=grab(/30\s*yr?\s*fixed[^\d]{0,8}(\d\.\d{1,3})/)||grab(/30\s*year[^\d]{0,8}(\d\.\d{1,3})/); if(c30){r.conv30=c30;any=true;}
+    const c15=grab(/15\s*yr?\s*fixed[^\d]{0,8}(\d\.\d{1,3})/); if(c15){r.conv15=c15;any=true;}
+    const fha=grab(/fha[^\d]{0,8}(\d\.\d{1,3})/); if(fha){r.fha30=fha;any=true;}
+    const va=grab(/\bva\b[^\d]{0,8}(\d\.\d{1,3})/); if(va){r.va30=va;any=true;}
+    const jumbo=grab(/jumbo[^\d]{0,8}(\d\.\d{1,3})/); if(jumbo){r.jumbo30=jumbo;any=true;}
+    const arm=grab(/arm[^\d]{0,8}(\d\.\d{1,3})/); if(arm){r.arm=arm;any=true;}
+    const ten=grab(/10\s*yr?\s*treasury[^\d]{0,8}(\d\.\d{1,3})/)||grab(/treasury[^\d]{0,8}(\d\.\d{2,3})/); if(ten){r.tenYr=ten;any=true;}
+    if(any){ r.updated=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric"}); D.rates=r; render(); }
+    return any;
+  }
+  $("feedBtn").onclick=()=>$("shot").click();
+  $("shot").onchange=e=>{const f=e.target.files&&e.target.files[0]; if(f)ocrImage(f); e.target.value="";};
 
   /* free live 10-yr treasury (the number mortgage rates track) — best-effort, no key */
   function renderRates(){
@@ -512,6 +608,14 @@ window.JARVIS_DATA = {
       return out;
     }
     let m=s.match(/set rates? (?:to |at )?(.+)/); if(m){D.rateNote=cap(m[1]); return `Locked in. Today's rate note: ${D.rateNote}.`;}
+    // ---- money / commission ----
+    if(/\b(show me the money|how'?s the money|pipeline worth|my commission|how much.*(make|money|commission)|the money)\b/.test(s)){
+      const mm=moneyStats();
+      return `You've got ${money(mm.vol)} in live pipeline — about ${money(mm.proj)} in commission at ${commPct()} percent.${mm.risk?` ${money(mm.risk)} of it is at risk, so protect that first.`:""} You've earned ${money(mm.closedComm)} closed this month. Now go lock it in.`;
+    }
+    m=s.match(/commission (?:to |at |is |of )?([\d.]+)\s*(percent|%|basis points|bps|bp)?/); if(m){let v=parseFloat(m[1]); if(/bp|basis/.test(m[2]||""))v=v/100; D.commissionPct=v; render(); return `Set — commission at ${v}%. Your money board's live now.`;}
+    m=t.match(/(.+?)\b(?:loan amount|amount|loan size|loan is|is worth)\b\s*(?:is|:)?\s*(.+)/i);
+    if(m){const d=findDeal(m[1].toLowerCase()); const amt=parseAmount(m[2]); if(d&&amt){d.amount=amt; render(); return `Got it — ${first(d.name)}'s loan at ${money(amt)}, about ${money(amt*commPct()/100)} to you. Money board updated.`;}}
     if(/\b(motivate|motivation|pump me up|hype me|i'?m (tired|stuck|stressed|down|drained|slow)|need (a )?boost|fire me up|let'?s go)\b/.test(s)) return motivate();
     if(/\b(brief|briefing|status|pipeline|rundown|how am i|what'?s up|update me)\b/.test(s)) return briefing();
     if(/\b(help|what can you do|commands)\b/.test(s)) return "Say: add a deal with a name, type and stage. Mark a deal closed. Flag one at risk. Set a reminder. Give me someone's number. Ask how are rates after you set them. Or say brief me.";
@@ -520,8 +624,9 @@ window.JARVIS_DATA = {
     m=t.match(/(.+?)\b(?:number|phone|cell|digits)\b(?:\s*(?:is|:))?\s*([\d\-\+\(\)\s]{7,})/i);
     if(m){const d=findDeal(m[1].toLowerCase()); if(d){d.phone=m[2].replace(/[^\d+]/g,""); return `Got it. ${first(d.name)} is now one-tap to text or call.`;} }
     if(/\b(closed|funded|we closed|mark .* done)\b/.test(s)){const d=findDeal(s);
-      if(d){d.stage="Closed"; d.flag="ok"; D.monthClosed=(D.monthClosed||0)+1;
-        return `Outstanding. ${d.name} closed — that's ${D.monthClosed} this month, ${Math.max(0,(D.monthGoal||0)-D.monthClosed)} to goal. On to the next.`;}
+      if(d){d.stage="Closed"; d.flag="ok"; D.monthClosed=(D.monthClosed||0)+1; D.monthVolume=(+D.monthVolume||0)+(+d.amount||0);
+        const earned=(+d.amount||0)*commPct()/100;
+        return `Outstanding. ${d.name} closed${d.amount?` — ${money(d.amount)}, about ${money(earned)} to you`:""}. That's ${D.monthClosed} this month, ${Math.max(0,(D.monthGoal||0)-D.monthClosed)} to goal. ${motivate()}`;}
       return "Which file closed? Try: close out Sarah Lee.";}
     if(/\b(at risk|flag|stalled|urgent|chase)\b/.test(s)){const d=findDeal(s); if(d){d.flag="risk"; return `Flagged. ${d.name} is top priority now.`;}}
     if(/\bwaiting\b/.test(s)){const d=findDeal(s); if(d){d.flag="wait"; const mm=s.match(/waiting on (.+)/); if(mm)d.next="Waiting on "+mm[1]; return `Noted. ${d.name} is waiting${d.next?', '+d.next.toLowerCase():''}.`;}}
@@ -560,7 +665,7 @@ window.JARVIS_DATA = {
     s+=risk.length?`, ${risk.length} needing you`:``;
     s+=pend?`, ${pend} follow-up${pend!==1?'s':''} on the clock. `:`. `;
     if(D.priorities[0])s+=`Priority one: ${D.priorities[0]} `;
-    s+=`Closed ${D.monthClosed||0} of ${D.monthGoal||0} this month. ${motivate()}`; return s;}
+    s+=`Closed ${D.monthClosed||0} of ${D.monthGoal||0} this month, about ${money(moneyStats().proj)} of commission sitting in your live pipeline. ${motivate()}`; return s;}
   function motivate(){const closed=D.monthClosed||0, left=Math.max(0,(D.monthGoal||0)-closed);
     const lines=[
       `${left>0?left+" to go":"goal crushed"} — every "no" just clears the path to the next "yes." Pick up the phone.`,
@@ -599,12 +704,17 @@ window.JARVIS_DATA = {
   $("saveBtn").onclick=()=>{try{const blob=new Blob(["window.JARVIS_DATA = "+JSON.stringify(D,null,2)+";\n"],{type:"text/javascript"});
     const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="data.js"; document.body.appendChild(a); a.click(); a.remove();
     toast("💾 Exported data.js");}catch(e){toast("Export not supported here");}};
+  function bootHidden(){return document.getElementById("boot").classList.contains("hidden");}
   $("boot").onclick=()=>{$("boot").classList.add("hidden"); render(); fetchRates(); jarvis(briefing());
     if("speechSynthesis"in window)speechSynthesis.onvoiceschanged=()=>{};
-    if("Notification"in window&&Notification.permission==="default"){try{Notification.requestPermission()}catch(e){}}};
+    if("Notification"in window&&Notification.permission==="default"){try{Notification.requestPermission()}catch(e){}}
+    let ok=[]; try{localStorage.setItem("_t","1");localStorage.removeItem("_t");ok.push("memory");}catch(e){}
+    if("speechSynthesis"in window)ok.push("voice"); if(rec)ok.push("mic");
+    setTimeout(()=>toast("✅ All systems go · "+ok.join(" · ")),1400);};
   setInterval(fetchRates, 60*60*1000);            // rates hourly
   setInterval(checkFollowups, 20000);             // follow-up alarms
-  setInterval(()=>{ if(document.getElementById("boot").classList.contains("hidden")) showPopup("✨", motivate()); }, 45*60*1000); // gentle motivation
+  setInterval(()=>{ if(bootHidden()) render(); }, 30000);  // real-time refresh (countdowns + money)
+  setInterval(()=>{ if(bootHidden()) showPopup("✨", motivate()); }, 45*60*1000); // gentle motivation
   render(); fetchRates();
   </script>
 </body>
