@@ -26,8 +26,9 @@
 
   /* header */
   header{display:flex; justify-content:space-between; align-items:center; padding:6px 4px 14px}
-  .brand{font-weight:800; font-size:15px; letter-spacing:.22em; color:var(--gold-bright)}
-  .brand small{display:block; font-size:9.5px; letter-spacing:.3em; color:var(--dim); margin-top:2px; font-weight:600}
+  .brandwrap{display:flex; flex-direction:column; gap:5px}
+  .logo{height:38px; width:auto; filter:invert(1) drop-shadow(0 0 7px rgba(230,194,90,.45)); object-fit:contain; align-self:flex-start}
+  .brandwrap small{font-size:9.5px; letter-spacing:.28em; color:var(--dim); font-weight:600}
   .clock{text-align:right}
   .clock .t{font-size:18px; font-weight:800; color:var(--gold-bright); font-variant-numeric:tabular-nums}
   .clock .d{font-size:9.5px; letter-spacing:.18em; color:var(--dim)}
@@ -126,6 +127,27 @@
   .mini button{background:transparent; border:1px solid var(--line); color:var(--dim); font-family:inherit;
     font-size:11px; letter-spacing:.1em; padding:7px 12px; border-radius:20px; cursor:pointer; font-weight:600}
 
+  /* follow-up popup + rows */
+  .popup{position:fixed; top:calc(8px + env(safe-area-inset-top)); left:12px; right:12px; z-index:80;
+    max-width:600px; margin:0 auto; background:linear-gradient(180deg,#2a2233,#181320);
+    border:1.5px solid var(--gold); border-radius:16px; padding:14px 15px;
+    box-shadow:0 14px 44px rgba(0,0,0,.6), 0 0 26px rgba(230,194,90,.35);
+    display:flex; align-items:center; gap:12px; transform:translateY(-150%);
+    transition:transform .45s cubic-bezier(.2,.9,.3,1)}
+  .popup.show{transform:translateY(0)}
+  .popup .ic{font-size:24px} .popup .ms{flex:1; font-size:14.5px; font-weight:700; line-height:1.3}
+  .popup .x{font-size:17px; color:var(--dim); cursor:pointer; padding:4px 6px}
+  .fu{display:flex; align-items:center; gap:10px; padding:11px 0; border-bottom:1px solid rgba(255,255,255,.05)}
+  .fu:last-child{border-bottom:0}
+  .fu .info{flex:1; min-width:0} .fu .fn{font-weight:700; font-size:15px}
+  .fu .fd{font-size:11px; margin-top:1px} .fu .fd.soon{color:var(--wait)}
+  .fu .fd.over{color:var(--risk); font-weight:700} .fu .fd.ok{color:var(--dim)}
+  .fu .mini2{display:flex; gap:6px; flex:0 0 auto}
+  .fu .mini2 a,.fu .mini2 button{font-family:inherit; cursor:pointer; border:0; border-radius:11px;
+    padding:9px 11px; font-size:13px; font-weight:800; text-decoration:none; text-align:center}
+  .b-text{background:#1f6feb; color:#fff} .b-done{background:#2bb673; color:#fff}
+  .b-snooze{background:rgba(230,194,90,.15); color:var(--gold-bright)}
+
   #boot{position:fixed; inset:0; z-index:60; background:var(--bg); display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:22px; cursor:pointer; text-align:center; padding:20px}
   #boot h1{font-size:27px; letter-spacing:.34em; color:var(--gold-bright)}
@@ -135,6 +157,8 @@
 </style>
 </head>
 <body>
+  <div class="popup" id="popup"><div class="ic">⏰</div><div class="ms" id="popMsg"></div><div class="x" id="popX">✕</div></div>
+
   <div id="boot">
     <h1>J · A · R · V · I · S</h1>
     <div class="bigring"></div>
@@ -143,7 +167,10 @@
   </div>
 
   <header>
-    <div class="brand">TEAM MIRANDA<small id="unit">V.I.P. MORTGAGE · MK III</small></div>
+    <div class="brandwrap">
+      <img id="logo" class="logo" src="../assets/brand/team-miranda-logo.png" alt="Team Miranda" />
+      <small id="unit">V.I.P. MORTGAGE · MK IV</small>
+    </div>
     <div class="clock"><div class="t" id="clk">--:--</div><div class="d" id="dte">—</div></div>
   </header>
 
@@ -172,9 +199,20 @@
     <div class="acts" id="nowActs"></div>
   </div>
 
+  <div class="card" id="fuCard">
+    <div class="label"><span class="pip"></span>⏰ FOLLOW-UPS · WAITING ON A REPLY</div>
+    <div id="fus"></div>
+  </div>
+
   <div class="card">
     <div class="label"><span class="pip"></span>📲 TODAY'S OUTREACH</div>
     <div id="outreach"></div>
+  </div>
+
+  <div class="card" id="rateCard">
+    <div class="label"><span class="pip"></span>📈 TODAY'S RATES <span id="rateSrc" style="margin-left:auto; font-size:9px; color:var(--dim); letter-spacing:.08em; font-weight:600"></span></div>
+    <div id="rateGrid"></div>
+    <div id="rateNoteBox" class="muted" style="font-size:12.5px; line-height:1.45; margin-top:9px"></div>
   </div>
 
   <div class="card">
@@ -204,7 +242,8 @@
   <script>
   const DEFAULTS=window.JARVIS_DATA||{operator:"Martin",unit:"V.I.P. MORTGAGE",deals:[],priorities:[],notes:[],history:[],rateNote:"",monthClosed:0,monthGoal:8};
   let D; try{const s=JSON.parse(localStorage.getItem("JARVIS_DATA")); D=s?{...DEFAULTS,...s}:structuredClone(DEFAULTS);}catch(e){D=structuredClone(DEFAULTS);}
-  ["deals","priorities","notes","history"].forEach(k=>D[k]=D[k]||[]);
+  ["deals","priorities","notes","history","followups"].forEach(k=>D[k]=D[k]||[]);
+  D.followups.forEach(f=>{ if(!f.due){ f.due=Date.now()+25*60000; f.alerted=false; } }); // demo seed → 25m out
   function save(){localStorage.setItem("JARVIS_DATA",JSON.stringify(D));}
   const $=id=>document.getElementById(id);
   const enc=encodeURIComponent;
@@ -225,7 +264,7 @@
   }
 
   function render(){
-    $("unit").textContent=(D.unit||"")+" · MK III";
+    $("unit").textContent=(D.unit||"")+" · MK IV";
     const active=D.deals.filter(d=>d.stage!=="Closed").length;
     const risk=D.deals.filter(d=>d.flag==="risk");
     $("sActive").textContent=active; $("sRisk").textContent=risk.length;
@@ -233,13 +272,22 @@
     $("hi").textContent=greeting()+", "+(D.operator||"Operator")+".";
     $("status").textContent=risk.length?`${risk.length} deal${risk.length>1?'s':''} need you today`:"All systems nominal";
 
-    // RIGHT NOW = top priority, tie to a deal if name matches
-    const top=D.priorities[0];
-    const tied=top? D.deals.find(d=>top.toLowerCase().includes(first(d.name).toLowerCase())) : null;
-    const focusDeal = tied || risk[0];
-    $("nowBig").textContent = top || (focusDeal? `Reach out to ${focusDeal.name}` : "You're clear. Add a deal or say “brief me.”");
-    $("nowWho").textContent = focusDeal? `${focusDeal.name} · ${focusDeal.type||'loan'} · ${focusDeal.stage||''}` : "";
-    $("nowActs").innerHTML = focusDeal? actBtns(focusDeal) : "";
+    // RIGHT NOW = most urgent follow-up first, else top priority
+    const pend=D.followups.filter(f=>!f.done).sort((a,b)=>a.due-b.due);
+    const urgent=pend.find(f=>f.due-Date.now()<30*60000); // overdue or due within 30 min
+    if(urgent){
+      const fd=fmtDue(urgent.due); const ud=D.deals.find(x=>x.name===urgent.name);
+      $("nowBig").textContent=`${fd.cls==="over"?"⏰ Overdue — ":""}Follow up with ${urgent.name||urgent.note}`;
+      $("nowWho").textContent=(fd.cls==="over"?"Was due ":"Due ")+fd.t.replace("⏰ OVERDUE","now")+(urgent.note&&urgent.name?` · ${urgent.note}`:"");
+      $("nowActs").innerHTML=(ud?actBtns(ud,false):"")+`<button class="act call" onclick="fuDone('${urgent.id}')">✅ Handled it</button>`;
+    } else {
+      const top=D.priorities[0];
+      const tied=top? D.deals.find(d=>top.toLowerCase().includes(first(d.name).toLowerCase())) : null;
+      const focusDeal = tied || risk[0];
+      $("nowBig").textContent = top || (focusDeal? `Reach out to ${focusDeal.name}` : "You're clear. Add a deal or say “brief me.”");
+      $("nowWho").textContent = focusDeal? `${focusDeal.name} · ${focusDeal.type||'loan'} · ${focusDeal.stage||''}` : "";
+      $("nowActs").innerHTML = focusDeal? actBtns(focusDeal,false) : "";
+    }
 
     // outreach = risk + wait deals
     const out=D.deals.filter(d=>d.flag==="risk"||d.flag==="wait");
@@ -265,7 +313,7 @@
     $("hist").innerHTML = D.history.slice(-25).reverse().map(h=>`
       <div class="hist"><div class="q">You: ${h.you}</div><div class="a">JARVIS: ${h.jv}</div><div class="tm">${h.t}</div></div>`).join("")
       || '<div class="muted" style="font-size:12px">No history yet.</div>';
-    renderRates(); save();
+    renderFollowups(); renderRates(); save();
   }
 
   function suggestES(d){const f=first(d.name); const nx=(d.next||"").toLowerCase();
@@ -294,20 +342,83 @@
     navigator.clipboard?.writeText(suggestES(d)); jarvis(`Copié el mensaje en español para ${first(d.name)}.`);};
   window.askPhone=name=>{jarvis(`What's ${first(name)}'s number? Say: ${first(name)} number 5 2 0 ...`); $("say").focus();};
 
+  /* ===== follow-up tracker: never miss a reply ===== */
+  function fmtDue(due){const diff=due-Date.now();
+    if(diff<=0)return{cls:"over",t:"⏰ OVERDUE"};
+    const m=Math.round(diff/60000);
+    if(m<60)return{cls:m<=15?"soon":"ok",t:"in "+m+"m"};
+    const h=Math.round(m/60); if(h<24)return{cls:"ok",t:"in "+h+"h"};
+    return{cls:"ok",t:new Date(due).toLocaleString("en-US",{weekday:"short",hour:"numeric",minute:"2-digit"})};}
+  function parseWhen(s){let m;
+    if(m=s.match(/in (\d+)\s*(min|minute|minutes|hour|hours|hr|hrs|day|days)/)){const n=+m[1];const ms=/day/.test(m[2])?864e5:/h/.test(m[2])?36e5:6e4;return Date.now()+n*ms;}
+    if(m=s.match(/at (\d{1,2})(?::(\d{2}))?\s*(a\.?m\.?|p\.?m\.?)?/)){const d=new Date();let h=+m[1];const mn=m[2]?+m[2]:0;const ap=(m[3]||"").replace(/\./g,"");if(ap==="pm"&&h<12)h+=12;if(ap==="am"&&h===12)h=0;d.setHours(h,mn,0,0);if(d.getTime()<Date.now())d.setDate(d.getDate()+1);return d.getTime();}
+    if(/tomorrow/.test(s)){const d=new Date();d.setDate(d.getDate()+1);d.setHours(9,0,0,0);return d.getTime();}
+    if(/tonight/.test(s)){const d=new Date();d.setHours(19,0,0,0);return d.getTime();}
+    return null;}
+  function extractName(t){const s=t.toLowerCase();
+    const d=D.deals.find(x=>s.includes(first(x.name).toLowerCase())); if(d)return d.name;
+    let m=s.match(/\b(?:with|to|from|back from)\s+([a-z]+(?:\s[a-z]+)?)/); if(m)return m[1].split(" ").map(cap).join(" ");
+    m=s.match(/^([a-z]+)\s+(?:texted|messaged|called|wants|needs|asked|hit)/); if(m)return cap(m[1]);
+    return "";}
+  function addFollowup(name,note,due){
+    D.followups.unshift({id:Date.now()+"",name:name||"",note:note||("Reply to "+(name||"client")),due,done:false,alerted:false});
+    if("Notification"in window&&Notification.permission==="default"){try{Notification.requestPermission()}catch(e){}}
+    render();}
+  window.fuDone=id=>{const f=D.followups.find(x=>x.id===id); if(f){f.done=true; jarvis(`Nice — ${f.name||"that"} cleared off your list. Timely as always.`);}};
+  window.fuSnooze=id=>{const f=D.followups.find(x=>x.id===id); if(f){f.due=Date.now()+15*60000; f.alerted=false; jarvis(`Snoozed ${f.name||"it"} 15 minutes.`);}};
+  function renderFollowups(){
+    const pend=D.followups.filter(f=>!f.done).sort((a,b)=>a.due-b.due);
+    $("fus").innerHTML = pend.length? pend.map(f=>{const fd=fmtDue(f.due);
+      const d=D.deals.find(x=>x.name===f.name); const ph=d&&d.phone?d.phone.replace(/[^\d+]/g,""):"";
+      const text=ph?`<a class="b-text" href="sms:${ph}&body=${enc(d?suggest(d):'')}">💬</a>`:"";
+      const sub=f.note&&f.name&&f.note!=="Reply to "+f.name?" · "+f.note:"";
+      return `<div class="fu"><div class="info"><div class="fn">${f.name||f.note}</div>
+        <div class="fd ${fd.cls}">${fd.t}${sub}</div></div>
+        <div class="mini2">${text}<button class="b-snooze" onclick="fuSnooze('${f.id}')">+15m</button>
+        <button class="b-done" onclick="fuDone('${f.id}')">✅</button></div></div>`;}).join("")
+      : '<div class="muted" style="font-size:13px">Nothing pending. Say "James texted me" or "follow up with Sarah in 2 hours."</div>';}
+  function checkFollowups(){let fired=false;
+    D.followups.filter(f=>!f.done&&!f.alerted&&f.due<=Date.now()).forEach(f=>{f.alerted=true; fired=true;
+      const msg=`Time to follow up${f.name?" with "+f.name:""}.`; showPopup("⏰",msg); beep(); notify("JARVIS reminder",msg);
+      if(voiceOn)say(`Reminder. ${msg}`);});
+    if(fired)render();}
+  function showPopup(ic,msg){const p=$("popup"); p.querySelector(".ic").textContent=ic; $("popMsg").textContent=msg;
+    p.classList.add("show"); clearTimeout(showPopup._t); showPopup._t=setTimeout(()=>p.classList.remove("show"),14000);}
+  function beep(){try{const a=new (window.AudioContext||window.webkitAudioContext)(); const o=a.createOscillator(); const g=a.createGain();
+    o.connect(g); g.connect(a.destination); o.type="sine"; o.frequency.setValueAtTime(987,a.currentTime); o.frequency.setValueAtTime(1318,a.currentTime+.12);
+    g.gain.setValueAtTime(.0001,a.currentTime); g.gain.exponentialRampToValueAtTime(.35,a.currentTime+.02); g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+.5);
+    o.start(); o.stop(a.currentTime+.5);}catch(e){}}
+  function notify(title,body){try{if("Notification"in window&&Notification.permission==="granted")new Notification(title,{body});}catch(e){}}
+  $("popX").onclick=()=>$("popup").classList.remove("show");
+
   /* free live 10-yr treasury (the number mortgage rates track) — best-effort, no key */
   function renderRates(){
-    const el=$("market"); if(!el) return;
-    if(D.tenYr){ const dir=D.tenYrPrev? (D.tenYr>D.tenYrPrev?" ▲": D.tenYr<D.tenYrPrev?" ▼":" ▬"):"";
-      el.innerHTML=`📈 10-YR TREASURY <b class="gold">${D.tenYr}%</b>${dir}${D.rateNote? ` · YOUR SHEET: <b class="gold">${D.rateNote}</b>`:""}`; }
-    else el.innerHTML=`📈 10-YR TREASURY · say "set rates to 6.5" to set your sheet`;
+    const el=$("market"); const r=D.rates;
+    if(el){
+      if(r) el.innerHTML=`📈 30-YR <b class="gold">${r.conv30}%</b> · 15-YR <b class="gold">${r.conv15}%</b> · 10-YR <b class="gold">${r.tenYr}</b>`;
+      else if(D.tenYr) el.innerHTML=`📈 10-YR TREASURY <b class="gold">${D.tenYr}%</b>`;
+      else el.innerHTML=`📈 share a rate screenshot or say "set rates to 6.5"`;
+    }
+    if($("rateGrid")){
+      if(r){
+        const rows=[["30-Yr Fixed",r.conv30],["15-Yr Fixed",r.conv15],["FHA 30",r.fha30],["VA 30",r.va30],["Jumbo 30",r.jumbo30],["7/6 ARM",r.arm]].filter(x=>x[1]);
+        $("rateGrid").innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px">`+
+          rows.map(x=>`<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05);padding:6px 0"><span class="muted" style="font-size:12.5px">${x[0]}</span><b class="gold" style="font-size:15px">${x[1]}%</b></div>`).join("")+`</div>`;
+        $("rateSrc").textContent=(r.source||"")+(r.updated?" · "+r.updated:"");
+        $("rateNoteBox").innerHTML=(r.headline?`<b class="gold">${r.headline}.</b> `:"")+(r.commentary||"")+(D.rateNote?` <br><span class="muted">Your sheet: ${D.rateNote}</span>`:"");
+      } else {
+        $("rateGrid").innerHTML='<div class="muted" style="font-size:13px">Say "set rates to 6.5" or share a rate screenshot and I\'ll load it.</div>';
+        $("rateSrc").textContent=""; $("rateNoteBox").textContent="";
+      }
+    }
   }
   async function fetchRates(){
     try{
       const res=await fetch("https://stooq.com/q/l/?s=10usy.b&f=sd2t2c&e=csv",{cache:"no-store"});
       const txt=await res.text(); const cols=txt.trim().split("\n").pop().split(",");
       const close=parseFloat(cols[cols.length-1]);
-      if(!isNaN(close)&&close>0&&close<25){ if(D.tenYr&&D.tenYr!==close) D.tenYrPrev=D.tenYr; D.tenYr=+close.toFixed(2); save(); renderRates(); }
-    }catch(e){ /* CORS / offline — manual "set rates" still works */ }
+      if(!isNaN(close)&&close>0&&close<25){ if(D.rates){D.rates.tenYr=+close.toFixed(2);} else {D.tenYr=+close.toFixed(2);} save(); renderRates(); }
+    }catch(e){ /* CORS / offline — the MND numbers + manual still work */ }
   }
   function greeting(){const h=new Date().getHours();return h<12?"Good morning":h<18?"Good afternoon":"Good evening";}
   function clock(){const n=new Date();
@@ -337,15 +448,18 @@
   }
   function brain(t,s){
     if(/\b(rate|rates|market|how'?s the market|today'?s rate|treasury)\b/.test(s)){
-      let r="";
-      if(D.tenYr){ const dir=D.tenYrPrev? (D.tenYr>D.tenYrPrev?", ticking up": D.tenYr<D.tenYrPrev?", easing down":", holding steady") : "";
-        r+=`The 10-year treasury — the number your rates track — is at ${D.tenYr}%${dir}. `; }
-      if(D.rateNote) r+=`Your rate sheet note: ${D.rateNote}. `;
-      else r+=`Tell me today's rate sheet — say "set rates to 6.5" — and I'll keep it ready for every client. `;
-      r+=`Either way, sell the monthly payment, not the headline.`;
-      return r;
+      const r=D.rates; let out="";
+      if(r){ out+=`30-year fixed is ${r.conv30}%, 15-year ${r.conv15}%`;
+        if(r.fha30)out+=`, FHA ${r.fha30}, VA ${r.va30}`;
+        out+=`. The 10-year treasury sits at ${r.tenYr}. ${r.headline?r.headline+". ":""}${r.commentary||""} `;
+      } else if(D.tenYr){ out+=`The 10-year treasury — what your rates track — is at ${D.tenYr}%. `; }
+      else { out+=`Share a rate screenshot or say "set rates to 6.5" and I'll keep it ready. `; }
+      if(D.rateNote) out+=`Your sheet note: ${D.rateNote}. `;
+      out+=`Lead with the monthly payment, not the headline.`;
+      return out;
     }
     let m=s.match(/set rates? (?:to |at )?(.+)/); if(m){D.rateNote=cap(m[1]); return `Locked in. Today's rate note: ${D.rateNote}.`;}
+    if(/\b(motivate|motivation|pump me up|hype me|i'?m (tired|stuck|stressed|down|drained|slow)|need (a )?boost|fire me up|let'?s go)\b/.test(s)) return motivate();
     if(/\b(brief|briefing|status|pipeline|rundown|how am i|what'?s up|update me)\b/.test(s)) return briefing();
     if(/\b(help|what can you do|commands)\b/.test(s)) return "Say: add a deal with a name, type and stage. Mark a deal closed. Flag one at risk. Set a reminder. Give me someone's number. Ask how are rates after you set them. Or say brief me.";
     m=s.match(/goal (?:to |is |of )?(\d+)/); if(m){D.monthGoal=+m[1]; return `Goal set to ${m[1]}. You're at ${D.monthClosed||0}.`;}
@@ -358,6 +472,23 @@
       return "Which file closed? Try: close out Sarah Lee.";}
     if(/\b(at risk|flag|stalled|urgent|chase)\b/.test(s)){const d=findDeal(s); if(d){d.flag="risk"; return `Flagged. ${d.name} is top priority now.`;}}
     if(/\bwaiting\b/.test(s)){const d=findDeal(s); if(d){d.flag="wait"; const mm=s.match(/waiting on (.+)/); if(mm)d.next="Waiting on "+mm[1]; return `Noted. ${d.name} is waiting${d.next?', '+d.next.toLowerCase():''}.`;}}
+    // ---- follow-ups: never miss a reply ----
+    if(/\b(replied|got back|responded|heard back|reached out to|i texted|i called|done with|handled it|cleared)\b/.test(s)){
+      const nm=extractName(t); const f=D.followups.find(x=>!x.done&&(!nm||x.name.toLowerCase().includes(nm.toLowerCase().split(" ")[0])));
+      if(f){f.done=true; return `Done — ${f.name||"that follow-up"} cleared. That's how you keep clients warm.`;}
+    }
+    {
+      const when=parseWhen(s);
+      const inbound=/\b(texted|messaged|called|reached out|hit me up|left a message|emailed)\b/.test(s);
+      const wantFU=/\b(follow ?up|get back|reply|respond|check in|circle back|text|call|nudge)\b/.test(s);
+      const isAdd=/\b(add|new|create)\b.*\b(deal|file|client|loan|borrower)\b/.test(s);
+      if(!isAdd && ((wantFU&&when)||inbound||/\b(follow ?up|circle back)\b/.test(s)||(wantFU&&/\b(waiting|hear back|owes)\b/.test(s)))){
+        const nm=extractName(t); const due=when||(Date.now()+(inbound?60:120)*60000);
+        addFollowup(nm, inbound&&!/\b(remind|follow)\b/.test(s)?`Reply to ${nm||"them"}`:"", due);
+        const fd=fmtDue(due);
+        return `Locked in.${nm?` ${nm} —`:""} I'll nudge you ${fd.t.startsWith("in")?fd.t:"at "+new Date(due).toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"})}. It pops up on screen, beeps, and I say it out loud.`;
+      }
+    }
     m=t.match(/\b(?:remind me to|reminder|add (?:a )?(?:task|directive)|to-?do)\s+(?:to\s+)?(.+)/i);
     if(m){D.priorities.unshift(cap(m[1])); D.priorities=D.priorities.slice(0,6); return `Logged: ${m[1]}.`;}
     m=t.match(/\bremember(?: that)?\s+(.+)/i); if(m){D.notes.unshift(m[1]); return `I'll remember that.`;}
@@ -371,10 +502,22 @@
     D.notes.unshift(t); return `Saved that to your notes. Say “brief me” for your rundown, or “help.”`;
   }
   function briefing(){const active=D.deals.filter(d=>d.stage!=="Closed").length; const risk=D.deals.filter(d=>d.flag==="risk");
+    const pend=D.followups.filter(f=>!f.done).length;
     let s=`${greeting()}, ${D.operator||"sir"}. ${active} active file${active!==1?'s':''}`;
-    s+=risk.length?`, ${risk.length} needing you. `:`, all nominal. `;
+    s+=risk.length?`, ${risk.length} needing you`:``;
+    s+=pend?`, ${pend} follow-up${pend!==1?'s':''} on the clock. `:`. `;
     if(D.priorities[0])s+=`Priority one: ${D.priorities[0]} `;
-    s+=`Closed ${D.monthClosed||0} of ${D.monthGoal||0} this month. Let's get you home.`; return s;}
+    s+=`Closed ${D.monthClosed||0} of ${D.monthGoal||0} this month. ${motivate()}`; return s;}
+  function motivate(){const closed=D.monthClosed||0, left=Math.max(0,(D.monthGoal||0)-closed);
+    const lines=[
+      `${left>0?left+" to go":"goal crushed"} — every "no" just clears the path to the next "yes." Pick up the phone.`,
+      `You're built for this, ${D.operator}. One more call than you feel like making — that's the whole game.`,
+      `Rates rise, rates fall; your hustle is the constant. Go own today.`,
+      `${left>0?left+" files":"You"} stand between you and your goal. That's not pressure — that's a target. Lock in.`,
+      `Champions follow up. You're ahead of most just by showing up sharp. Keep stacking wins.`,
+      `Someone out there is praying for the home you can get them into. Go find them.`,
+      `Protect the pipeline, protect the relationships, and the commissions take care of themselves. Let's move.`];
+    return lines[Math.floor(Math.random()*lines.length)];}
   function findDeal(s){return D.deals.find(d=>s.includes(first(d.name).toLowerCase()))||D.deals.find(d=>s.includes(d.name.toLowerCase()));}
   function parseDeal(t){let body=t.replace(/^.*?\b(deal|file|client|loan|borrower)\b[:,]?\s*/i,"").replace(/^(add|new|create)\s+(a\s+)?/i,"");
     const parts=body.split(/[,]| for | who | and /i).map(x=>x.trim()).filter(Boolean);
@@ -403,8 +546,12 @@
   $("saveBtn").onclick=()=>{const blob=new Blob(["window.JARVIS_DATA = "+JSON.stringify(D,null,2)+";\n"],{type:"text/javascript"});
     const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="data.js"; a.click();
     say("Exported your data.");};
-  $("boot").onclick=()=>{$("boot").classList.add("hidden"); render(); fetchRates(); jarvis(briefing()); if("speechSynthesis"in window)speechSynthesis.onvoiceschanged=()=>{};};
-  setInterval(fetchRates, 60*60*1000); // refresh hourly
+  $("boot").onclick=()=>{$("boot").classList.add("hidden"); render(); fetchRates(); jarvis(briefing());
+    if("speechSynthesis"in window)speechSynthesis.onvoiceschanged=()=>{};
+    if("Notification"in window&&Notification.permission==="default"){try{Notification.requestPermission()}catch(e){}}};
+  setInterval(fetchRates, 60*60*1000);            // rates hourly
+  setInterval(checkFollowups, 20000);             // follow-up alarms
+  setInterval(()=>{ if(document.getElementById("boot").classList.contains("hidden")) showPopup("✨", motivate()); }, 45*60*1000); // gentle motivation
   render(); fetchRates();
   </script>
 </body>
