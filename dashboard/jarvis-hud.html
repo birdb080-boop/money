@@ -163,6 +163,19 @@
     box-shadow:0 10px 28px rgba(0,0,0,.55); max-width:90vw; text-align:center}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 
+  /* settings modal */
+  .modal{position:fixed; inset:0; z-index:90; background:rgba(0,0,0,.62); display:flex; align-items:flex-end; justify-content:center; backdrop-filter:blur(3px)}
+  .modal.hidden{display:none}
+  .sheet{background:linear-gradient(180deg,var(--card2),var(--card)); border:1px solid var(--gold); border-radius:22px 22px 0 0;
+    width:100%; max-width:620px; padding:20px 18px calc(26px + env(safe-area-inset-bottom)); box-shadow:0 -12px 44px rgba(0,0,0,.6)}
+  .shead{font-size:13px; letter-spacing:.18em; color:var(--gold-bright); font-weight:800; display:flex; justify-content:space-between; align-items:center; margin-bottom:6px}
+  .shead span{cursor:pointer; color:var(--dim); font-size:17px; padding:4px 8px}
+  .sheet label{display:block; font-size:11px; letter-spacing:.1em; color:var(--gold); margin:14px 0 5px; font-weight:700}
+  .sheet input,.sheet select{width:100%; background:rgba(0,0,0,.35); border:1px solid var(--line); border-radius:12px; color:var(--txt); font-family:inherit; font-size:16px; padding:13px 14px}
+  .sheet .hint{font-size:11px; color:var(--dim); margin-top:6px; line-height:1.45}
+  .savebtn{width:100%; margin-top:20px; background:linear-gradient(180deg,var(--gold-bright),var(--gold)); color:#06090f; border:0; border-radius:14px; padding:16px; font-family:inherit; font-weight:800; font-size:15px; letter-spacing:.12em; cursor:pointer}
+  .savebtn:active{transform:scale(.98)}
+
   #boot{position:fixed; inset:0; z-index:60; background:var(--bg); display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:22px; cursor:pointer; text-align:center; padding:20px}
   #boot h1{font-size:27px; letter-spacing:.34em; color:var(--gold-bright)}
@@ -174,6 +187,26 @@
 <body>
   <div class="popup" id="popup"><div class="ic">⏰</div><div class="ms" id="popMsg"></div><div class="x" id="popX">✕</div></div>
   <div class="toast" id="toast"></div>
+
+  <div id="settings" class="modal hidden">
+    <div class="sheet">
+      <div class="shead">⚙️ SETTINGS <span id="setClose">✕</span></div>
+      <label>🧠 GENIUS MODE — Claude API key</label>
+      <input id="setKey" type="password" placeholder="sk-ant-…" autocomplete="off" />
+      <div class="hint">Paste a key to chat freely + read client-text screenshots. Blank = free built-in brain. Stored only on this phone. Get a key at console.anthropic.com.</div>
+      <label>Brain</label>
+      <select id="setModel">
+        <option value="claude-opus-4-8">Opus 4.8 — smartest</option>
+        <option value="claude-haiku-4-5">Haiku 4.5 — cheapest &amp; fastest</option>
+        <option value="claude-sonnet-4-6">Sonnet 4.6 — balanced</option>
+      </select>
+      <label>Commission %</label>
+      <input id="setComm" type="number" step="0.01" inputmode="decimal" />
+      <label>Monthly goal (units)</label>
+      <input id="setGoal" type="number" inputmode="numeric" />
+      <button class="savebtn" id="setSave">SAVE</button>
+    </div>
+  </div>
 
   <div id="boot">
     <h1>J · A · R · V · I · S</h1>
@@ -256,6 +289,7 @@
   <input type="file" id="shot" accept="image/*" style="display:none" />
   <div class="mini">
     <button id="feedBtn" style="border-color:var(--gold); color:var(--gold-bright)">📷 FEED SCREENSHOT</button>
+    <button id="settingsBtn">⚙️ SETTINGS</button>
     <button id="rebrief">⟳ BRIEF ME</button>
     <button id="voiceBtn">🔊 VOICE ON</button>
     <button id="saveBtn">💾 EXPORT</button>
@@ -272,6 +306,11 @@
 window.JARVIS_DATA = {
   operator: "Martin",
   unit: "V.I.P. MORTGAGE",
+
+  // Genius Mode (optional): paste a Claude API key in ⚙️ Settings to chat freely.
+  // Blank = runs on the free built-in brain. Stored only on your phone.
+  apiKey: "",
+  model: "claude-opus-4-8",
 
   commissionPct: 1.0,   // your commission % — say "set commission to 1.25"
   monthVolume: 1150000, // closed loan volume this month (for earned $)
@@ -375,7 +414,7 @@ window.JARVIS_DATA = {
   }
 
   function render(){
-    $("unit").textContent=(D.unit||"")+" · MK IV";
+    $("unit").textContent=(D.unit||"")+" · MK V"+(D.apiKey?" · 🧠 GENIUS":"");
     const active=D.deals.filter(d=>d.stage!=="Closed").length;
     const risk=D.deals.filter(d=>d.flag==="risk");
     $("sActive").textContent=active; $("sRisk").textContent=risk.length;
@@ -509,18 +548,45 @@ window.JARVIS_DATA = {
 
   /* ===== feed-by-screenshot: free on-device OCR ===== */
   function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement("script"); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s);});}
+  function popSticky(ic,msg){const p=$("popup"); p.querySelector(".ic").textContent=ic; $("popMsg").textContent=msg; p.classList.add("show"); clearTimeout(showPopup._t);}
+  function popHide(){ $("popup").classList.remove("show"); }
+  function fileToB64(file){return new Promise((res,rej)=>{const r=new FileReader(); r.onload=()=>res(String(r.result).split(",")[1]); r.onerror=rej; r.readAsDataURL(file);});}
+  async function askGeniusVision(file){
+    const key=D.apiKey; if(!key) return null;
+    try{
+      const b64=await fileToB64(file); let media=file.type||"image/png";
+      if(!/jpeg|png|gif|webp/.test(media)) media="image/jpeg";
+      const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
+        headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body:JSON.stringify({model:D.model||"claude-opus-4-8",max_tokens:600,system:geniusSystem(),
+          messages:[{role:"user",content:[
+            {type:"image",source:{type:"base64",media_type:media,data:b64}},
+            {type:"text",text:"This is a screenshot Martin shared — usually a text/iMessage conversation with a client, or a rate sheet/document. Read it. If it's a client conversation: one short line on what the client wants, then draft Martin's reply in the MARTY method, and suggest he say 'remind me to follow up with [name] in 2 hours' if useful. If it's rates or a document, extract the key facts. Concise, spoken-aloud, no markdown."}
+          ]}]})});
+      if(!res.ok) return {error:res.status};
+      const j=await res.json();
+      const txt=(j.content||[]).filter(b=>b.type==="text").map(b=>b.text).join(" ").trim();
+      return {text:txt||"I read it but couldn't make out the details — try a clearer shot."};
+    }catch(e){ return {error:"network"}; }
+  }
   async function ocrImage(file){
-    showPopup("📷","Reading your screenshot… hang tight."); toast("📷 Reading screenshot…");
+    popSticky("📷","Reading your screenshot…"); toast("📷 Got it — reading…");
+    // Best path: Genius vision actually understands client texts
+    if(D.apiKey){
+      const r=await askGeniusVision(file);
+      if(r&&r.text){ popHide(); jarvis(r.text,"📷 shared a screenshot"); toast("📷 Read it"); return; }
+      if(r&&r.error){ toast(`Vision error ${r.error} — trying basic read`); }
+    }
+    // Fallback: on-device OCR (great for rate sheets, rough for chats)
     try{
       if(!window.Tesseract) await loadScript("https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js");
       const {data}=await Tesseract.recognize(file,"eng");
-      const txt=((data&&data.text)||"").trim();
-      $("popup").classList.remove("show");
-      if(!txt){ toast("Couldn't read it — share it to Martin in chat to sync"); return; }
-      if(parseRatesFromText(txt)){ jarvis("Got your rate screenshot — I pulled the numbers into your board.", "📷 rate screenshot"); toast("📈 Rates updated from screenshot"); return; }
-      $("say").value=txt.replace(/\s+/g," ").slice(0,260); $("say").focus();
-      toast("Captured the text — edit if needed, then tap ➤");
-    }catch(err){ $("popup").classList.remove("show"); toast("Reader busy — share the screenshot to Martin in chat and it'll sync"); }
+      const txt=((data&&data.text)||"").trim(); popHide();
+      if(!txt){ jarvis("I couldn't read that one on-device. Turn on Genius Mode in ⚙️ so I can actually read client texts — or share it to Martin in the chat and it'll sync.","📷 screenshot"); return; }
+      if(parseRatesFromText(txt)){ jarvis("Got your rate screenshot — I pulled the numbers into your board.","📷 rate screenshot"); toast("📈 Rates updated"); return; }
+      D.notes.unshift("From screenshot: "+txt.replace(/\s+/g," ").slice(0,300)); $("say").value=txt.replace(/\s+/g," ").slice(0,260);
+      jarvis("I read your screenshot and saved the text to your notes — it's in the box if you want me to act on it. For client texts, turn on Genius Mode in ⚙️ and I'll read them and draft your reply.","📷 screenshot");
+    }catch(err){ popHide(); jarvis("That on-device reader didn't load. Turn on Genius Mode in ⚙️, or share the screenshot to Martin in chat and it'll sync.","📷 screenshot"); }
   }
   function parseRatesFromText(txt){
     const t=txt.toLowerCase().replace(/,/g," ");
@@ -539,6 +605,13 @@ window.JARVIS_DATA = {
   }
   $("feedBtn").onclick=()=>$("shot").click();
   $("shot").onchange=e=>{const f=e.target.files&&e.target.files[0]; if(f)ocrImage(f); e.target.value="";};
+  $("settingsBtn").onclick=()=>{ $("setKey").value=D.apiKey||""; $("setModel").value=D.model||"claude-opus-4-8"; $("setComm").value=commPct(); $("setGoal").value=D.monthGoal||0; $("settings").classList.remove("hidden"); };
+  $("setClose").onclick=()=>$("settings").classList.add("hidden");
+  $("setSave").onclick=()=>{ const had=!!D.apiKey; D.apiKey=$("setKey").value.trim(); D.model=$("setModel").value;
+    const c=parseFloat($("setComm").value); if(!isNaN(c))D.commissionPct=c; const g=parseInt($("setGoal").value); if(!isNaN(g))D.monthGoal=g;
+    save(); render(); $("settings").classList.add("hidden");
+    if(D.apiKey){ toast("🧠 Genius Mode ON"); if(!had)say("Genius mode online. Ask me anything, or feed me a client text and I'll draft your reply."); }
+    else toast("Saved"); };
 
   /* free live 10-yr treasury (the number mortgage rates track) — best-effort, no key */
   function renderRates(){
@@ -593,7 +666,38 @@ window.JARVIS_DATA = {
   /* brain */
   function handle(raw){
     const t=raw.trim(); if(!t)return; const s=t.toLowerCase();
-    const reply=brain(t,s); jarvis(reply,t);
+    const reply=brain(t,s);
+    if(reply===null){ // Genius Mode handles open-ended questions
+      toast("🧠 thinking…"); say("One moment.");
+      askGenius(t).then(r=>{
+        if(r&&r.text) jarvis(r.text,t);
+        else if(r&&r.error) jarvis(`I couldn't reach my AI brain (error ${r.error}). Double-check your key in settings — I'll keep using my built-in smarts meanwhile.`,t);
+        else { D.notes.unshift(t); jarvis(`Saved that to your notes. Say "brief me", or "help".`,t); }
+      });
+    } else jarvis(reply,t);
+  }
+
+  /* ===== Genius Mode: optional Claude brain (free built-in brain still handles commands) ===== */
+  function geniusSystem(){
+    const m=moneyStats(); const r=D.rates;
+    return `You are JARVIS, the AI co-pilot for Martin Miranda, a licensed mortgage Loan Officer (NMLS 1683424) at V.I.P. Mortgage, Inc. — Team Miranda, Tucson AZ. Bilingual English/Spanish.
+Speak in a calm, confident, concise JARVIS voice — 1 to 3 sentences, meant to be spoken aloud, so no markdown, headings, or bullet lists. Be genuinely smart and useful.
+COMPLIANCE (hard rules, protect his license above all): never quote or confirm specific binding rates, APRs, fees, payments, or approval status — use "subject to underwriting" language; never give wiring instructions; never give legal or tax advice. For any borrower-facing message, follow the MARTY method: move first, ask one diagnostic question, reframe, give two or three clear options, end with a clear yes/no next step.
+LIVE CONTEXT: ${(D.deals||[]).filter(d=>d.stage!=="Closed").length} active files; ${m.proj?money(m.proj)+" projected commission in pipeline":"no loan amounts set"}; today's rates ${r?`30yr ${r.conv30}%, 15yr ${r.conv15}%, 10yr treasury ${r.tenYr}`:"not loaded"}. Top priorities: ${(D.priorities||[]).slice(0,3).join("; ")||"none set"}.
+If he asks you to do an in-app action (add a deal, set a reminder, set rates), give him the exact short phrase to say so the app logs it.`;
+  }
+  function geniusHistory(){ return (D.history||[]).slice(-6).flatMap(h=>[{role:"user",content:h.you},{role:"assistant",content:h.jv}]); }
+  async function askGenius(userText){
+    const key=D.apiKey; if(!key) return null;
+    try{
+      const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
+        headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body:JSON.stringify({model:D.model||"claude-opus-4-8",max_tokens:600,system:geniusSystem(),messages:geniusHistory().concat([{role:"user",content:userText}])})});
+      if(!res.ok) return {error:res.status};
+      const j=await res.json();
+      const txt=(j.content||[]).filter(b=>b.type==="text").map(b=>b.text).join(" ").trim();
+      return {text:txt||"I didn't catch that — try again?"};
+    }catch(e){ return {error:"network"}; }
   }
   function brain(t,s){
     if(/\b(rate|rates|market|how'?s the market|today'?s rate|treasury)\b/.test(s)){
@@ -616,6 +720,16 @@ window.JARVIS_DATA = {
     m=s.match(/commission (?:to |at |is |of )?([\d.]+)\s*(percent|%|basis points|bps|bp)?/); if(m){let v=parseFloat(m[1]); if(/bp|basis/.test(m[2]||""))v=v/100; D.commissionPct=v; render(); return `Set — commission at ${v}%. Your money board's live now.`;}
     m=t.match(/(.+?)\b(?:loan amount|amount|loan size|loan is|is worth)\b\s*(?:is|:)?\s*(.+)/i);
     if(m){const d=findDeal(m[1].toLowerCase()); const amt=parseAmount(m[2]); if(d&&amt){d.amount=amt; render(); return `Got it — ${first(d.name)}'s loan at ${money(amt)}, about ${money(amt*commPct()/100)} to you. Money board updated.`;}}
+    // payment calculator (P&I)
+    if(/\b(payment|p ?& ?i|amorti|monthly on)\b/.test(s) && /\d/.test(s)){
+      const amt=parseAmount(t);
+      const rm=s.match(/(?:at|@)\s*(\d{1,2}(?:\.\d+)?)/)||s.match(/(\d{1,2}\.\d{1,3})\s*%?/);
+      const rate=rm?parseFloat(rm[1]):(D.rates&&D.rates.conv30);
+      const tm=(s.match(/(\d{2})\s*(?:yr|year)/)||[])[1]; const n=(tm?+tm:30)*12;
+      if(amt&&rate){ const r=rate/100/12; const pay=r? amt*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1): amt/n;
+        return `On ${money(amt)} at ${rate}% over ${n/12} years, principal and interest is about ${moneyFull(Math.round(pay))} a month — before taxes and insurance, and subject to underwriting. Want me to draft that for a client?`; }
+      return "Give me the amount and rate — like: payment on 400k at 6.5.";
+    }
     if(/\b(motivate|motivation|pump me up|hype me|i'?m (tired|stuck|stressed|down|drained|slow)|need (a )?boost|fire me up|let'?s go)\b/.test(s)) return motivate();
     if(/\b(brief|briefing|status|pipeline|rundown|how am i|what'?s up|update me)\b/.test(s)) return briefing();
     if(/\b(help|what can you do|commands)\b/.test(s)) return "Say: add a deal with a name, type and stage. Mark a deal closed. Flag one at risk. Set a reminder. Give me someone's number. Ask how are rates after you set them. Or say brief me.";
@@ -657,7 +771,8 @@ window.JARVIS_DATA = {
     if(m){const d=findDeal(m[1].toLowerCase()); if(d){d.next=cap(m[2]); return `Updated. Next on ${d.name}: ${m[2]}.`;}}
     if(/\b(thank|thanks|appreciate)\b/.test(s)) return "Always. Let's get you home.";
     if(/\b(hello|hey|hi|jarvis|you there)\b/.test(s)) return `${greeting()}, ${D.operator}. Online and listening.`;
-    D.notes.unshift(t); return `Saved that to your notes. Say “brief me” for your rundown, or “help.”`;
+    if(D.apiKey) return null; // hand open-ended questions to Genius Mode
+    D.notes.unshift(t); return `Saved that to your notes. Say “brief me” for your rundown, or turn on Genius mode in ⚙️ to chat freely.`;
   }
   function briefing(){const active=D.deals.filter(d=>d.stage!=="Closed").length; const risk=D.deals.filter(d=>d.flag==="risk");
     const pend=D.followups.filter(f=>!f.done).length;

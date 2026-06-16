@@ -3,6 +3,11 @@ window.JARVIS_DATA = {
   operator: "Martin",
   unit: "V.I.P. MORTGAGE",
 
+  // Genius Mode (optional): paste a Claude API key in ⚙️ Settings to chat freely.
+  // Blank = runs on the free built-in brain. Stored only on your phone.
+  apiKey: "",
+  model: "claude-opus-4-8",
+
   commissionPct: 1.0,   // your commission % — say "set commission to 1.25"
   monthVolume: 1150000, // closed loan volume this month (for earned $)
 
