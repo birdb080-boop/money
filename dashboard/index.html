@@ -328,7 +328,9 @@
     rec.onerror=e=>{ if(e.error==="not-allowed"){jarvis("I need microphone access. Enable it and click TALK again."); stopMic();} };
     rec.onend=()=>{ if(listening&&!speaking){try{rec.start()}catch(e){}} };
   }
-  function startMic(){ if(!rec){jarvis("Voice input needs Chrome or Edge. You can type to me instead."); return;}
+  if(!rec){ $("micBtn").textContent="⌨️ TAP TO TALK / TYPE"; }
+  function startMic(){ if(!rec){ $("say").focus();
+      jarvis("Tap the microphone on your keyboard and just talk. Try: add a deal, Sarah Lee, conventional, processing."); return;}
     listening=true; $("micBtn").classList.add("on"); $("micBtn").textContent="🎙️ LISTENING…";
     $("core").classList.add("listening"); try{rec.start()}catch(e){} }
   function stopMic(){ listening=false; $("micBtn").classList.remove("on"); $("micBtn").textContent="🎤 TALK TO JARVIS";
