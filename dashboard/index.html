@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="JARVIS" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>JARVIS · Team Miranda</title>
 <style>
@@ -162,6 +163,8 @@
     <div class="stat"><b id="sClosed">0</b><span>CLOSED · GOAL</span></div>
   </div>
 
+  <div id="market" class="muted" style="text-align:center; font-size:11px; letter-spacing:.14em; margin:-7px 0 15px">📈 10-YR TREASURY · loading…</div>
+
   <div class="card now">
     <div class="label"><span class="pip"></span>⚡ RIGHT NOW</div>
     <div class="big" id="nowBig">Tap the mic and tell me what's going on.</div>
@@ -245,7 +248,7 @@
         <div class="top2"><span class="dot ${d.flag}"></span><span class="nm">${d.name}</span>
           <span class="stg">${d.stage||'Lead'}</span></div>
         <div class="sug"><b>Suggested:</b> ${suggest(d)}</div>
-        <div class="acts">${actBtns(d)}</div>
+        <div class="acts">${actBtns(d,true)}</div>
       </div>`).join("") : '<div class="muted" style="font-size:13px">Nobody waiting on you. 🎉 Add deals and I’ll surface who to contact.</div>';
 
     $("deals").innerHTML = D.deals.length? D.deals.map(d=>`
@@ -262,22 +265,50 @@
     $("hist").innerHTML = D.history.slice(-25).reverse().map(h=>`
       <div class="hist"><div class="q">You: ${h.you}</div><div class="a">JARVIS: ${h.jv}</div><div class="tm">${h.t}</div></div>`).join("")
       || '<div class="muted" style="font-size:12px">No history yet.</div>';
-    save();
+    renderRates(); save();
   }
 
-  function actBtns(d){
-    const msg=enc(suggest(d));
+  function suggestES(d){const f=first(d.name); const nx=(d.next||"").toLowerCase();
+    if(/paystub|w2|w-2|tax|statement|doc|bank/.test(nx))
+      return `Hola ${f}, soy Martin de Team Miranda. Para avanzar con su préstamo necesitamos ${d.next.toLowerCase()} cuando pueda — toma 2 minutos y seguimos a tiempo. ¡Gracias! 🙏`;
+    if(/appraisal|title|insurance/.test(nx))
+      return `Hola ${f}, soy Martin — actualización de su préstamo: estamos trabajando en ${d.next.toLowerCase()}. Le mantengo informado. ¡Cualquier duda, escríbame!`;
+    if(d.flag==="risk")
+      return `Hola ${f}, soy Martin de Team Miranda. Quería saludarle y asegurarme de que tiene todo lo necesario para su préstamo. ¿Tiene 5 minutos hoy?`;
+    return `Hola ${f}, soy Martin de Team Miranda — ¿algo en que pueda ayudarle hoy con su préstamo?`;}
+
+  function actBtns(d, es){
     const ph=(d.phone||"").replace(/[^\d+]/g,"");
-    const text = ph? `<a class="act text" href="sms:${ph}&body=${msg}">💬 Text</a>`
-                   : `<button class="act text" onclick="copyMsg('${d.name.replace(/'/g,"")}')">💬 Copy text</button>`;
+    const nm=d.name.replace(/'/g,"");
+    const text = ph? `<a class="act text" href="sms:${ph}&body=${enc(suggest(d))}">💬 Text</a>`
+                   : `<button class="act text" onclick="copyMsg('${nm}')">💬 Copy</button>`;
     const call = ph? `<a class="act call" href="tel:${ph}">📞 Call</a>`
-                   : `<button class="act ghost" onclick="askPhone('${d.name.replace(/'/g,"")}')">➕ Add #</button>`;
-    return text+call;
+                   : `<button class="act ghost" onclick="askPhone('${nm}')">➕ Add #</button>`;
+    const esb = es? (ph? `<a class="act ghost" href="sms:${ph}&body=${enc(suggestES(d))}">🇲🇽 ES</a>`
+                       : `<button class="act ghost" onclick="copyMsgES('${nm}')">🇲🇽 ES</button>`) : "";
+    return text+call+esb;
   }
   window.copyMsg=name=>{const d=D.deals.find(x=>x.name===name); if(!d)return;
     navigator.clipboard?.writeText(suggest(d)); jarvis(`Copied your text to ${first(d.name)}. Paste it in Messages — or tell me ${first(d.name)}'s number and I'll make it one tap.`);};
+  window.copyMsgES=name=>{const d=D.deals.find(x=>x.name===name); if(!d)return;
+    navigator.clipboard?.writeText(suggestES(d)); jarvis(`Copié el mensaje en español para ${first(d.name)}.`);};
   window.askPhone=name=>{jarvis(`What's ${first(name)}'s number? Say: ${first(name)} number 5 2 0 ...`); $("say").focus();};
 
+  /* free live 10-yr treasury (the number mortgage rates track) — best-effort, no key */
+  function renderRates(){
+    const el=$("market"); if(!el) return;
+    if(D.tenYr){ const dir=D.tenYrPrev? (D.tenYr>D.tenYrPrev?" ▲": D.tenYr<D.tenYrPrev?" ▼":" ▬"):"";
+      el.innerHTML=`📈 10-YR TREASURY <b class="gold">${D.tenYr}%</b>${dir}${D.rateNote? ` · YOUR SHEET: <b class="gold">${D.rateNote}</b>`:""}`; }
+    else el.innerHTML=`📈 10-YR TREASURY · say "set rates to 6.5" to set your sheet`;
+  }
+  async function fetchRates(){
+    try{
+      const res=await fetch("https://stooq.com/q/l/?s=10usy.b&f=sd2t2c&e=csv",{cache:"no-store"});
+      const txt=await res.text(); const cols=txt.trim().split("\n").pop().split(",");
+      const close=parseFloat(cols[cols.length-1]);
+      if(!isNaN(close)&&close>0&&close<25){ if(D.tenYr&&D.tenYr!==close) D.tenYrPrev=D.tenYr; D.tenYr=+close.toFixed(2); save(); renderRates(); }
+    }catch(e){ /* CORS / offline — manual "set rates" still works */ }
+  }
   function greeting(){const h=new Date().getHours();return h<12?"Good morning":h<18?"Good afternoon":"Good evening";}
   function clock(){const n=new Date();
     $("clk").textContent=n.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"});
@@ -305,9 +336,14 @@
     const reply=brain(t,s); jarvis(reply,t);
   }
   function brain(t,s){
-    if(/\b(rate|rates|market|how'?s the market|today'?s rate)\b/.test(s)){
-      if(D.rateNote) return `Today's rate note: ${D.rateNote}. Remember to sell the monthly payment, not the headline.`;
-      return `I can't pull live market rates from here yet — but tell me today's number and I'll keep it ready for every client. Say: set rates to your number. And the move that always works: focus the client on the monthly payment, not the headline rate.`;
+    if(/\b(rate|rates|market|how'?s the market|today'?s rate|treasury)\b/.test(s)){
+      let r="";
+      if(D.tenYr){ const dir=D.tenYrPrev? (D.tenYr>D.tenYrPrev?", ticking up": D.tenYr<D.tenYrPrev?", easing down":", holding steady") : "";
+        r+=`The 10-year treasury — the number your rates track — is at ${D.tenYr}%${dir}. `; }
+      if(D.rateNote) r+=`Your rate sheet note: ${D.rateNote}. `;
+      else r+=`Tell me today's rate sheet — say "set rates to 6.5" — and I'll keep it ready for every client. `;
+      r+=`Either way, sell the monthly payment, not the headline.`;
+      return r;
     }
     let m=s.match(/set rates? (?:to |at )?(.+)/); if(m){D.rateNote=cap(m[1]); return `Locked in. Today's rate note: ${D.rateNote}.`;}
     if(/\b(brief|briefing|status|pipeline|rundown|how am i|what'?s up|update me)\b/.test(s)) return briefing();
@@ -367,8 +403,9 @@
   $("saveBtn").onclick=()=>{const blob=new Blob(["window.JARVIS_DATA = "+JSON.stringify(D,null,2)+";\n"],{type:"text/javascript"});
     const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="data.js"; a.click();
     say("Exported your data.");};
-  $("boot").onclick=()=>{$("boot").classList.add("hidden"); render(); jarvis(briefing()); if("speechSynthesis"in window)speechSynthesis.onvoiceschanged=()=>{};};
-  render();
+  $("boot").onclick=()=>{$("boot").classList.add("hidden"); render(); fetchRates(); jarvis(briefing()); if("speechSynthesis"in window)speechSynthesis.onvoiceschanged=()=>{};};
+  setInterval(fetchRates, 60*60*1000); // refresh hourly
+  render(); fetchRates();
   </script>
 </body>
 </html>
