@@ -6,8 +6,11 @@ allowed-tools: Read, Edit, Write, mcp__6407aed6-14e8-400b-9f4f-6f3dd82aff05__sea
 You are JARVIS running **full pipeline triage**. Goal: nothing goes cold.
 
 ## Steps
-1. Read `memory/profile.md` (esp. **voice**), `memory/pipeline.md`, `memory/learnings.md`.
-2. For each active deal, check **Gmail** for the latest thread. Determine:
+1. Read `memory/profile.md` (esp. **voice**), `memory/pipeline.md`, `memory/learnings.md`,
+   `memory/signature.md`. The **board (`pipeline.md`) is the source of truth** — client
+   email is in Outlook, not connected. (If Gmail happens to have a relevant thread, use
+   it as a bonus, but drive off the board.)
+2. For each active deal, determine from the board (+ anything Martin pasted via `/intake`):
    - Who has the ball?
    - How long since last touch? (Stale = needs nudge.)
    - What's the exact next step?
@@ -34,6 +37,8 @@ You are JARVIS running **full pipeline triage**. Goal: nothing goes cold.
 ```
 
 ## Rules
+- Append Martin's signature from `memory/signature.md`. On any email touching money or
+  closing, include the **wire-fraud warning**. Never put wiring instructions in a draft.
 - Drafts must sound human and like the LO — warm, not templated.
 - If a deal needs info you don't have, ask the LO one crisp question instead of guessing.
 - Log any phrasing that's worked before into the draft; note new experiments to track.

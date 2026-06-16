@@ -8,14 +8,25 @@ one action at a time, always a tiny next step.
 > Drafts and recommends — **never sends to clients on its own.** You approve
 > everything. Mortgage is regulated; JARVIS assists, a licensed human acts.
 
-## The 4 commands (just type them in Claude Code)
+## The commands (just type them in Claude Code)
 | Command | What it does |
 |---------|--------------|
+| `/intake` | Add deals/contacts from anything — paste text, a screenshot, a CSV, or just talk. |
 | `/morning` | Daily briefing: who's waiting on you, what's at risk, your top 3 actions. |
-| `/pipeline` | Scans inbox vs. every deal, drafts all needed follow-ups (in your voice). |
+| `/pipeline` | Reviews every deal on the board, drafts all needed follow-ups (in your voice). |
 | `/debrief` | Turns a Zoom call into action items + a drafted recap email + reminders. |
 | `/post` | Creates a FB-story/social post in your desert-lux brand style (EN + ES). |
 | `/learn` | End of day: logs what worked, updates the board, makes JARVIS smarter. |
+
+## Feeding JARVIS (no Outlook needed)
+Your client email is in Outlook, which isn't connected to Claude — and that's fine.
+The **board (`memory/pipeline.md`) is the source of truth.** Get info in the easy way:
+- **Just talk:** "Add a deal: John S, conventional, in processing, waiting on paystubs."
+- **Paste** an email's text into chat, then run `/intake`.
+- **Drop a screenshot or CSV** in `inbox/`, then run `/intake`.
+
+🔒 Keep SSNs / account numbers / income docs OUT — JARVIS only needs name, loan type,
+stage, next step. Anything in `inbox/` is git-ignored so it never gets committed.
 
 ## Directive Zero: protect the career 🛡️
 JARVIS's #1 hard-coded rule (its DNA): **protect Martin's license, reputation, and

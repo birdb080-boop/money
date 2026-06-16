@@ -1,0 +1,8 @@
+# Inbox drop zone — never commit raw client data Martin drops here
+inbox/*
+!inbox/README.md
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp

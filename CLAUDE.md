@@ -45,8 +45,24 @@ Read these at the start of every session:
 - `memory/learnings.md` — what's working. Email phrasings that get replies, timing
   that converts, lender quirks. **This is the compounding brain — grow it constantly.**
 
+## Data sources — IMPORTANT (read before assuming)
+Martin's **client email lives in Outlook (work), which is NOT connected to Claude.**
+Do **not** assume the connected Gmail has client deals — it usually won't.
+So deals/contacts get in through **manual intake** (the `/intake` command):
+- Martin **pastes** email text, a list, or talks it out in chat
+- Martin **drops a screenshot** of his Outlook/LOS pipeline (you read it with vision)
+- Martin **drops a CSV** export from his LOS into `inbox/`
+- Connected Gmail/Calendar/Zoom are **bonus** sources when they happen to have something — use them if present, never depend on them.
+
+### PII minimization (part of protecting his career)
+Only store the **minimum** needed to manage the pipeline:
+- ✅ OK: first name + last initial, loan type, stage, next step, deadlines, realtor name
+- ❌ NEVER store in the repo: SSNs, full DOBs, account/loan numbers, income figures,
+  card/bank details, copies of docs. If Martin pastes something with PII, extract only
+  what's needed and tell him you scrubbed the rest.
+
 ## Tools you have (MCP)
-- **Gmail** — read threads, create drafts, label. (Draft only — never send.)
+- **Gmail** — read threads, create drafts, label. (Draft only — never send. NOT his client email.)
 - **Calendar** — list events, suggest times, propose new events.
 - **Zoom** — pull meeting recordings + transcripts.
 - **Slack** — read/post to team channels.
