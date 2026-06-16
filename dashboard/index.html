@@ -279,6 +279,12 @@
     <div id="outreach"></div>
   </div>
 
+  <div class="card" id="queueCard">
+    <div class="label"><span class="pip"></span>📤 FOLLOW-UP QUEUE · approve to send
+      <button id="buildQ" style="margin-left:auto; background:transparent; border:1px solid var(--line); color:var(--gold-bright); font-family:inherit; font-size:10px; letter-spacing:.08em; padding:7px 11px; border-radius:20px; cursor:pointer">✨ DRAFT ALL DUE</button></div>
+    <div id="queue"></div>
+  </div>
+
   <div class="card" id="rateCard">
     <div class="label"><span class="pip"></span>📈 TODAY'S RATES <span id="rateSrc" style="margin-left:auto; font-size:9px; color:var(--dim); letter-spacing:.08em; font-weight:600"></span></div>
     <div id="rateGrid"></div>
@@ -315,7 +321,7 @@
   <script>
   const DEFAULTS=window.JARVIS_DATA||{operator:"Martin",unit:"V.I.P. MORTGAGE",deals:[],priorities:[],notes:[],history:[],rateNote:"",monthClosed:0,monthGoal:8};
   let D; try{const s=JSON.parse(localStorage.getItem("JARVIS_DATA")); D=s?{...DEFAULTS,...s}:structuredClone(DEFAULTS);}catch(e){D=structuredClone(DEFAULTS);}
-  ["deals","priorities","notes","history","followups"].forEach(k=>D[k]=D[k]||[]);
+  ["deals","priorities","notes","history","followups","queue"].forEach(k=>D[k]=D[k]||[]);
   D.followups.forEach(f=>{ if(!f.due){ f.due=Date.now()+25*60000; f.alerted=false; } }); // demo seed → 25m out
   // migrate older saved data so the money board fills in
   const _def=Object.fromEntries((DEFAULTS.deals||[]).map(d=>[d.name,d]));
@@ -423,8 +429,25 @@
     $("hist").innerHTML = D.history.slice(-25).reverse().map(h=>`
       <div class="hist"><div class="q">You: ${h.you}</div><div class="a">JARVIS: ${h.jv}</div><div class="tm">${h.t}</div></div>`).join("")
       || '<div class="muted" style="font-size:12px">No history yet.</div>';
-    renderFollowups(); renderRates(); renderMoney(); save();
+    renderFollowups(); renderRates(); renderMoney(); renderQueue(); save();
   }
+  function renderQueue(){ if(!$("queue"))return; const q=D.queue||[];
+    $("queue").innerHTML = q.length? q.map(it=>{ const d=D.deals.find(x=>x.name===it.name); const ph=d&&d.phone?d.phone.replace(/[^\d+]/g,""):"";
+      return `<div class="out"><div class="top2"><span class="dot ${d?d.flag:'ok'}"></span><span class="nm">${it.name}</span><span class="stg">queued</span></div>
+        <div class="sug">${it.msg}</div>
+        <div class="acts"><a class="act text" href="sms:${ph}&body=${enc(it.msg)}" onclick="qSent('${it.id}')">✅ Send</a><button class="act ghost" onclick="qEdit('${it.id}')">✏️ Edit</button><button class="act ghost" onclick="qDrop('${it.id}')">🗑️</button></div></div>`; }).join("")
+      : '<div class="muted" style="font-size:13px">Empty. Tap “Draft all due” and I’ll write a personalized follow-up for everyone who needs one — nothing sends until you approve each with one tap.</div>'; }
+  async function buildQueue(){
+    const due=D.deals.filter(d=>d.stage!=="Closed" && (d.flag==="risk"||d.flag==="wait"));
+    if(!due.length){ jarvis("Nobody's due for a follow-up right now — your pipeline's warm. Nice work.","draft all due"); return; }
+    toast(`✍️ Drafting ${due.length} follow-ups…`); D.queue=D.queue||[];
+    for(const d of due){ if(D.queue.find(x=>x.name===d.name)) continue; let msg=suggest(d);
+      if(D.apiKey){ const ctx=`Write a warm, human follow-up TEXT (message only) from Martin to client ${d.name}. Loan ${d.type||"n/a"}, stage ${d.stage}, next step ${d.next||"n/a"}. Recent history: ${(d.log||[]).slice(-4).map(e=>e.kind+": "+e.text).join(" | ")||"none yet"}. Use the MARTY method, one clear next step, no rate quotes.`; const r=await askGenius(ctx); if(r&&r.text)msg=r.text; }
+      D.queue.push({id:Date.now()+"_"+Math.random().toString(36).slice(2,6),name:d.name,msg}); render(); }
+    jarvis(`Drafted ${due.length} follow-up${due.length>1?'s':''} — they're in your queue, personalized to each client. Approve each with one tap and I'll log it. Nothing sends without you.`,"draft all due"); toast("📤 Queue ready — approve to send"); }
+  window.qSent=id=>{const it=(D.queue||[]).find(x=>x.id===id); if(it){const d=D.deals.find(x=>x.name===it.name); if(d){logEntry(d,"text (sent)",it.msg); if(d.flag==="risk"||d.flag==="wait")d.flag="ok";} D.queue=D.queue.filter(x=>x.id!==id); render(); toast("✅ Sent & logged to "+first(it.name));}};
+  window.qEdit=id=>{const it=(D.queue||[]).find(x=>x.id===id); if(it){const v=prompt("Edit before sending:",it.msg); if(v&&v.trim()){it.msg=v.trim(); save(); render(); toast("✏️ Updated");}}};
+  window.qDrop=id=>{D.queue=(D.queue||[]).filter(x=>x.id!==id); render(); toast("Removed from queue");};
   function renderMoney(){ if(!$("projComm"))return; const m=moneyStats();
     $("projComm").textContent=money(m.proj);
     $("projSub").textContent=`projected commission @ ${commPct()}% · live pipeline`;
@@ -589,6 +612,7 @@
   $("settingsBtn").onclick=()=>{ $("setKey").value=D.apiKey||""; $("setModel").value=D.model||"claude-opus-4-8"; $("setComm").value=commPct(); $("setGoal").value=D.monthGoal||0; $("settings").classList.remove("hidden"); };
   $("setClose").onclick=()=>$("settings").classList.add("hidden");
   $("clClose").onclick=()=>$("client").classList.add("hidden");
+  $("buildQ").onclick=buildQueue;
   $("setSave").onclick=()=>{ const had=!!D.apiKey; D.apiKey=$("setKey").value.trim(); D.model=$("setModel").value;
     const c=parseFloat($("setComm").value); if(!isNaN(c))D.commissionPct=c; const g=parseInt($("setGoal").value); if(!isNaN(g))D.monthGoal=g;
     save(); render(); $("settings").classList.add("hidden");
@@ -726,6 +750,7 @@ If he asks you to do an in-app action (add a deal, set a reminder, set rates), g
       return "Which file closed? Try: close out Sarah Lee.";}
     if(/\b(at risk|flag|stalled|urgent|chase)\b/.test(s)){const d=findDeal(s); if(d){d.flag="risk"; return `Flagged. ${d.name} is top priority now.`;}}
     if(/\bwaiting\b/.test(s)){const d=findDeal(s); if(d){d.flag="wait"; const mm=s.match(/waiting on (.+)/); if(mm)d.next="Waiting on "+mm[1]; return `Noted. ${d.name} is waiting${d.next?', '+d.next.toLowerCase():''}.`;}}
+    if(/\b(work my follow|draft all|build (my )?queue|follow.?ups for everyone|draft everyone|work my queue)\b/.test(s)){ buildQueue(); return "Building your follow-up queue now — drafting a personalized message for everyone who's due."; }
     // ---- per-client logging ----
     if(/^log\b/.test(s)){
       const kind=(s.match(/\b(call|text|message|meeting|voicemail|email|note)\b/)||[])[1]||"note";

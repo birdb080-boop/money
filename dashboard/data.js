@@ -42,6 +42,7 @@ window.JARVIS_DATA = {
 
   notes: [],
   history: [],
+  queue: [],          // AI-drafted follow-ups awaiting your one-tap approval
   rateNote: "",
   monthClosed: 3,
   monthGoal: 8
