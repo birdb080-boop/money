@@ -208,6 +208,14 @@
     </div>
   </div>
 
+  <div id="scripts" class="modal hidden">
+    <div class="sheet">
+      <div class="shead">📋 SCRIPTS · tap to copy <span id="scClose">✕</span></div>
+      <div id="scList"></div>
+      <div id="scDetail" class="muted" style="font-size:14px; line-height:1.5; margin-top:12px; padding:12px; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:12px; display:none"></div>
+    </div>
+  </div>
+
   <div id="client" class="modal hidden">
     <div class="sheet">
       <div class="shead"><span id="clName">Client</span> <span id="clClose">✕</span></div>
@@ -305,6 +313,7 @@
   <input type="file" id="shot" accept="image/*" style="display:none" />
   <div class="mini">
     <button id="feedBtn" style="border-color:var(--gold); color:var(--gold-bright)">📷 FEED SCREENSHOT</button>
+    <button id="scriptsBtn">📋 SCRIPTS</button>
     <button id="settingsBtn">⚙️ SETTINGS</button>
     <button id="rebrief">⟳ BRIEF ME</button>
     <button id="voiceBtn">🔊 VOICE ON</button>
@@ -532,7 +541,7 @@
       const sub=f.note&&f.name&&f.note!=="Reply to "+f.name?" · "+f.note:"";
       return `<div class="fu"><div class="info"><div class="fn">${f.name||f.note}</div>
         <div class="fd ${fd.cls}">${fd.t}${sub}</div></div>
-        <div class="mini2">${text}<button class="b-snooze" onclick="fuSnooze('${f.id}')">+15m</button>
+        <div class="mini2">${text}<button class="b-snooze" onclick="fuCal('${f.id}')">📅</button><button class="b-snooze" onclick="fuSnooze('${f.id}')">+15m</button>
         <button class="b-done" onclick="fuDone('${f.id}')">✅</button></div></div>`;}).join("")
       : '<div class="muted" style="font-size:13px">Nothing pending. Say "James texted me" or "follow up with Sarah in 2 hours."</div>';}
   function checkFollowups(){let fired=false;
@@ -548,6 +557,13 @@
     g.gain.setValueAtTime(.0001,a.currentTime); g.gain.exponentialRampToValueAtTime(.35,a.currentTime+.02); g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+.5);
     o.start(); o.stop(a.currentTime+.5);}catch(e){}}
   function notify(title,body){try{if("Notification"in window&&Notification.permission==="granted")new Notification(title,{body});}catch(e){}}
+  /* add a reminder to the iPhone Calendar (.ics) — alerts even when JARVIS is closed */
+  function icsFor(title,when){const z=d=>new Date(d).toISOString().replace(/[-:]/g,"").split(".")[0]+"Z";
+    return `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//JARVIS//Team Miranda//EN\r\nBEGIN:VEVENT\r\nUID:${Date.now()}@jarvis\r\nDTSTAMP:${z(Date.now())}\r\nDTSTART:${z(when)}\r\nDTEND:${z(when+30*60000)}\r\nSUMMARY:${title}\r\nBEGIN:VALARM\r\nTRIGGER:-PT0M\r\nACTION:DISPLAY\r\nDESCRIPTION:${title}\r\nEND:VALARM\r\nEND:VEVENT\r\nEND:VCALENDAR`;}
+  function addToCal(title,when){try{const blob=new Blob([icsFor(title,when)],{type:"text/calendar"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="jarvis-reminder.ics"; document.body.appendChild(a); a.click(); a.remove();
+    toast("📅 Open the file to add it to your Calendar");}catch(e){toast("Couldn't make the calendar file");}}
+  window.fuCal=id=>{const f=D.followups.find(x=>x.id===id); if(f)addToCal("📞 Follow up"+(f.name?" with "+f.name:""), f.due);};
   $("popX").onclick=()=>$("popup").classList.remove("show");
 
   /* ===== feed-by-screenshot: free on-device OCR ===== */
@@ -613,6 +629,22 @@
   $("setClose").onclick=()=>$("settings").classList.add("hidden");
   $("clClose").onclick=()=>$("client").classList.add("hidden");
   $("buildQ").onclick=buildQueue;
+
+  /* scripts library (compliant, from persona) */
+  const SCRIPTS={
+    "“What's your rate?”":"I can help with that, but I won't give you a fake-simple number. A real quote depends on loan amount, down payment, property type, occupancy, credit, points, credits, and lock period. The better question is which structure gives you the safest payment and lowest long-term cost — let me ask a few quick things.",
+    "Rate shopper":"I love that you're comparing — smart move. The only fair comparison is same day, same loan amount, down payment, lock period, points, credits, and escrow assumptions. Send me the Loan Estimate and I'll show you real cost vs. assumption. If theirs is genuinely better, I'll tell you straight.",
+    "First-time buyer":"The goal isn't just getting pre-approved — it's knowing your safe payment, true cash-to-close, and offer strength before you fall in love with a house. A strong pre-approval helps you win the home; a weak one can cost it.",
+    "Waiting for rates":"Let's make it math, not emotion: today's payment, the cost of waiting, and a realistic refinance later. If waiting protects you, I'll tell you to wait. If it adds risk, I'll show you that too.",
+    "“Closing costs are high”":"Let's separate real cost from estimate noise — taxes, insurance, and prepaids get estimated differently lender to lender. The clean comparison is lender fees, points, credits, APR, lock period, and cash-to-close. Send the quote and I'll mark what's real vs. assumption.",
+    "Three options":"I'll show you three versions: lowest cash-to-close, balanced payment and cost, and lowest long-term cost. Then you choose based on your household — not a random rate quote.",
+    "Past-client check-in":"Quick check-in — your mortgage deserves a yearly review like insurance or taxes. I'll look at your equity, rate position, mortgage insurance, and whether doing nothing is still smartest. Worth 10 minutes?",
+    "Realtor partner":"I'm not asking you to send deals — just one chance to improve the buyer experience. I help buyers understand payment, cash-to-close, and offer readiness before you spend weekends showing homes. No referral fee, no gimmick — just execution you can judge."
+  };
+  function renderScripts(){ $("scList").innerHTML=Object.keys(SCRIPTS).map(k=>`<div class="hist" style="cursor:pointer" onclick="useScript('${k.replace(/'/g,"\\'")}')"><div class="a" style="font-weight:700">${k}</div></div>`).join(""); }
+  window.useScript=k=>{const txt=SCRIPTS[k]; if(!txt)return; if(navigator.clipboard)navigator.clipboard.writeText(txt).catch(()=>{}); const el=$("scDetail"); el.style.display="block"; el.textContent=txt; toast("📋 Copied — paste into your text"); };
+  $("scriptsBtn").onclick=()=>{ renderScripts(); $("scDetail").style.display="none"; $("scripts").classList.remove("hidden"); };
+  $("scClose").onclick=()=>$("scripts").classList.add("hidden");
   $("setSave").onclick=()=>{ const had=!!D.apiKey; D.apiKey=$("setKey").value.trim(); D.model=$("setModel").value;
     const c=parseFloat($("setComm").value); if(!isNaN(c))D.commissionPct=c; const g=parseInt($("setGoal").value); if(!isNaN(g))D.monthGoal=g;
     save(); render(); $("settings").classList.add("hidden");
