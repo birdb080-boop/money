@@ -297,15 +297,16 @@ window.JARVIS_DATA = {
   const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
   const first=n=>n.split(" ")[0];
 
+  /* MARTY method: every text = value + a clear yes/no next step (memory/persona.md) */
   function suggest(d){
     const f=first(d.name); const nx=(d.next||"").toLowerCase();
     if(/paystub|w2|w-2|tax|statement|doc|bank/.test(nx))
-      return `Hi ${f}, it's Martin with Team Miranda. To keep your loan moving we just need ${d.next.toLowerCase()} — whenever you get a sec. Takes 2 minutes and we stay on track. 🙏`;
+      return `Hi ${f}, it's Martin with Team Miranda. Quick one to keep your file on track: I just need ${d.next.toLowerCase()}. Easiest is to text a photo right here — want to send it now, or should I email you a secure upload link?`;
     if(/appraisal|title|insurance/.test(nx))
-      return `Hi ${f}, Martin here — quick update on your file: we're working through ${d.next.toLowerCase()}. I'll keep you posted, but text me any questions!`;
+      return `Hi ${f}, Martin with Team Miranda — update: we're working through ${d.next.toLowerCase()}, nothing needed from you yet. One question so I keep you ahead: are you optimizing for fastest close or lowest cash-to-close? I'll prep options either way.`;
     if(d.flag==="risk")
-      return `Hi ${f}, it's Martin with Team Miranda. Wanted to personally check in on your loan and make sure you have everything you need. Got 5 min today?`;
-    return `Hi ${f}, Martin with Team Miranda checking in — anything I can knock out for you on your loan today?`;
+      return `Hi ${f}, it's Martin with Team Miranda. Want to make sure nothing's slowing your loan down. Fastest way to clarity is a 5-minute call — does today or tomorrow work better?`;
+    return `Hi ${f}, Martin with Team Miranda. Would it help to see your file in three clean options — lowest payment, balanced, and lowest long-term cost? I can put those together. Want me to?`;
   }
 
   function render(){
@@ -363,12 +364,12 @@ window.JARVIS_DATA = {
 
   function suggestES(d){const f=first(d.name); const nx=(d.next||"").toLowerCase();
     if(/paystub|w2|w-2|tax|statement|doc|bank/.test(nx))
-      return `Hola ${f}, soy Martin de Team Miranda. Para avanzar con su préstamo necesitamos ${d.next.toLowerCase()} cuando pueda — toma 2 minutos y seguimos a tiempo. ¡Gracias! 🙏`;
+      return `Hola ${f}, soy Martin de Team Miranda. Para mantener su préstamo a tiempo solo necesito ${d.next.toLowerCase()}. Lo más fácil es enviarme una foto por aquí — ¿me lo manda ahora o le envío un enlace seguro por correo?`;
     if(/appraisal|title|insurance/.test(nx))
-      return `Hola ${f}, soy Martin — actualización de su préstamo: estamos trabajando en ${d.next.toLowerCase()}. Le mantengo informado. ¡Cualquier duda, escríbame!`;
+      return `Hola ${f}, soy Martin de Team Miranda — actualización: estamos trabajando en ${d.next.toLowerCase()}, no necesito nada de usted aún. Una pregunta para tenerle listo: ¿prefiere cerrar lo más rápido posible o el menor efectivo para cerrar? Preparo opciones de cualquier forma.`;
     if(d.flag==="risk")
-      return `Hola ${f}, soy Martin de Team Miranda. Quería saludarle y asegurarme de que tiene todo lo necesario para su préstamo. ¿Tiene 5 minutos hoy?`;
-    return `Hola ${f}, soy Martin de Team Miranda — ¿algo en que pueda ayudarle hoy con su préstamo?`;}
+      return `Hola ${f}, soy Martin de Team Miranda. Quiero asegurarme de que nada esté retrasando su préstamo. Lo más rápido es una llamada de 5 minutos — ¿le funciona mejor hoy o mañana?`;
+    return `Hola ${f}, soy Martin de Team Miranda. ¿Le ayudaría ver su préstamo en tres opciones claras — pago más bajo, equilibrado, y menor costo a largo plazo? Se las preparo. ¿Quiere?`;}
 
   function actBtns(d, es){
     const ph=(d.phone||"").replace(/[^\d+]/g,"");
