@@ -208,6 +208,16 @@
     </div>
   </div>
 
+  <div id="client" class="modal hidden">
+    <div class="sheet">
+      <div class="shead"><span id="clName">Client</span> <span id="clClose">✕</span></div>
+      <div id="clMeta" class="muted" style="font-size:12px; margin-bottom:12px"></div>
+      <div class="acts" id="clActs" style="margin-bottom:14px; flex-wrap:wrap"></div>
+      <div style="font-size:10.5px; letter-spacing:.2em; color:var(--gold); font-weight:700; margin:4px 0 8px">📜 HISTORY (per client)</div>
+      <div id="clLog" style="max-height:44vh; overflow:auto"></div>
+    </div>
+  </div>
+
   <div id="boot">
     <h1>J · A · R · V · I · S</h1>
     <div class="bigring"></div>
@@ -359,7 +369,7 @@ window.JARVIS_DATA = {
   D.followups.forEach(f=>{ if(!f.due){ f.due=Date.now()+25*60000; f.alerted=false; } }); // demo seed → 25m out
   // migrate older saved data so the money board fills in
   const _def=Object.fromEntries((DEFAULTS.deals||[]).map(d=>[d.name,d]));
-  D.deals.forEach(d=>{ if(d.amount==null&&_def[d.name]) d.amount=_def[d.name].amount; });
+  D.deals.forEach(d=>{ if(d.amount==null&&_def[d.name]) d.amount=_def[d.name].amount; if(!d.log) d.log=[]; });
   if(D.commissionPct==null)D.commissionPct=DEFAULTS.commissionPct!=null?DEFAULTS.commissionPct:1.0;
   if(D.monthVolume==null)D.monthVolume=DEFAULTS.monthVolume||0;
   if(!D.rates&&DEFAULTS.rates)D.rates=DEFAULTS.rates;
@@ -450,8 +460,8 @@ window.JARVIS_DATA = {
       </div>`).join("") : '<div class="muted" style="font-size:13px">Nobody waiting on you. 🎉 Add deals and I’ll surface who to contact.</div>';
 
     $("deals").innerHTML = D.deals.length? D.deals.map(d=>`
-      <div class="row"><span class="dot ${d.flag||'ok'}"></span>
-        <div><div class="nm">${d.name}</div><div class="mt">${[d.type,d.next].filter(Boolean).join(' · ')||'—'}</div></div>
+      <div class="row" style="cursor:pointer" onclick="openClient('${d.name.replace(/'/g,"")}')"><span class="dot ${d.flag||'ok'}"></span>
+        <div><div class="nm">${d.name} ${(d.log&&d.log.length)?`<span style="font-size:10px;color:var(--dim)">· ${d.log.length}📜</span>`:""}</div><div class="mt">${[d.type,d.next].filter(Boolean).join(' · ')||'—'}</div></div>
         <span class="stg">${d.stage||'Lead'}</span></div>`).join("")
       : '<div class="muted" style="font-size:13px">No deals yet. Say “add a deal, Sarah Lee, conventional, processing.”</div>';
 
@@ -495,6 +505,27 @@ window.JARVIS_DATA = {
     const p=prompt(`${first(d.name)}'s mobile number?  (enables one-tap text & call)`, d.phone||"");
     if(p&&p.replace(/[^\d]/g,"").length>=7){ d.phone=p.replace(/[^\d+]/g,""); render(); toast(`📞 Saved — ${first(d.name)} is one-tap now.`); }
   };
+
+  /* ===== per-client log + client card ===== */
+  const nowStr=()=>new Date().toLocaleString("en-US",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
+  function logEntry(d,kind,text){ (d.log=d.log||[]).push({t:nowStr(),kind,text}); save(); }
+  window.openClient=name=>{const d=D.deals.find(x=>x.name===name); if(!d)return; D._open=name;
+    $("clName").textContent=d.name;
+    $("clMeta").textContent=[d.type,d.stage,d.amount?money(d.amount):"",d.phone?"📱 saved":"",d.next].filter(Boolean).join(" · ");
+    const nm=name.replace(/'/g,"");
+    $("clActs").innerHTML=actBtns(d,true)+`<button class="act ghost" onclick="logNote('${nm}')">📝 Log</button><button class="act ghost" onclick="draftFollow('${nm}')">✨ Draft</button>`;
+    renderLog(d); $("client").classList.remove("hidden"); };
+  function renderLog(d){ const log=(d.log||[]).slice().reverse();
+    $("clLog").innerHTML= log.length? log.map(e=>`<div class="hist"><div class="q">${e.kind||"note"} · ${e.t}</div><div class="a">${e.text}</div></div>`).join("")
+      : '<div class="muted" style="font-size:13px">No history yet. Tap 📝 Log to add a call/text/note, or ✨ Draft a follow-up.</div>'; }
+  window.logNote=name=>{const d=D.deals.find(x=>x.name===name); if(!d)return; const note=prompt(`Log for ${first(d.name)} — a call, text, or note:`); if(note&&note.trim()){ logEntry(d,"note",note.trim()); renderLog(d); render(); toast("📝 Logged to "+first(d.name)); } };
+  window.draftFollow=async name=>{const d=D.deals.find(x=>x.name===name); if(!d)return; toast("✍️ Drafting…");
+    let msg=suggest(d);
+    if(D.apiKey){ const ctx=`Write a warm, human follow-up TEXT (just the message) from Martin to client ${d.name}. Loan: ${d.type||"n/a"}, stage ${d.stage}, next step ${d.next||"n/a"}. Recent history: ${(d.log||[]).slice(-5).map(e=>e.kind+": "+e.text).join(" | ")||"none yet"}. Use the MARTY method — one diagnostic or a clear next step, no rate quotes.`;
+      const r=await askGenius(ctx); if(r&&r.text)msg=r.text; }
+    logEntry(d,"draft",msg); if(D._open===name)renderLog(d); render();
+    if(navigator.clipboard)navigator.clipboard.writeText(msg).catch(()=>{});
+    jarvis(`Draft for ${first(d.name)}: ${msg}`, `draft follow-up for ${d.name}`); toast("✍️ Drafted, copied & logged"); };
 
   /* ===== follow-up tracker: never miss a reply ===== */
   function fmtDue(due){const diff=due-Date.now();
@@ -607,6 +638,7 @@ window.JARVIS_DATA = {
   $("shot").onchange=e=>{const f=e.target.files&&e.target.files[0]; if(f)ocrImage(f); e.target.value="";};
   $("settingsBtn").onclick=()=>{ $("setKey").value=D.apiKey||""; $("setModel").value=D.model||"claude-opus-4-8"; $("setComm").value=commPct(); $("setGoal").value=D.monthGoal||0; $("settings").classList.remove("hidden"); };
   $("setClose").onclick=()=>$("settings").classList.add("hidden");
+  $("clClose").onclick=()=>$("client").classList.add("hidden");
   $("setSave").onclick=()=>{ const had=!!D.apiKey; D.apiKey=$("setKey").value.trim(); D.model=$("setModel").value;
     const c=parseFloat($("setComm").value); if(!isNaN(c))D.commissionPct=c; const g=parseInt($("setGoal").value); if(!isNaN(g))D.monthGoal=g;
     save(); render(); $("settings").classList.add("hidden");
@@ -744,6 +776,18 @@ If he asks you to do an in-app action (add a deal, set a reminder, set rates), g
       return "Which file closed? Try: close out Sarah Lee.";}
     if(/\b(at risk|flag|stalled|urgent|chase)\b/.test(s)){const d=findDeal(s); if(d){d.flag="risk"; return `Flagged. ${d.name} is top priority now.`;}}
     if(/\bwaiting\b/.test(s)){const d=findDeal(s); if(d){d.flag="wait"; const mm=s.match(/waiting on (.+)/); if(mm)d.next="Waiting on "+mm[1]; return `Noted. ${d.name} is waiting${d.next?', '+d.next.toLowerCase():''}.`;}}
+    // ---- per-client logging ----
+    if(/^log\b/.test(s)){
+      const kind=(s.match(/\b(call|text|message|meeting|voicemail|email|note)\b/)||[])[1]||"note";
+      const d=findDeal(s);
+      if(d){ let text=t.replace(/^log\b/i,"").replace(new RegExp("\\b"+first(d.name)+"\\b","i"),"").replace(/\b(call|text|message|meeting|voicemail|email|note|with|for|to|a|the)\b/ig,"").replace(/\s+/g," ").trim();
+        logEntry(d,kind,text||kind); return `Logged a ${kind} for ${first(d.name)}${text&&text!==kind?": "+text:""}. It's saved to their history.`; }
+      return "Who's it for? Try: log call with Sarah, she wants to close by July.";
+    }
+    if(/\bdraft\b/.test(s) && /\b(follow|message|text|reply|response)\b/.test(s)){
+      const d=findDeal(s); if(d){ draftFollow(d.name); return `On it — drafting a follow-up for ${first(d.name)}.`; }
+      return "Who should I draft for? Try: draft a follow-up for Sarah.";
+    }
     // ---- follow-ups: never miss a reply ----
     if(/\b(replied|got back|responded|heard back|reached out to|i texted|i called|done with|handled it|cleared)\b/.test(s)){
       const nm=extractName(t); const f=D.followups.find(x=>!x.done&&(!nm||x.name.toLowerCase().includes(nm.toLowerCase().split(" ")[0])));
