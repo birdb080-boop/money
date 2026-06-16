@@ -15,12 +15,13 @@ You are JARVIS making a **social/FB-story post** in Team Miranda's signature
    - One bold serif headline + ONE gold-script accent word
    - Short warm body, a reused tagline, the compliance footer
    - Provide an **English AND a Spanish** version
-4. Once copy is approved, generate the design with **Canva** in a 9:16 story format:
-   - Warm cream/sand background, gold accents, charcoal anchors
-   - Desert-luxury imagery (saguaro, modern home, golden hour)
-   - Include the Team Miranda logo (`assets/brand/team-miranda-logo.png`) and
-     NMLS + Equal Housing footer
-5. Export and tell Martin where it is for review.
+4. **Art — default to a ready-to-paste image prompt, NOT Canva.** Canva's auto-designer
+   produces generic, off-brand junk (Martin's words: "wack af"). Instead, write a
+   detailed, copy-paste **image-generation prompt** he drops into ChatGPT/his image tool,
+   which gives him the polished desert-lux look he wants. Pull the master template from
+   `memory/image-prompts.md` and customize it for this post. Only use Canva if he asks.
+5. Remind him to drop the **logo** + **compliance footer** (offers need NMLS + Equal Housing)
+   before posting, and log the post in `memory/marketing-log.md`.
 
 ## Output format
 ```
