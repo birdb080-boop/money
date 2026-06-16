@@ -38,7 +38,7 @@ This rule outranks everything below. When in conflict, this wins.
    for voice), warm and human — never robotic or spammy.
 
 ## How JARVIS talks to / about borrowers — DNA
-`memory/persona.md` (**MartyMortgageAI**) governs every borrower-facing draft: the voice
+`memory/persona.md` (**MartinMortgageAI**) governs every borrower-facing draft: the voice
 (Calm · Direct · Precise · Protective), the **MARTY** method (Move first · Ask diagnostics ·
 Reframe · Translate into 2–3 options · Yes/no next step), the 4-part output format, and the
 hard compliance rules (never invent rates/approval/fees; never imply referral comp; never use
@@ -54,7 +54,7 @@ Read these at the start of every session:
 - `memory/contacts.md` — realtors, referral partners, past clients to nurture.
 - `memory/learnings.md` — what's working. Email phrasings that get replies, timing
   that converts, lender quirks. **This is the compounding brain — grow it constantly.**
-- `memory/persona.md` — the MartyMortgageAI borrower-conversation OS (voice + method + compliance).
+- `memory/persona.md` — the MartinMortgageAI borrower-conversation OS (voice + method + compliance).
 - `memory/brand.md` / `memory/signature.md` — marketing style + email signature & fraud notices.
 
 ## Data sources — IMPORTANT (read before assuming)

@@ -147,6 +147,13 @@
     padding:9px 11px; font-size:13px; font-weight:800; text-decoration:none; text-align:center}
   .b-text{background:#1f6feb; color:#fff} .b-done{background:#2bb673; color:#fff}
   .b-snooze{background:rgba(230,194,90,.15); color:var(--gold-bright)}
+  /* tap feedback + toast */
+  .btn:active,.mic:active,.send:active,.mini button:active,.b-done:active,.b-snooze:active,.b-text:active{transform:scale(.94)}
+  .toast{position:fixed; left:50%; bottom:calc(88px + env(safe-area-inset-bottom)); transform:translateX(-50%) translateY(18px);
+    background:#1b2233; border:1px solid var(--gold); color:var(--txt); padding:12px 18px; border-radius:14px;
+    font-size:13.5px; font-weight:700; z-index:75; opacity:0; pointer-events:none; transition:.25s;
+    box-shadow:0 10px 28px rgba(0,0,0,.55); max-width:90vw; text-align:center}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 
   #boot{position:fixed; inset:0; z-index:60; background:var(--bg); display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:22px; cursor:pointer; text-align:center; padding:20px}
@@ -158,6 +165,7 @@
 </head>
 <body>
   <div class="popup" id="popup"><div class="ic">⏰</div><div class="ms" id="popMsg"></div><div class="x" id="popX">✕</div></div>
+  <div class="toast" id="toast"></div>
 
   <div id="boot">
     <h1>J · A · R · V · I · S</h1>
@@ -329,19 +337,17 @@
   function actBtns(d, es){
     const ph=(d.phone||"").replace(/[^\d+]/g,"");
     const nm=d.name.replace(/'/g,"");
-    const text = ph? `<a class="act text" href="sms:${ph}&body=${enc(suggest(d))}">💬 Text</a>`
-                   : `<button class="act text" onclick="copyMsg('${nm}')">💬 Copy</button>`;
+    // Text ALWAYS opens Messages (prefilled body); recipient added if we have it
+    const text = `<a class="act text" href="sms:${ph}&body=${enc(suggest(d))}">💬 Text</a>`;
     const call = ph? `<a class="act call" href="tel:${ph}">📞 Call</a>`
-                   : `<button class="act ghost" onclick="askPhone('${nm}')">➕ Add #</button>`;
-    const esb = es? (ph? `<a class="act ghost" href="sms:${ph}&body=${enc(suggestES(d))}">🇲🇽 ES</a>`
-                       : `<button class="act ghost" onclick="copyMsgES('${nm}')">🇲🇽 ES</button>`) : "";
+                   : `<button class="act call" onclick="addPhone('${nm}')">📞 Add #</button>`;
+    const esb = es? `<a class="act ghost" href="sms:${ph}&body=${enc(suggestES(d))}">🇲🇽 ES</a>` : "";
     return text+call+esb;
   }
-  window.copyMsg=name=>{const d=D.deals.find(x=>x.name===name); if(!d)return;
-    navigator.clipboard?.writeText(suggest(d)); jarvis(`Copied your text to ${first(d.name)}. Paste it in Messages — or tell me ${first(d.name)}'s number and I'll make it one tap.`);};
-  window.copyMsgES=name=>{const d=D.deals.find(x=>x.name===name); if(!d)return;
-    navigator.clipboard?.writeText(suggestES(d)); jarvis(`Copié el mensaje en español para ${first(d.name)}.`);};
-  window.askPhone=name=>{jarvis(`What's ${first(name)}'s number? Say: ${first(name)} number 5 2 0 ...`); $("say").focus();};
+  window.addPhone=name=>{const d=D.deals.find(x=>x.name===name); if(!d)return;
+    const p=prompt(`${first(d.name)}'s mobile number?  (enables one-tap text & call)`, d.phone||"");
+    if(p&&p.replace(/[^\d]/g,"").length>=7){ d.phone=p.replace(/[^\d+]/g,""); render(); toast(`📞 Saved — ${first(d.name)} is one-tap now.`); }
+  };
 
   /* ===== follow-up tracker: never miss a reply ===== */
   function fmtDue(due){const diff=due-Date.now();
@@ -365,13 +371,13 @@
     D.followups.unshift({id:Date.now()+"",name:name||"",note:note||("Reply to "+(name||"client")),due,done:false,alerted:false});
     if("Notification"in window&&Notification.permission==="default"){try{Notification.requestPermission()}catch(e){}}
     render();}
-  window.fuDone=id=>{const f=D.followups.find(x=>x.id===id); if(f){f.done=true; jarvis(`Nice — ${f.name||"that"} cleared off your list. Timely as always.`);}};
-  window.fuSnooze=id=>{const f=D.followups.find(x=>x.id===id); if(f){f.due=Date.now()+15*60000; f.alerted=false; jarvis(`Snoozed ${f.name||"it"} 15 minutes.`);}};
+  window.fuDone=id=>{const f=D.followups.find(x=>x.id===id); if(f){f.done=true; toast(`✅ ${f.name||"Follow-up"} cleared`); jarvis(`Nice — ${f.name||"that"} cleared off your list. Timely as always.`);}};
+  window.fuSnooze=id=>{const f=D.followups.find(x=>x.id===id); if(f){f.due=Date.now()+15*60000; f.alerted=false; render(); toast(`⏰ Snoozed 15 min`);}};
   function renderFollowups(){
     const pend=D.followups.filter(f=>!f.done).sort((a,b)=>a.due-b.due);
     $("fus").innerHTML = pend.length? pend.map(f=>{const fd=fmtDue(f.due);
       const d=D.deals.find(x=>x.name===f.name); const ph=d&&d.phone?d.phone.replace(/[^\d+]/g,""):"";
-      const text=ph?`<a class="b-text" href="sms:${ph}&body=${enc(d?suggest(d):'')}">💬</a>`:"";
+      const text=`<a class="b-text" href="sms:${ph}&body=${enc(d?suggest(d):'')}">💬</a>`;
       const sub=f.note&&f.name&&f.note!=="Reply to "+f.name?" · "+f.note:"";
       return `<div class="fu"><div class="info"><div class="fn">${f.name||f.note}</div>
         <div class="fd ${fd.cls}">${fd.t}${sub}</div></div>
@@ -385,6 +391,7 @@
     if(fired)render();}
   function showPopup(ic,msg){const p=$("popup"); p.querySelector(".ic").textContent=ic; $("popMsg").textContent=msg;
     p.classList.add("show"); clearTimeout(showPopup._t); showPopup._t=setTimeout(()=>p.classList.remove("show"),14000);}
+  function toast(msg){const el=$("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove("show"),2600);}
   function beep(){try{const a=new (window.AudioContext||window.webkitAudioContext)(); const o=a.createOscillator(); const g=a.createGain();
     o.connect(g); g.connect(a.destination); o.type="sine"; o.frequency.setValueAtTime(987,a.currentTime); o.frequency.setValueAtTime(1318,a.currentTime+.12);
     g.gain.setValueAtTime(.0001,a.currentTime); g.gain.exponentialRampToValueAtTime(.35,a.currentTime+.02); g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+.5);
@@ -535,18 +542,18 @@
     rec.onresult=e=>{const r=e.results[e.results.length-1]; if(r.isFinal)handle(r[0].transcript);};
     rec.onerror=e=>{if(e.error==="not-allowed"){say("I need mic access. Or just type to me."); stopMic();}};
     rec.onend=()=>{if(listening&&!speaking){try{rec.start()}catch(e){}}};}
-  function startMic(){if(!rec){$("say").focus(); say("Tap the microphone on your keyboard and talk. Try: add a deal, Sarah Lee, conventional, processing."); return;}
-    listening=true; $("micBtn").classList.add("on"); $("core").classList.add("listening"); try{rec.start()}catch(e){}}
+  function startMic(){if(!rec){$("say").focus(); toast("⌨️ Tap the 🎤 on your keyboard, then talk"); say("Tap the microphone on your keyboard and talk to me."); return;}
+    listening=true; $("micBtn").classList.add("on"); $("core").classList.add("listening"); toast("🎙️ Listening… speak now"); try{rec.start()}catch(e){}}
   function stopMic(){listening=false; $("micBtn").classList.remove("on"); $("core").classList.remove("listening"); if(rec){try{rec.stop()}catch(e){}}}
 
   $("micBtn").onclick=()=>listening?stopMic():startMic();
-  $("sendBtn").onclick=()=>{if($("say").value.trim()){handle($("say").value); $("say").value="";}};
+  $("sendBtn").onclick=()=>{if($("say").value.trim()){handle($("say").value); $("say").value="";} else {$("say").focus(); toast("Type or talk to me first 👇");}};
   $("say").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.value.trim()){handle(e.target.value); e.target.value="";}});
-  $("voiceBtn").onclick=e=>{voiceOn=!voiceOn; e.target.textContent="🔊 VOICE "+(voiceOn?"ON":"OFF"); if(!voiceOn)speechSynthesis.cancel();};
-  $("rebrief").onclick=()=>jarvis(briefing());
-  $("saveBtn").onclick=()=>{const blob=new Blob(["window.JARVIS_DATA = "+JSON.stringify(D,null,2)+";\n"],{type:"text/javascript"});
-    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="data.js"; a.click();
-    say("Exported your data.");};
+  $("voiceBtn").onclick=e=>{voiceOn=!voiceOn; e.target.textContent="🔊 VOICE "+(voiceOn?"ON":"OFF"); if(!voiceOn)speechSynthesis.cancel(); toast(voiceOn?"🔊 Voice on":"🔇 Voice off");};
+  $("rebrief").onclick=()=>{toast("📋 Briefing…"); jarvis(briefing());};
+  $("saveBtn").onclick=()=>{try{const blob=new Blob(["window.JARVIS_DATA = "+JSON.stringify(D,null,2)+";\n"],{type:"text/javascript"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="data.js"; document.body.appendChild(a); a.click(); a.remove();
+    toast("💾 Exported data.js");}catch(e){toast("Export not supported here");}};
   $("boot").onclick=()=>{$("boot").classList.add("hidden"); render(); fetchRates(); jarvis(briefing());
     if("speechSynthesis"in window)speechSynthesis.onvoiceschanged=()=>{};
     if("Notification"in window&&Notification.permission==="default"){try{Notification.requestPermission()}catch(e){}}};
