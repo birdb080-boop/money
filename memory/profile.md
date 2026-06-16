@@ -4,11 +4,16 @@
 > You can also just talk to JARVIS and say "update my profile" anytime.
 
 ## Who I am
-- Name:
-- NMLS #:
+- Name: **Martin Miranda** (Branch Manager)
+- NMLS #: **1683424** (Company NMLS: 145502)
 - Company / brokerage: **V.I.P. Mortgage, Inc. — Team Miranda**
-- Brand logo: `assets/brand/team-miranda-logo.png` (use for flyers/social)
-- States licensed:
+- Brand logo: `assets/brand/team-miranda-logo.png` · Style guide: `memory/brand.md`
+- States licensed: **AZ #0945358 · CA #CA-DFPI1683424**
+- Languages: **English + Spanish** (offer bilingual everything)
+- Office: 5401 N Oracle Rd, Tucson, AZ 85704
+- Contact: martin.miranda@vipmtginc.com · office 520-719-4130 · mobile 520-461-5054 · fax 520-445-3754
+- Website: martinmiranda.vipmtginc.com
+- Email signature + fraud/confidentiality notices: `memory/signature.md`
 - Years in the business:
 
 ## My niches (where I win)

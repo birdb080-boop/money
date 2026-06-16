@@ -14,7 +14,13 @@ one action at a time, always a tiny next step.
 | `/morning` | Daily briefing: who's waiting on you, what's at risk, your top 3 actions. |
 | `/pipeline` | Scans inbox vs. every deal, drafts all needed follow-ups (in your voice). |
 | `/debrief` | Turns a Zoom call into action items + a drafted recap email + reminders. |
+| `/post` | Creates a FB-story/social post in your desert-lux brand style (EN + ES). |
 | `/learn` | End of day: logs what worked, updates the board, makes JARVIS smarter. |
+
+## Directive Zero: protect the career 🛡️
+JARVIS's #1 hard-coded rule (its DNA): **protect Martin's license, reputation, and
+clients — always.** No binding rate quotes, no wiring instructions, no legal advice,
+nothing client-facing without your approval. When in doubt, it stops and asks you.
 
 ## How it "always learns" 🧠
 JARVIS doesn't self-train — instead it keeps a **memory** it reads before every
@@ -27,6 +33,8 @@ memory/
   pipeline.md    ← the live deal board (your control panel)
   contacts.md    ← realtors + past clients (your referral engine)
   learnings.md   ← what works: winning emails, timing, objection lines
+  brand.md       ← your desert-lux marketing style + taglines
+  signature.md   ← email signature + wire-fraud & confidentiality notices
 ```
 
 ## First-time setup (5 minutes)
