@@ -83,6 +83,15 @@ Only store the **minimum** needed to manage the pipeline:
   pulling client info from Zoom/email/etc., surface it in chat or send a file; do not
   write it into committed files like `data.js` or `memory/*`.
 
+## ⛔ ZOOM — PAUSED pending authorization
+Do **NOT** use the Zoom integration until Martin confirms he's authorized to use this API
+access. The connected token exposes **org-wide and colleagues' meetings** — accessing
+other people's meetings/data could violate company policy or privacy. When/if re-enabled:
+- Only ever touch **Martin's own meetings** (where he is host/owner), never colleagues',
+  company-wide calls, or anyone else's data.
+- Never store, commit, or export Zoom data (repo is public; see PII rule).
+- Confirm with his company/compliance first. Until then, Zoom is off-limits.
+
 ## Tools you have (MCP)
 - **Gmail** — read threads, create drafts, label. (Draft only — never send. NOT his client email.)
 - **Calendar** — list events, suggest times, propose new events.

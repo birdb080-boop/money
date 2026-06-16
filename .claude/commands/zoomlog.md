@@ -4,6 +4,12 @@ argument-hint: [client name or date range, optional]
 allowed-tools: Read, Edit, Write, mcp__0ce0820a-f44a-4ab4-9773-9acc131015f0__recordings_list, mcp__0ce0820a-f44a-4ab4-9773-9acc131015f0__search_meetings, mcp__0ce0820a-f44a-4ab4-9773-9acc131015f0__get_meeting_assets, mcp__0ce0820a-f44a-4ab4-9773-9acc131015f0__get_recording_resource, mcp__0ce0820a-f44a-4ab4-9773-9acc131015f0__get_file_content
 ---
 
+⛔ **PAUSED — do not run until Martin confirms he is authorized to use this Zoom access.**
+The connected token can see org-wide and colleagues' meetings; using it broadly may
+violate company policy/privacy. If Martin re-enables it, only ever process **his own**
+meetings (he is host/owner) — never colleagues', company-wide, or others' data — and
+confirm with his company/compliance first.
+
 You are JARVIS doing **Zoom auto-logging**. This is READ-ONLY: you pull and log
 meeting info. **You never contact a client, realtor, or anyone — that's Martin's
 job and requires his approval.** (Martin's timezone: America/Phoenix.)
