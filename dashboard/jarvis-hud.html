@@ -2,384 +2,402 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>JARVIS · Team Miranda</title>
 <style>
   :root{
-    --gold:#d4af37; --gold-bright:#ffd86b; --amber:#ff9d2f;
-    --cyan:#46e0ff; --risk:#ff4d4d; --wait:#ffc24d; --ok:#5dffa0;
-    --bg:#05070d; --line:rgba(212,175,55,.22); --txt:#f3e9cf; --dim:#9c8f6e;
+    --gold:#e6c25a; --gold-bright:#ffe08a; --amber:#ff9d2f;
+    --cyan:#5fe6ff; --risk:#ff5c5c; --wait:#ffc24d; --ok:#5dffa0;
+    --bg:#070a12; --bg2:#0c111d; --card:#121826; --card2:#161d2e;
+    --line:rgba(230,194,90,.18); --txt:#f4ecd8; --dim:#8b93a7;
   }
-  *{box-sizing:border-box; margin:0; padding:0}
-  html,body{height:100%}
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
   body{
-    background:
-      radial-gradient(1200px 800px at 50% 35%, rgba(212,175,55,.10), transparent 60%),
-      radial-gradient(900px 600px at 50% 120%, rgba(70,224,255,.07), transparent 60%),
-      var(--bg);
-    color:var(--txt); font-family:"Rajdhani","Segoe UI",system-ui,sans-serif;
-    overflow:hidden; height:100vh; letter-spacing:.04em; -webkit-font-smoothing:antialiased;
+    background:radial-gradient(1100px 700px at 50% -8%, rgba(230,194,90,.10), transparent 55%), var(--bg);
+    color:var(--txt); font-family:-apple-system,"SF Pro Display","Segoe UI",system-ui,sans-serif;
+    min-height:100vh; padding:max(14px,env(safe-area-inset-top)) 14px calc(108px + env(safe-area-inset-bottom));
+    -webkit-font-smoothing:antialiased; letter-spacing:.01em; max-width:620px; margin:0 auto;
   }
-  body::before{content:""; position:fixed; inset:0; pointer-events:none; opacity:.5;
-    background-image:linear-gradient(rgba(212,175,55,.05) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(212,175,55,.05) 1px,transparent 1px);
-    background-size:46px 46px; mask:radial-gradient(circle at 50% 45%,#000 30%,transparent 80%)}
-  body::after{content:""; position:fixed; left:0; right:0; height:140px; pointer-events:none;
-    background:linear-gradient(180deg,transparent,rgba(70,224,255,.06),transparent);
-    animation:scan 7s linear infinite; z-index:2}
-  @keyframes scan{0%{top:-160px}100%{top:100%}}
-  .bracket{position:fixed; width:54px; height:54px; border:2px solid var(--line); z-index:3}
-  .bracket.tl{top:18px;left:18px;border-right:0;border-bottom:0}
-  .bracket.tr{top:18px;right:18px;border-left:0;border-bottom:0}
-  .bracket.bl{bottom:18px;left:18px;border-right:0;border-top:0}
-  .bracket.br{bottom:18px;right:18px;border-left:0;border-top:0}
+  .muted{color:var(--dim)} .gold{color:var(--gold-bright)}
 
-  .wrap{position:relative; z-index:4; height:100vh; display:grid;
-    grid-template-rows:auto 1fr auto auto; padding:22px 38px 12px; gap:8px}
-  .top{display:flex; justify-content:space-between; align-items:center}
-  .brand{font-weight:700; font-size:21px; letter-spacing:.32em; color:var(--gold-bright);
-    text-shadow:0 0 18px rgba(212,175,55,.5)}
-  .brand small{display:block; font-size:11px; color:var(--dim); letter-spacing:.42em; margin-top:3px}
-  .clock{text-align:right; font-variant-numeric:tabular-nums}
-  .clock .t{font-size:28px; font-weight:700; color:var(--gold-bright)}
-  .clock .d{font-size:12px; color:var(--dim); letter-spacing:.3em}
+  /* header */
+  header{display:flex; justify-content:space-between; align-items:center; padding:6px 4px 14px}
+  .brand{font-weight:800; font-size:15px; letter-spacing:.22em; color:var(--gold-bright)}
+  .brand small{display:block; font-size:9.5px; letter-spacing:.3em; color:var(--dim); margin-top:2px; font-weight:600}
+  .clock{text-align:right}
+  .clock .t{font-size:18px; font-weight:800; color:var(--gold-bright); font-variant-numeric:tabular-nums}
+  .clock .d{font-size:9.5px; letter-spacing:.18em; color:var(--dim)}
 
-  .grid{display:grid; grid-template-columns:1fr 1.1fr 1fr; gap:20px; align-items:center; min-height:0}
-  .panel{border:1px solid var(--line);
-    background:linear-gradient(180deg,rgba(212,175,55,.06),rgba(212,175,55,.015));
-    border-radius:10px; padding:16px 18px; box-shadow:inset 0 0 30px rgba(212,175,55,.04)}
-  .panel h2{font-size:12px; letter-spacing:.3em; color:var(--gold); font-weight:600;
-    margin-bottom:12px; display:flex; align-items:center; gap:8px}
-  .panel h2::before{content:""; width:7px; height:7px; background:var(--gold); border-radius:50%;
-    box-shadow:0 0 10px var(--gold); animation:blink 2.2s infinite}
-  @keyframes blink{50%{opacity:.25}}
-
-  .deal{display:flex; align-items:center; gap:11px; padding:8px 0; border-bottom:1px dashed rgba(212,175,55,.12)}
-  .deal:last-child{border-bottom:0}
-  .dot{width:11px; height:11px; border-radius:50%; flex:0 0 auto}
-  .dot.risk{background:var(--risk); box-shadow:0 0 12px var(--risk); animation:blink 1.1s infinite}
-  .dot.wait{background:var(--wait); box-shadow:0 0 12px var(--wait)}
-  .dot.ok{background:var(--ok); box-shadow:0 0 12px var(--ok)}
-  .deal .nm{font-weight:700; font-size:16px; color:#fff}
-  .deal .meta{font-size:11px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase}
-  .deal .stg{margin-left:auto; font-size:10px; color:var(--gold); border:1px solid var(--line);
-    padding:3px 8px; border-radius:20px; white-space:nowrap}
-
-  .reactor{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px}
-  .core{position:relative; width:240px; height:240px}
-  .ring{position:absolute; inset:0; border-radius:50%; border:2px solid rgba(212,175,55,.35)}
-  .ring.r2{inset:22px; border-color:rgba(70,224,255,.3); border-style:dashed; animation:spin 14s linear infinite}
-  .ring.r3{inset:44px; border-color:rgba(212,175,55,.5); animation:spin 9s linear infinite reverse}
-  .ring.r4{inset:72px; border-color:rgba(70,224,255,.5)}
+  /* hero */
+  .hero{display:flex; align-items:center; gap:16px; margin-bottom:14px; padding:4px 6px}
+  .core{position:relative; width:78px; height:78px; flex:0 0 auto}
+  .ring{position:absolute; inset:0; border-radius:50%; border:1.5px solid rgba(230,194,90,.3)}
+  .ring.r2{inset:9px; border-color:rgba(95,230,255,.3); border-style:dashed; animation:spin 12s linear infinite}
+  .ring.r3{inset:20px; border-color:rgba(230,194,90,.45); animation:spin 7s linear infinite reverse}
   @keyframes spin{100%{transform:rotate(360deg)}}
-  .glow{position:absolute; inset:90px; border-radius:50%;
-    background:radial-gradient(circle,var(--gold-bright),var(--amber) 55%,transparent 75%);
-    box-shadow:0 0 70px 16px rgba(212,175,55,.55), inset 0 0 40px rgba(255,255,255,.5);
-    animation:pulse 3s ease-in-out infinite; transition:.3s}
-  @keyframes pulse{50%{transform:scale(1.07)}}
-  .core.listening .glow{background:radial-gradient(circle,#bff4ff,var(--cyan) 55%,transparent 75%);
-    box-shadow:0 0 90px 22px rgba(70,224,255,.7), inset 0 0 50px #fff}
-  .core .pct{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:2}
-  .core .pct b{font-size:40px; color:#0a0a0a; font-weight:800; line-height:1}
-  .core .pct span{font-size:9px; color:#1a1a1a; letter-spacing:.3em; font-weight:700}
-  .greet .hi{font-size:22px; color:var(--gold-bright); font-weight:700; text-align:center; text-shadow:0 0 16px rgba(212,175,55,.5)}
-  .greet .sub{font-size:12px; color:var(--dim); letter-spacing:.16em; text-align:center; margin-top:3px}
-  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:9px; width:100%}
-  .stat{border:1px solid var(--line); border-radius:8px; padding:8px 4px; text-align:center}
-  .stat b{display:block; font-size:23px; color:var(--gold-bright); line-height:1}
-  .stat span{font-size:9px; color:var(--dim); letter-spacing:.16em}
+  .glow{position:absolute; inset:28px; border-radius:50%;
+    background:radial-gradient(circle,var(--gold-bright),var(--amber) 60%,transparent 78%);
+    box-shadow:0 0 34px 8px rgba(230,194,90,.5), inset 0 0 18px rgba(255,255,255,.6);
+    animation:pulse 3s ease-in-out infinite}
+  @keyframes pulse{50%{transform:scale(1.08)}}
+  .core.listening .glow{background:radial-gradient(circle,#cdf6ff,var(--cyan) 60%,transparent 78%);
+    box-shadow:0 0 40px 12px rgba(95,230,255,.7)}
+  .hi{font-size:20px; font-weight:800; line-height:1.15; color:var(--gold-bright)}
+  .hsub{font-size:12px; color:var(--dim); letter-spacing:.06em; margin-top:3px}
 
-  .prio{display:flex; gap:10px; padding:9px 0; border-bottom:1px dashed rgba(212,175,55,.12); align-items:flex-start}
+  /* stat chips */
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-bottom:16px}
+  .stat{background:linear-gradient(180deg,var(--card2),var(--card)); border:1px solid var(--line);
+    border-radius:16px; padding:11px 6px; text-align:center}
+  .stat b{display:block; font-size:24px; font-weight:800; color:var(--gold-bright); line-height:1}
+  .stat.risk b{color:var(--risk)} .stat span{font-size:9px; letter-spacing:.14em; color:var(--dim)}
+
+  /* cards */
+  .card{background:linear-gradient(180deg,var(--card2),var(--card)); border:1px solid var(--line);
+    border-radius:20px; padding:16px 16px; margin-bottom:13px; box-shadow:0 8px 30px rgba(0,0,0,.35)}
+  .label{font-size:10.5px; letter-spacing:.24em; color:var(--gold); font-weight:700;
+    display:flex; align-items:center; gap:7px; margin-bottom:11px}
+  .label .pip{width:6px; height:6px; border-radius:50%; background:var(--gold); box-shadow:0 0 8px var(--gold); animation:bk 2.2s infinite}
+  @keyframes bk{50%{opacity:.25}}
+
+  /* RIGHT NOW focus */
+  .now{background:linear-gradient(150deg, rgba(230,194,90,.16), rgba(230,194,90,.03));
+    border:1.5px solid rgba(230,194,90,.4)}
+  .now .big{font-size:19px; font-weight:700; line-height:1.3; margin-bottom:4px}
+  .now .who{font-size:12.5px; color:var(--gold); letter-spacing:.04em; margin-bottom:12px}
+
+  /* action buttons (text/call) */
+  .acts{display:flex; gap:9px}
+  a.act,button.act{flex:1; text-decoration:none; text-align:center; font-family:inherit; cursor:pointer;
+    font-size:14px; font-weight:800; letter-spacing:.04em; padding:13px 8px; border-radius:14px; border:0;
+    transition:.15s; display:flex; align-items:center; justify-content:center; gap:6px}
+  .act.text{background:linear-gradient(180deg,#1f6feb,#1551c4); color:#fff; box-shadow:0 4px 16px rgba(31,111,235,.4)}
+  .act.call{background:linear-gradient(180deg,#2bb673,#1f9460); color:#fff; box-shadow:0 4px 16px rgba(43,182,115,.35)}
+  .act.ghost{background:rgba(230,194,90,.12); color:var(--gold-bright); border:1px solid var(--line)}
+  .act:active{transform:scale(.97)}
+
+  /* deal / outreach rows */
+  .row{display:flex; align-items:center; gap:11px; padding:11px 0; border-bottom:1px solid rgba(255,255,255,.05)}
+  .row:last-child{border-bottom:0}
+  .dot{width:10px; height:10px; border-radius:50%; flex:0 0 auto}
+  .dot.risk{background:var(--risk); box-shadow:0 0 10px var(--risk); animation:bk 1.1s infinite}
+  .dot.wait{background:var(--wait); box-shadow:0 0 10px var(--wait)}
+  .dot.ok{background:var(--ok); box-shadow:0 0 10px var(--ok)}
+  .row .nm{font-weight:700; font-size:16px} .row .mt{font-size:11px; color:var(--dim); margin-top:1px}
+  .row .stg{margin-left:auto; font-size:10px; color:var(--gold); border:1px solid var(--line); padding:3px 9px; border-radius:20px; white-space:nowrap}
+
+  .out{padding:13px 0; border-bottom:1px solid rgba(255,255,255,.05)} .out:last-child{border-bottom:0}
+  .out .top2{display:flex; align-items:center; gap:9px; margin-bottom:8px}
+  .out .sug{font-size:13px; color:var(--txt); background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06);
+    border-radius:12px; padding:9px 11px; line-height:1.4; margin-bottom:9px}
+  .out .sug b{color:var(--cyan); font-weight:700}
+
+  details{border-top:1px solid rgba(255,255,255,.05); margin-top:2px}
+  summary{list-style:none; cursor:pointer; padding:11px 0 4px; font-size:13px; color:var(--dim); font-weight:600; letter-spacing:.04em}
+  summary::-webkit-details-marker{display:none} summary::after{content:" ▾"; color:var(--gold)}
+  details[open] summary::after{content:" ▴"}
+  .hist{font-size:13px; padding:7px 0; border-bottom:1px dashed rgba(255,255,255,.06)}
+  .hist .q{color:var(--cyan)} .hist .a{color:var(--gold-bright)} .hist .tm{font-size:9px; color:var(--dim)}
+
+  .prio{display:flex; gap:10px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.05); align-items:flex-start}
   .prio:last-child{border-bottom:0}
-  .prio .n{font-size:12px; font-weight:800; color:#05070d; background:var(--gold-bright);
-    min-width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center}
-  .prio .txt{font-size:14px; line-height:1.3}
+  .prio .n{font-size:12px; font-weight:800; color:#06090f; background:var(--gold-bright); min-width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex:0 0 auto}
+  .prio .tx{font-size:14.5px; line-height:1.35}
 
-  /* conversation strip */
-  .convo{border:1px solid var(--line); border-radius:10px; padding:10px 16px; min-height:54px;
-    background:rgba(70,224,255,.04); display:flex; flex-direction:column; gap:3px; justify-content:center}
-  .convo .you{font-size:13px; color:var(--dim); letter-spacing:.04em}
-  .convo .you b{color:var(--cyan)}
-  .convo .jv{font-size:16px; color:var(--gold-bright); letter-spacing:.03em}
-  .convo .jv b{color:var(--gold)}
+  /* sticky input */
+  .dock{position:fixed; left:0; right:0; bottom:0; z-index:20; padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    background:linear-gradient(180deg, transparent, var(--bg) 26%); }
+  .dockin{max-width:620px; margin:0 auto; display:flex; gap:8px; align-items:center}
+  .mic{flex:0 0 auto; font-family:inherit; cursor:pointer; font-size:20px; width:52px; height:52px; border-radius:16px;
+    background:linear-gradient(180deg,rgba(230,194,90,.3),rgba(230,194,90,.1)); color:var(--gold-bright);
+    border:1px solid var(--gold); box-shadow:0 0 16px rgba(230,194,90,.3); transition:.15s}
+  .mic.on{background:linear-gradient(180deg,rgba(95,230,255,.35),rgba(95,230,255,.12)); border-color:var(--cyan);
+    animation:mp 1.2s infinite} @keyframes mp{50%{box-shadow:0 0 30px rgba(95,230,255,.8)}}
+  #say{flex:1; background:var(--card); border:1px solid var(--line); border-radius:16px; color:var(--txt);
+    font-family:inherit; font-size:16px; padding:15px 16px} #say::placeholder{color:var(--dim)}
+  .send{flex:0 0 auto; width:52px; height:52px; border-radius:16px; border:0; cursor:pointer; font-size:20px;
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold)); color:#06090f; font-weight:800}
 
-  .bottom{display:flex; align-items:center; gap:12px; padding-top:4px}
-  .mic{font-family:inherit; cursor:pointer; letter-spacing:.14em; font-weight:700; font-size:14px;
-    background:linear-gradient(180deg,rgba(212,175,55,.25),rgba(212,175,55,.08));
-    color:var(--gold-bright); border:1px solid var(--gold); padding:13px 22px; border-radius:8px;
-    transition:.2s; box-shadow:0 0 16px rgba(212,175,55,.25); white-space:nowrap}
-  .mic:hover{box-shadow:0 0 26px rgba(212,175,55,.5)}
-  .mic.on{background:linear-gradient(180deg,rgba(70,224,255,.3),rgba(70,224,255,.1));
-    color:#bff4ff; border-color:var(--cyan); box-shadow:0 0 26px rgba(70,224,255,.6);
-    animation:micpulse 1.2s infinite}
-  @keyframes micpulse{50%{box-shadow:0 0 40px rgba(70,224,255,.9)}}
-  #say{flex:1; background:rgba(0,0,0,.3); border:1px solid var(--line); border-radius:8px;
-    color:var(--txt); font-family:inherit; font-size:15px; padding:12px 16px; letter-spacing:.03em}
-  #say::placeholder{color:var(--dim)}
-  .btn{font-family:inherit; cursor:pointer; letter-spacing:.12em; font-weight:700; font-size:12px;
-    background:transparent; color:var(--gold); border:1px solid var(--line); padding:12px 14px;
-    border-radius:8px; transition:.2s; white-space:nowrap}
-  .btn:hover{background:rgba(212,175,55,.12)}
+  .mini{display:flex; gap:8px; justify-content:center; margin:2px 0 6px}
+  .mini button{background:transparent; border:1px solid var(--line); color:var(--dim); font-family:inherit;
+    font-size:11px; letter-spacing:.1em; padding:7px 12px; border-radius:20px; cursor:pointer; font-weight:600}
 
-  #boot{position:fixed; inset:0; z-index:50; background:var(--bg); display:flex; flex-direction:column;
-    align-items:center; justify-content:center; gap:24px; cursor:pointer}
-  #boot h1{font-size:32px; letter-spacing:.4em; color:var(--gold-bright); text-shadow:0 0 24px rgba(212,175,55,.6)}
-  #boot .bigring{width:110px; height:110px; border-radius:50%;
-    border:3px solid rgba(212,175,55,.3); border-top-color:var(--gold-bright); animation:spin 1.1s linear infinite}
-  #boot .bt{font-size:14px; color:var(--gold); letter-spacing:.28em}
-  #boot .go{font-size:13px; color:var(--dim); letter-spacing:.26em; animation:blink 1.4s infinite}
+  #boot{position:fixed; inset:0; z-index:60; background:var(--bg); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:22px; cursor:pointer; text-align:center; padding:20px}
+  #boot h1{font-size:27px; letter-spacing:.34em; color:var(--gold-bright)}
+  #boot .bigring{width:96px; height:96px; border-radius:50%; border:3px solid rgba(230,194,90,.3); border-top-color:var(--gold-bright); animation:spin 1.1s linear infinite}
+  #boot .go{font-size:12px; letter-spacing:.22em; color:var(--dim); animation:bk 1.4s infinite}
   .hidden{display:none!important}
 </style>
 </head>
 <body>
-  <div class="bracket tl"></div><div class="bracket tr"></div>
-  <div class="bracket bl"></div><div class="bracket br"></div>
-
   <div id="boot">
     <h1>J · A · R · V · I · S</h1>
     <div class="bigring"></div>
-    <div class="bt">TEAM MIRANDA · MORTGAGE COMMAND</div>
-    <div class="go">▶ CLICK TO INITIALIZE</div>
+    <div class="muted" style="font-size:12px;letter-spacing:.26em">TEAM MIRANDA · MORTGAGE COMMAND</div>
+    <div class="go">▶ TAP TO INITIALIZE</div>
   </div>
 
-  <div class="wrap">
-    <div class="top">
-      <div class="brand">TEAM MIRANDA<small id="unit">V.I.P. MORTGAGE · MK II</small></div>
-      <div class="clock"><div class="t" id="clk">--:--:--</div><div class="d" id="dte">—</div></div>
-    </div>
+  <header>
+    <div class="brand">TEAM MIRANDA<small id="unit">V.I.P. MORTGAGE · MK III</small></div>
+    <div class="clock"><div class="t" id="clk">--:--</div><div class="d" id="dte">—</div></div>
+  </header>
 
-    <div class="grid">
-      <div class="panel"><h2>ACTIVE PIPELINE</h2><div id="deals"></div></div>
-      <div class="reactor">
-        <div class="core" id="core">
-          <div class="ring r1"></div><div class="ring r2"></div>
-          <div class="ring r3"></div><div class="ring r4"></div>
-          <div class="glow"></div>
-          <div class="pct"><b id="goalPct">0%</b><span>TO GOAL</span></div>
-        </div>
-        <div class="greet"><div class="hi" id="hi">Good day, Operator.</div>
-          <div class="sub" id="status">SYSTEMS NOMINAL</div></div>
-        <div class="stats">
-          <div class="stat"><b id="sActive">0</b><span>ACTIVE</span></div>
-          <div class="stat"><b id="sRisk" style="color:var(--risk)">0</b><span>AT RISK</span></div>
-          <div class="stat"><b id="sClosed">0</b><span>CLOSED MO</span></div>
-        </div>
-      </div>
-      <div class="panel"><h2>PRIORITY DIRECTIVES</h2><div id="prios"></div></div>
+  <div class="hero">
+    <div class="core" id="core">
+      <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="glow"></div>
     </div>
-
-    <div class="convo">
-      <div class="you" id="youLine">&nbsp;</div>
-      <div class="jv" id="jvLine">Click <b>TALK</b> and say "brief me", or "add a deal…"</div>
-    </div>
-
-    <div class="bottom">
-      <button class="mic" id="micBtn">🎤 TALK TO JARVIS</button>
-      <input id="say" placeholder="…or type here and press Enter (e.g. add deal Sarah Lee conventional processing)" />
-      <button class="btn" id="voiceBtn">🔊 ON</button>
-      <button class="btn" id="saveBtn">💾 EXPORT</button>
-      <button class="btn" id="resetBtn">⟲ BRIEF</button>
+    <div>
+      <div class="hi" id="hi">Good day, Martin.</div>
+      <div class="hsub" id="status">Systems nominal</div>
     </div>
   </div>
+
+  <div class="stats">
+    <div class="stat"><b id="sActive">0</b><span>ACTIVE</span></div>
+    <div class="stat risk"><b id="sRisk">0</b><span>NEEDS YOU</span></div>
+    <div class="stat"><b id="sClosed">0</b><span>CLOSED · GOAL</span></div>
+  </div>
+
+  <div class="card now">
+    <div class="label"><span class="pip"></span>⚡ RIGHT NOW</div>
+    <div class="big" id="nowBig">Tap the mic and tell me what's going on.</div>
+    <div class="who" id="nowWho"></div>
+    <div class="acts" id="nowActs"></div>
+  </div>
+
+  <div class="card">
+    <div class="label"><span class="pip"></span>📲 TODAY'S OUTREACH</div>
+    <div id="outreach"></div>
+  </div>
+
+  <div class="card">
+    <div class="label"><span class="pip"></span>📋 PIPELINE</div>
+    <div id="deals"></div>
+  </div>
+
+  <div class="card">
+    <div class="label"><span class="pip"></span>🎯 DIRECTIVES</div>
+    <div id="prios"></div>
+    <details><summary id="histSum">Past conversations</summary><div id="hist"></div></details>
+  </div>
+
+  <div class="mini">
+    <button id="voiceBtn">🔊 VOICE ON</button>
+    <button id="rebrief">⟳ BRIEF ME</button>
+    <button id="saveBtn">💾 EXPORT</button>
+  </div>
+
+  <div class="dock"><div class="dockin">
+    <button class="mic" id="micBtn">🎤</button>
+    <input id="say" placeholder="Talk or type… (tap 🎤 on your keyboard)" />
+    <button class="send" id="sendBtn">➤</button>
+  </div></div>
 
   <script>
-/* JARVIS data feed — JARVIS updates this when you run /intake or /learn.
-   Edit by hand anytime, or just tell JARVIS "update the HUD". */
+/* JARVIS data feed — JARVIS updates this as you talk to it (and it saves on your
+   phone automatically). Edit by hand anytime, or just talk to it. */
 window.JARVIS_DATA = {
   operator: "Martin",
-  team: "TEAM MIRANDA",
   unit: "V.I.P. MORTGAGE",
-  mark: "MK I",
 
-  // Your live deals. stage: Lead | App | Processing | Underwriting | CTC | Closed
-  // flag: "risk" (needs you / at risk) | "wait" (waiting on others) | "ok"
+  // stage: Lead | App | Processing | Underwriting | CTC | Closed
+  // flag: "risk" (needs you) | "wait" (waiting on others) | "ok"
+  // phone: optional — enables one-tap Text/Call. (Stays only on your phone.)
   deals: [
-    { name: "Sarah L.",  type: "Conventional", stage: "Processing",   flag: "risk", next: "Send updated paystubs request", close: "06/30" },
-    { name: "The Garcias", type: "Refi watch",  stage: "Lead",        flag: "ok",   next: "Quarterly check-in",          close: "" },
-    { name: "James R.",  type: "VA Purchase",   stage: "Underwriting", flag: "wait", next: "Waiting on appraisal",        close: "07/10" },
-    { name: "Mendez Fam.", type: "FHA Purchase", stage: "App",        flag: "risk", next: "Collect bank statements",      close: "" }
+    { name: "Sarah L.",    type: "Conventional", stage: "Processing",   flag: "risk", next: "Updated paystubs",      phone: "" },
+    { name: "Mendez Fam.", type: "FHA",          stage: "App",          flag: "risk", next: "Bank statements",       phone: "" },
+    { name: "James R.",    type: "VA",           stage: "Underwriting", flag: "wait", next: "Waiting on appraisal",  phone: "" },
+    { name: "The Garcias", type: "Refi watch",   stage: "Lead",         flag: "ok",   next: "Quarterly check-in",    phone: "" }
   ],
 
-  // Top priorities JARVIS reads aloud (keep to 3 — ADHD mode)
   priorities: [
-    "Sarah L. — request updated paystubs before processing stalls.",
-    "Mendez family — collect bank statements to keep the app moving.",
-    "Post today's pre-approval flyer and reply to every DM."
+    "Get Sarah L.'s updated paystubs so processing doesn't stall",
+    "Collect the Mendez family's bank statements",
+    "Post today's pre-approval flyer and reply to every DM"
   ],
 
-  // One-line market / motivation note for the ticker
-  ticker: "LOCAL EXPERTS · REAL PEOPLE · REAL RESULTS · LET'S GET YOU HOME",
-
-  monthClosed: 3,      // closings logged this month (momentum fuel)
-  monthGoal: 8         // your target
+  notes: [],
+  history: [],
+  rateNote: "",          // say "set rates to ..." and JARVIS keeps it ready
+  monthClosed: 3,
+  monthGoal: 8
 };
 
 </script>
   <script>
-  /* ===== state: defaults merged with anything saved locally (this is how it GROWS) ===== */
-  const DEFAULTS = window.JARVIS_DATA || {operator:"Martin", team:"TEAM MIRANDA",
-    unit:"V.I.P. MORTGAGE", deals:[], priorities:[], notes:[], ticker:"TEAM MIRANDA",
-    monthClosed:0, monthGoal:8};
-  let D;
-  try{ const saved=JSON.parse(localStorage.getItem("JARVIS_DATA")); D = saved? {...DEFAULTS,...saved} : structuredClone(DEFAULTS);}
-  catch(e){ D = structuredClone(DEFAULTS); }
-  D.deals=D.deals||[]; D.priorities=D.priorities||[]; D.notes=D.notes||[];
-  function save(){ localStorage.setItem("JARVIS_DATA", JSON.stringify(D)); }
-
+  const DEFAULTS=window.JARVIS_DATA||{operator:"Martin",unit:"V.I.P. MORTGAGE",deals:[],priorities:[],notes:[],history:[],rateNote:"",monthClosed:0,monthGoal:8};
+  let D; try{const s=JSON.parse(localStorage.getItem("JARVIS_DATA")); D=s?{...DEFAULTS,...s}:structuredClone(DEFAULTS);}catch(e){D=structuredClone(DEFAULTS);}
+  ["deals","priorities","notes","history"].forEach(k=>D[k]=D[k]||[]);
+  function save(){localStorage.setItem("JARVIS_DATA",JSON.stringify(D));}
   const $=id=>document.getElementById(id);
-  const STAGES={lead:"Lead",app:"App",application:"App",processing:"Processing",
-    underwriting:"Underwriting",ctc:"CTC","clear to close":"CTC",closed:"Closed",funded:"Closed"};
+  const enc=encodeURIComponent;
+  const STAGES={lead:"Lead",app:"App",application:"App",processing:"Processing",underwriting:"Underwriting",ctc:"CTC","clear to close":"CTC",closed:"Closed",funded:"Closed"};
   const TYPES=["conventional","fha","va","jumbo","refi","refinance","usda","heloc"];
+  const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
+  const first=n=>n.split(" ")[0];
 
-  /* ===== render ===== */
+  function suggest(d){
+    const f=first(d.name); const nx=(d.next||"").toLowerCase();
+    if(/paystub|w2|w-2|tax|statement|doc|bank/.test(nx))
+      return `Hi ${f}, it's Martin with Team Miranda. To keep your loan moving we just need ${d.next.toLowerCase()} — whenever you get a sec. Takes 2 minutes and we stay on track. 🙏`;
+    if(/appraisal|title|insurance/.test(nx))
+      return `Hi ${f}, Martin here — quick update on your file: we're working through ${d.next.toLowerCase()}. I'll keep you posted, but text me any questions!`;
+    if(d.flag==="risk")
+      return `Hi ${f}, it's Martin with Team Miranda. Wanted to personally check in on your loan and make sure you have everything you need. Got 5 min today?`;
+    return `Hi ${f}, Martin with Team Miranda checking in — anything I can knock out for you on your loan today?`;
+  }
+
   function render(){
-    $("unit").textContent=(D.unit||"")+" · MK II";
-    const active=D.deals.filter(d=>d.stage!=="Closed").length;
-    const risk=D.deals.filter(d=>d.flag==="risk").length;
-    $("sActive").textContent=active; $("sRisk").textContent=risk; $("sClosed").textContent=D.monthClosed||0;
-    $("goalPct").textContent=(D.monthGoal?Math.round(((D.monthClosed||0)/D.monthGoal)*100):0)+"%";
-    $("deals").innerHTML=D.deals.length? D.deals.map(d=>`
-      <div class="deal"><div class="dot ${d.flag||'ok'}"></div>
-        <div><div class="nm">${d.name}</div>
-          <div class="meta">${[d.type,d.next].filter(Boolean).join(' · ')||'—'}</div></div>
-        <div class="stg">${d.stage||'Lead'}</div></div>`).join("")
-      : '<div class="meta">No deals yet. Say "add a deal…"</div>';
-    $("prios").innerHTML=(D.priorities||[]).length? D.priorities.map((p,i)=>`
-      <div class="prio"><div class="n">${i+1}</div><div class="txt">${p}</div></div>`).join("")
-      : '<div class="meta">Say "remind me to…" to add directives.</div>';
-    $("hi").textContent=greeting()+", "+(D.operator||"Operator")+".";
-    $("status").textContent=risk>0?(risk+" DEAL"+(risk>1?"S":"")+" NEED YOUR ATTENTION"):"ALL SYSTEMS NOMINAL";
-    save();
-  }
-  function greeting(){const h=new Date().getHours();return h<12?"Good morning":h<18?"Good afternoon":"Good evening";}
-  function clock(){const n=new Date();
-    $("clk").textContent=n.toLocaleTimeString("en-US",{hour12:false});
-    $("dte").textContent=n.toLocaleDateString("en-US",{weekday:"long",month:"short",day:"numeric"}).toUpperCase();}
-  setInterval(clock,1000); clock();
-
-  /* ===== voice out ===== */
-  let voiceOn=true, speaking=false;
-  function pickVoice(){const vs=speechSynthesis.getVoices();
-    const pref=["Daniel","Google UK English Male","Arthur","Oliver","Microsoft Ryan","Microsoft George","Alex"];
-    for(const n of pref){const v=vs.find(x=>x.name.includes(n)); if(v) return v;}
-    return vs.find(v=>/en-GB/.test(v.lang))||vs.find(v=>/en/.test(v.lang))||vs[0];}
-  function jarvis(text){
-    $("jvLine").innerHTML="<b>JARVIS:</b> "+text;
-    if(!voiceOn||!("speechSynthesis" in window)) return;
-    speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text);
-    const v=pickVoice(); if(v) u.voice=v; u.rate=.93; u.pitch=.8;
-    speaking=true; if(rec&&listening){try{rec.stop()}catch(e){}}
-    u.onend=()=>{speaking=false; if(listening){try{rec.start()}catch(e){}}};
-    speechSynthesis.speak(u);
-  }
-
-  /* ===== brain: turn what you say into actions (this is the "grow as we talk") ===== */
-  function handle(raw){
-    const t=raw.trim(); if(!t) return;
-    $("youLine").innerHTML="<b>You:</b> "+t;
-    const s=t.toLowerCase();
-
-    // brief / status
-    if(/\b(brief|briefing|status|pipeline|how am i|what'?s? up|update me|rundown)\b/.test(s)) return jarvis(briefing());
-    // help
-    if(/\b(help|what can you do|commands)\b/.test(s)) return jarvis("You can say: add a deal, then a name, loan type and stage. Mark a deal closed. Flag a deal at risk. Set a reminder. Set my goal to a number. Or say brief me for your rundown.");
-    // set goal
-    let m=s.match(/goal (?:to |is |of )?(\d+)/); if(m){D.monthGoal=+m[1]; render(); return jarvis(`Understood. Monthly goal set to ${m[1]} units. You're at ${D.monthClosed||0}.`);}
-    // closed / funded
-    if(/\b(closed|funded|close out|mark .* done|we closed)\b/.test(s)){
-      const d=findDeal(s); if(d){d.stage="Closed"; d.flag="ok"; D.monthClosed=(D.monthClosed||0)+1; render();
-        return jarvis(`Outstanding. ${d.name} marked closed. That's ${D.monthClosed} this month — ${Math.max(0,(D.monthGoal||0)-D.monthClosed)} to goal. Let's get the next one.`);}
-      return jarvis("Which file closed? Try: close out Sarah Lee.");
-    }
-    // risk / waiting flags
-    if(/\b(at risk|flag|stalled|urgent|chase)\b/.test(s)){const d=findDeal(s); if(d){d.flag="risk"; render(); return jarvis(`Flagged. ${d.name} is now top priority.`);}}
-    if(/\bwaiting\b/.test(s)){const d=findDeal(s); if(d){d.flag="wait"; const mm=s.match(/waiting on (.+)/); if(mm) d.next="Waiting on "+mm[1]; render(); return jarvis(`Noted. ${d.name} is waiting${d.next?', '+d.next.toLowerCase():''}.`);}}
-    // reminder / directive
-    m=t.match(/\b(?:remind me to|reminder|add (?:a )?(?:task|directive)|note)\s+(?:to\s+)?(.+)/i);
-    if(m){D.priorities.unshift(cap(m[1])); D.priorities=D.priorities.slice(0,6); render(); return jarvis(`Logged. "${m[1]}" added to your directives.`);}
-    // remember a fact
-    m=t.match(/\bremember(?: that)?\s+(.+)/i);
-    if(m){D.notes.unshift(m[1]); render(); return jarvis(`I'll remember that. ${cap(m[1])}.`);}
-    // add deal
-    if(/\b(add|new|create)\b.*\b(deal|file|client|loan|borrower)\b/.test(s) || /^(add|new) /.test(s)){
-      const d=parseDeal(t); if(d.name){D.deals.unshift(d); render();
-        return jarvis(`Added ${d.name} — ${d.type||'loan'}, ${d.stage}. ${d.flag==='risk'?'Marked as needing your attention. ':''}Anything else?`);}
-      return jarvis("Tell me the name, loan type and stage. For example: add a deal, Sarah Lee, conventional, processing.");
-    }
-    // next step update
-    m=t.match(/(.+?)\b(?:next step|next|needs to|needs|todo)\b\s+(.+)/i);
-    if(m){const d=findDeal(m[1].toLowerCase()); if(d){d.next=cap(m[2]); render(); return jarvis(`Updated. Next on ${d.name}: ${m[2]}.`);}}
-    // pleasantries
-    if(/\b(thank|thanks|appreciate)\b/.test(s)) return jarvis("Always, sir. Let's get you home.");
-    if(/\b(hello|hey|hi|you there|jarvis)\b/.test(s)) return jarvis(`${greeting()}, ${D.operator}. JARVIS online and listening.`);
-    // fallback: treat as a quick note so nothing is lost
-    D.notes.unshift(t); render();
-    jarvis(`Noted. I saved that. Say "brief me" for your rundown, or "help" for what I can do.`);
-  }
-
-  function briefing(){
+    $("unit").textContent=(D.unit||"")+" · MK III";
     const active=D.deals.filter(d=>d.stage!=="Closed").length;
     const risk=D.deals.filter(d=>d.flag==="risk");
-    let s=`${greeting()}, ${D.operator||"sir"}. `;
-    s+=`${active} active file${active!==1?'s':''} in the pipeline`;
-    s+=risk.length?`, ${risk.length} needing your attention. `:`. All nominal. `;
-    if(D.priorities[0]) s+=`Priority one: ${D.priorities[0]} `;
-    s+=`You've closed ${D.monthClosed||0} of ${D.monthGoal||0} this month. Let's get you home.`;
-    return s;
+    $("sActive").textContent=active; $("sRisk").textContent=risk.length;
+    $("sClosed").textContent=(D.monthClosed||0)+" / "+(D.monthGoal||0);
+    $("hi").textContent=greeting()+", "+(D.operator||"Operator")+".";
+    $("status").textContent=risk.length?`${risk.length} deal${risk.length>1?'s':''} need you today`:"All systems nominal";
+
+    // RIGHT NOW = top priority, tie to a deal if name matches
+    const top=D.priorities[0];
+    const tied=top? D.deals.find(d=>top.toLowerCase().includes(first(d.name).toLowerCase())) : null;
+    const focusDeal = tied || risk[0];
+    $("nowBig").textContent = top || (focusDeal? `Reach out to ${focusDeal.name}` : "You're clear. Add a deal or say “brief me.”");
+    $("nowWho").textContent = focusDeal? `${focusDeal.name} · ${focusDeal.type||'loan'} · ${focusDeal.stage||''}` : "";
+    $("nowActs").innerHTML = focusDeal? actBtns(focusDeal) : "";
+
+    // outreach = risk + wait deals
+    const out=D.deals.filter(d=>d.flag==="risk"||d.flag==="wait");
+    $("outreach").innerHTML = out.length? out.map(d=>`
+      <div class="out">
+        <div class="top2"><span class="dot ${d.flag}"></span><span class="nm">${d.name}</span>
+          <span class="stg">${d.stage||'Lead'}</span></div>
+        <div class="sug"><b>Suggested:</b> ${suggest(d)}</div>
+        <div class="acts">${actBtns(d)}</div>
+      </div>`).join("") : '<div class="muted" style="font-size:13px">Nobody waiting on you. 🎉 Add deals and I’ll surface who to contact.</div>';
+
+    $("deals").innerHTML = D.deals.length? D.deals.map(d=>`
+      <div class="row"><span class="dot ${d.flag||'ok'}"></span>
+        <div><div class="nm">${d.name}</div><div class="mt">${[d.type,d.next].filter(Boolean).join(' · ')||'—'}</div></div>
+        <span class="stg">${d.stage||'Lead'}</span></div>`).join("")
+      : '<div class="muted" style="font-size:13px">No deals yet. Say “add a deal, Sarah Lee, conventional, processing.”</div>';
+
+    $("prios").innerHTML = D.priorities.length? D.priorities.map((p,i)=>`
+      <div class="prio"><div class="n">${i+1}</div><div class="tx">${p}</div></div>`).join("")
+      : '<div class="muted" style="font-size:13px">Say “remind me to…” to add a directive.</div>';
+
+    $("histSum").textContent = `Past conversations (${D.history.length})`;
+    $("hist").innerHTML = D.history.slice(-25).reverse().map(h=>`
+      <div class="hist"><div class="q">You: ${h.you}</div><div class="a">JARVIS: ${h.jv}</div><div class="tm">${h.t}</div></div>`).join("")
+      || '<div class="muted" style="font-size:12px">No history yet.</div>';
+    save();
   }
-  function findDeal(s){return D.deals.find(d=>s.includes(d.name.toLowerCase().split(' ')[0]))
-    ||D.deals.find(d=>s.includes(d.name.toLowerCase()));}
-  function parseDeal(t){
-    let body=t.replace(/^.*?\b(deal|file|client|loan|borrower)\b[:,]?\s*/i,"")
-              .replace(/^(add|new|create)\s+(a\s+)?/i,"");
+
+  function actBtns(d){
+    const msg=enc(suggest(d));
+    const ph=(d.phone||"").replace(/[^\d+]/g,"");
+    const text = ph? `<a class="act text" href="sms:${ph}&body=${msg}">💬 Text</a>`
+                   : `<button class="act text" onclick="copyMsg('${d.name.replace(/'/g,"")}')">💬 Copy text</button>`;
+    const call = ph? `<a class="act call" href="tel:${ph}">📞 Call</a>`
+                   : `<button class="act ghost" onclick="askPhone('${d.name.replace(/'/g,"")}')">➕ Add #</button>`;
+    return text+call;
+  }
+  window.copyMsg=name=>{const d=D.deals.find(x=>x.name===name); if(!d)return;
+    navigator.clipboard?.writeText(suggest(d)); jarvis(`Copied your text to ${first(d.name)}. Paste it in Messages — or tell me ${first(d.name)}'s number and I'll make it one tap.`);};
+  window.askPhone=name=>{jarvis(`What's ${first(name)}'s number? Say: ${first(name)} number 5 2 0 ...`); $("say").focus();};
+
+  function greeting(){const h=new Date().getHours();return h<12?"Good morning":h<18?"Good afternoon":"Good evening";}
+  function clock(){const n=new Date();
+    $("clk").textContent=n.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"});
+    $("dte").textContent=n.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}).toUpperCase();}
+  setInterval(clock,1000); clock();
+
+  /* voice out */
+  let voiceOn=true, speaking=false;
+  function pickVoice(){const vs=speechSynthesis.getVoices();
+    for(const n of ["Daniel","Google UK English Male","Arthur","Oliver","Microsoft Ryan","Alex"]){const v=vs.find(x=>x.name.includes(n)); if(v)return v;}
+    return vs.find(v=>/en-GB/.test(v.lang))||vs.find(v=>/en/.test(v.lang))||vs[0];}
+  function say(text){if(!voiceOn||!("speechSynthesis"in window))return; speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text); const v=pickVoice(); if(v)u.voice=v; u.rate=.94; u.pitch=.8;
+    speaking=true; if(rec&&listening){try{rec.stop()}catch(e){}}
+    u.onend=()=>{speaking=false; if(listening){try{rec.start()}catch(e){}}}; speechSynthesis.speak(u);}
+  function jarvis(text,you){
+    if(you){ D.history.push({you, jv:text, t:new Date().toLocaleString("en-US",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})});
+      if(D.history.length>200) D.history=D.history.slice(-200); }
+    render(); say(text);
+  }
+
+  /* brain */
+  function handle(raw){
+    const t=raw.trim(); if(!t)return; const s=t.toLowerCase();
+    const reply=brain(t,s); jarvis(reply,t);
+  }
+  function brain(t,s){
+    if(/\b(rate|rates|market|how'?s the market|today'?s rate)\b/.test(s)){
+      if(D.rateNote) return `Today's rate note: ${D.rateNote}. Remember to sell the monthly payment, not the headline.`;
+      return `I can't pull live market rates from here yet — but tell me today's number and I'll keep it ready for every client. Say: set rates to your number. And the move that always works: focus the client on the monthly payment, not the headline rate.`;
+    }
+    let m=s.match(/set rates? (?:to |at )?(.+)/); if(m){D.rateNote=cap(m[1]); return `Locked in. Today's rate note: ${D.rateNote}.`;}
+    if(/\b(brief|briefing|status|pipeline|rundown|how am i|what'?s up|update me)\b/.test(s)) return briefing();
+    if(/\b(help|what can you do|commands)\b/.test(s)) return "Say: add a deal with a name, type and stage. Mark a deal closed. Flag one at risk. Set a reminder. Give me someone's number. Ask how are rates after you set them. Or say brief me.";
+    m=s.match(/goal (?:to |is |of )?(\d+)/); if(m){D.monthGoal=+m[1]; return `Goal set to ${m[1]}. You're at ${D.monthClosed||0}.`;}
+    // phone number for a deal
+    m=t.match(/(.+?)\b(?:number|phone|cell|digits)\b(?:\s*(?:is|:))?\s*([\d\-\+\(\)\s]{7,})/i);
+    if(m){const d=findDeal(m[1].toLowerCase()); if(d){d.phone=m[2].replace(/[^\d+]/g,""); return `Got it. ${first(d.name)} is now one-tap to text or call.`;} }
+    if(/\b(closed|funded|we closed|mark .* done)\b/.test(s)){const d=findDeal(s);
+      if(d){d.stage="Closed"; d.flag="ok"; D.monthClosed=(D.monthClosed||0)+1;
+        return `Outstanding. ${d.name} closed — that's ${D.monthClosed} this month, ${Math.max(0,(D.monthGoal||0)-D.monthClosed)} to goal. On to the next.`;}
+      return "Which file closed? Try: close out Sarah Lee.";}
+    if(/\b(at risk|flag|stalled|urgent|chase)\b/.test(s)){const d=findDeal(s); if(d){d.flag="risk"; return `Flagged. ${d.name} is top priority now.`;}}
+    if(/\bwaiting\b/.test(s)){const d=findDeal(s); if(d){d.flag="wait"; const mm=s.match(/waiting on (.+)/); if(mm)d.next="Waiting on "+mm[1]; return `Noted. ${d.name} is waiting${d.next?', '+d.next.toLowerCase():''}.`;}}
+    m=t.match(/\b(?:remind me to|reminder|add (?:a )?(?:task|directive)|to-?do)\s+(?:to\s+)?(.+)/i);
+    if(m){D.priorities.unshift(cap(m[1])); D.priorities=D.priorities.slice(0,6); return `Logged: ${m[1]}.`;}
+    m=t.match(/\bremember(?: that)?\s+(.+)/i); if(m){D.notes.unshift(m[1]); return `I'll remember that.`;}
+    if(/\b(add|new|create)\b.*\b(deal|file|client|loan|borrower)\b/.test(s)||/^(add|new)\s/.test(s)){
+      const d=parseDeal(t); if(d.name){D.deals.unshift(d); return `Added ${d.name} — ${d.type||'loan'}, ${d.stage}.${d.flag==='risk'?' Flagged for attention.':''}`;}
+      return "Tell me the name, type and stage — like: add a deal, Sarah Lee, conventional, processing.";}
+    m=t.match(/(.+?)\b(?:next step|next|needs)\b\s+(.+)/i);
+    if(m){const d=findDeal(m[1].toLowerCase()); if(d){d.next=cap(m[2]); return `Updated. Next on ${d.name}: ${m[2]}.`;}}
+    if(/\b(thank|thanks|appreciate)\b/.test(s)) return "Always. Let's get you home.";
+    if(/\b(hello|hey|hi|jarvis|you there)\b/.test(s)) return `${greeting()}, ${D.operator}. Online and listening.`;
+    D.notes.unshift(t); return `Saved that to your notes. Say “brief me” for your rundown, or “help.”`;
+  }
+  function briefing(){const active=D.deals.filter(d=>d.stage!=="Closed").length; const risk=D.deals.filter(d=>d.flag==="risk");
+    let s=`${greeting()}, ${D.operator||"sir"}. ${active} active file${active!==1?'s':''}`;
+    s+=risk.length?`, ${risk.length} needing you. `:`, all nominal. `;
+    if(D.priorities[0])s+=`Priority one: ${D.priorities[0]} `;
+    s+=`Closed ${D.monthClosed||0} of ${D.monthGoal||0} this month. Let's get you home.`; return s;}
+  function findDeal(s){return D.deals.find(d=>s.includes(first(d.name).toLowerCase()))||D.deals.find(d=>s.includes(d.name.toLowerCase()));}
+  function parseDeal(t){let body=t.replace(/^.*?\b(deal|file|client|loan|borrower)\b[:,]?\s*/i,"").replace(/^(add|new|create)\s+(a\s+)?/i,"");
     const parts=body.split(/[,]| for | who | and /i).map(x=>x.trim()).filter(Boolean);
-    const d={name:"",type:"",stage:"Lead",flag:"ok",next:""};
-    const leftover=[];
-    parts.forEach((p,i)=>{
-      const pl=p.toLowerCase();
-      const st=Object.keys(STAGES).find(k=>pl.includes(k));
-      const ty=TYPES.find(k=>pl.includes(k));
-      if(i===0){d.name=cap(p);}
-      else if(st){d.stage=STAGES[st];}
-      else if(ty){d.type=cap(ty.replace("refinance","refi"));}
-      else if(/risk|urgent|asap/.test(pl)){d.flag="risk";}
-      else leftover.push(p);
-    });
-    // also catch type/stage if they were in the name chunk
+    const d={name:"",type:"",stage:"Lead",flag:"ok",next:""}; const left=[];
+    parts.forEach((p,i)=>{const pl=p.toLowerCase(); const st=Object.keys(STAGES).find(k=>pl.includes(k)); const ty=TYPES.find(k=>pl.includes(k));
+      if(i===0)d.name=cap(p); else if(st)d.stage=STAGES[st]; else if(ty)d.type=cap(ty.replace("refinance","refi"));
+      else if(/risk|urgent|asap/.test(pl))d.flag="risk"; else left.push(p);});
     if(!d.type){const ty=TYPES.find(k=>d.name.toLowerCase().includes(k)); if(ty){d.type=cap(ty); d.name=cap(d.name.replace(new RegExp(ty,"i"),"").trim());}}
-    if(leftover.length) d.next=cap(leftover.join(", "));
-    return d;
-  }
-  const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+    if(left.length)d.next=cap(left.join(", ")); return d;}
 
-  /* ===== voice in (talk to it) ===== */
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  let rec=null, listening=false;
-  if(SR){ rec=new SR(); rec.lang="en-US"; rec.interimResults=false; rec.continuous=true;
-    rec.onresult=e=>{const r=e.results[e.results.length-1]; if(r.isFinal) handle(r[0].transcript);};
-    rec.onerror=e=>{ if(e.error==="not-allowed"){jarvis("I need microphone access. Enable it and click TALK again."); stopMic();} };
-    rec.onend=()=>{ if(listening&&!speaking){try{rec.start()}catch(e){}} };
-  }
-  if(!rec){ $("micBtn").textContent="⌨️ TAP TO TALK / TYPE"; }
-  function startMic(){ if(!rec){ $("say").focus();
-      jarvis("Tap the microphone on your keyboard and just talk. Try: add a deal, Sarah Lee, conventional, processing."); return;}
-    listening=true; $("micBtn").classList.add("on"); $("micBtn").textContent="🎙️ LISTENING…";
-    $("core").classList.add("listening"); try{rec.start()}catch(e){} }
-  function stopMic(){ listening=false; $("micBtn").classList.remove("on"); $("micBtn").textContent="🎤 TALK TO JARVIS";
-    $("core").classList.remove("listening"); if(rec){try{rec.stop()}catch(e){}} }
+  /* voice in */
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition; let rec=null, listening=false;
+  if(SR){rec=new SR(); rec.lang="en-US"; rec.interimResults=false; rec.continuous=true;
+    rec.onresult=e=>{const r=e.results[e.results.length-1]; if(r.isFinal)handle(r[0].transcript);};
+    rec.onerror=e=>{if(e.error==="not-allowed"){say("I need mic access. Or just type to me."); stopMic();}};
+    rec.onend=()=>{if(listening&&!speaking){try{rec.start()}catch(e){}}};}
+  function startMic(){if(!rec){$("say").focus(); say("Tap the microphone on your keyboard and talk. Try: add a deal, Sarah Lee, conventional, processing."); return;}
+    listening=true; $("micBtn").classList.add("on"); $("core").classList.add("listening"); try{rec.start()}catch(e){}}
+  function stopMic(){listening=false; $("micBtn").classList.remove("on"); $("core").classList.remove("listening"); if(rec){try{rec.stop()}catch(e){}}}
 
-  /* ===== wiring ===== */
-  $("micBtn").onclick=()=> listening?stopMic():startMic();
-  $("say").addEventListener("keydown",e=>{ if(e.key==="Enter"&&e.target.value.trim()){handle(e.target.value); e.target.value="";}});
-  $("voiceBtn").onclick=e=>{voiceOn=!voiceOn; e.target.textContent="🔊 "+(voiceOn?"ON":"OFF"); if(!voiceOn)speechSynthesis.cancel();};
-  $("resetBtn").onclick=()=>jarvis(briefing());
-  $("saveBtn").onclick=()=>{ const blob=new Blob(["window.JARVIS_DATA = "+JSON.stringify(D,null,2)+";\n"],{type:"text/javascript"});
+  $("micBtn").onclick=()=>listening?stopMic():startMic();
+  $("sendBtn").onclick=()=>{if($("say").value.trim()){handle($("say").value); $("say").value="";}};
+  $("say").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.value.trim()){handle(e.target.value); e.target.value="";}});
+  $("voiceBtn").onclick=e=>{voiceOn=!voiceOn; e.target.textContent="🔊 VOICE "+(voiceOn?"ON":"OFF"); if(!voiceOn)speechSynthesis.cancel();};
+  $("rebrief").onclick=()=>jarvis(briefing());
+  $("saveBtn").onclick=()=>{const blob=new Blob(["window.JARVIS_DATA = "+JSON.stringify(D,null,2)+";\n"],{type:"text/javascript"});
     const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="data.js"; a.click();
-    jarvis("Exported. Drop that data.js back into your dashboard folder to sync your pipeline."); };
-
-  $("boot").onclick=()=>{ $("boot").classList.add("hidden"); render(); jarvis(briefing());
-    if("speechSynthesis" in window) speechSynthesis.onvoiceschanged=()=>{}; };
-
+    say("Exported your data.");};
+  $("boot").onclick=()=>{$("boot").classList.add("hidden"); render(); jarvis(briefing()); if("speechSynthesis"in window)speechSynthesis.onvoiceschanged=()=>{};};
   render();
   </script>
 </body>
