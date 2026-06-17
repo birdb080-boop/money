@@ -7,9 +7,28 @@ static page you can drop on Vercel, Netlify, or any host.
 ## What's here
 ```
 funnel/
-  index.html             ← the whole landing page (HTML + CSS + JS, one file)
-  team-miranda-logo.png  ← logo used in the header + footer
+  index.html               ← the whole landing page (HTML + CSS + JS, one file)
+  team-miranda-logo.png    ← logo used in the header + footer
+  img/martin-headshot.png  ← Martin's headshot (Meet Martin section)
 ```
+
+## Photos & how to swap them
+- **Martin's headshot** is self-hosted at `img/martin-headshot.png` and shows in the
+  "Meet Martin" section. Replace that file (keep the name) to update it.
+- The two full-width **photo bands** (home + family) use **royalty-free stock photos
+  hotlinked from Unsplash** as placeholders. To use your own photography (recommended —
+  even better, real local homes or a client family with their consent), edit the
+  `background-image: …url('…')` in each `<section class="band" …>` and point it at your
+  image. The dark gradient overlay doubles as a fallback, so the bands still look right
+  even if a photo fails to load.
+- Heads-up: the image CDNs are blocked from the build sandbox, so the stock photos can't
+  be downloaded and self-hosted here — they load in your browser and on the live site,
+  which both have open internet.
+
+## Color note
+The palette got a warm refresh: the desert-lux cream/gold/charcoal base now carries a
+**terracotta/clay accent** (section labels, the "Meet Martin" tags, badges, and band
+accents). Tune it via the `--clay` / `--clay2` variables in `:root`.
 
 ## Features
 - **Multi-step equity estimator** (home value → balance → credit band → goal → contact).

@@ -14,8 +14,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;0,900;1,600&family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cream:#F5EFE6; --cream2:#EFE6D7; --sand:#E7DAC6; --sand2:#DCCDB4;
+    --cream:#F7F1E6; --cream2:#F0E7D6; --sand:#E7DAC6; --sand2:#DCCDB4;
     --gold:#B08D57; --gold2:#C9A227; --bronze:#9A7B45;
+    --clay:#C0694A; --clay2:#9d4f34; --terra-soft:rgba(192,105,74,.10);
     --ink:#1A1A1A; --ink2:#2c2a27; --muted:#6f675c; --line:rgba(26,26,26,.10);
     --card:#FBF7F0; --shadow:0 16px 40px rgba(26,26,26,.10);
   }
@@ -29,7 +30,7 @@
   .serif{font-family:"Playfair Display",Georgia,serif}
   .script{font-family:"Great Vibes",cursive; color:var(--gold); font-weight:400}
   .wrap{max-width:1080px; margin:0 auto; padding:0 22px}
-  .eyebrow{font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:var(--bronze); font-weight:600}
+  .eyebrow{font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:var(--clay); font-weight:700}
   .gold-rule{height:1px; width:64px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:18px auto}
   a{color:inherit}
   .btn{display:inline-flex; align-items:center; justify-content:center; gap:9px; cursor:pointer;
@@ -116,6 +117,42 @@
   .thanks .check{width:64px; height:64px; margin:0 auto 14px; border-radius:50%; background:rgba(201,162,39,.14); display:flex; align-items:center; justify-content:center}
   .thanks h3{font-size:26px; font-weight:800; margin-bottom:8px}
   .thanks p{color:var(--ink2); max-width:30em; margin:0 auto 8px}
+
+  /* ---------- photo bands ---------- */
+  .band{position:relative; padding:96px 0; color:var(--cream); background-color:var(--clay2);
+    background-size:cover; background-position:center; background-repeat:no-repeat}
+  .band .wrap{position:relative; z-index:2}
+  .band .eyebrow{color:var(--gold2)}
+  .band h2{font-family:"Playfair Display",serif; font-size:clamp(28px,4.8vw,46px); font-weight:800; line-height:1.08; max-width:13em; margin:10px 0 14px}
+  .band h2 .script{color:var(--gold2)}
+  .band p{font-size:17px; max-width:30em; color:rgba(247,241,230,.92); margin-bottom:24px}
+  .band .btn-ghost{border-color:var(--cream); color:var(--cream)}
+  .band .btn-ghost:hover{background:var(--cream); color:var(--ink)}
+
+  /* ---------- meet martin ---------- */
+  .meet-sec{background:linear-gradient(180deg,var(--cream2),var(--cream))}
+  .meet{display:grid; grid-template-columns:.72fr 1.28fr; gap:46px; align-items:center}
+  @media(max-width:760px){ .meet{grid-template-columns:1fr; gap:26px; text-align:center} }
+  .meet .photo-wrap{position:relative; justify-self:center; width:240px; height:240px; flex:0 0 auto}
+  .meet .headshot{width:240px; height:240px; border-radius:50%; object-fit:cover; object-position:center top;
+    border:5px solid #fff; box-shadow:0 18px 44px rgba(26,26,26,.24); background:var(--sand); display:block}
+  .meet .ring{position:absolute; inset:-14px; border-radius:50%; border:1.5px dashed var(--gold); opacity:.55; pointer-events:none}
+  .meet .badge-nmls{position:absolute; bottom:8px; right:-4px; background:var(--ink); color:var(--cream);
+    font-size:10px; font-weight:700; letter-spacing:.06em; padding:8px 13px; border-radius:999px; box-shadow:var(--shadow); white-space:nowrap}
+  .meet h2{font-family:"Playfair Display",serif; font-size:clamp(26px,3.8vw,40px); font-weight:800; line-height:1.1; margin:4px 0 4px}
+  .meet h2 .script{color:var(--gold)}
+  .meet .role{font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--clay); font-weight:700; margin-bottom:16px}
+  .meet p{color:var(--ink2); font-size:15.5px; margin-bottom:14px; max-width:42em}
+  @media(max-width:760px){ .meet p{margin-left:auto; margin-right:auto} }
+  .meet .creds{display:flex; flex-wrap:wrap; gap:8px 9px; margin:6px 0 22px}
+  @media(max-width:760px){ .meet .creds{justify-content:center} }
+  .meet .creds span{font-size:11.5px; font-weight:600; color:var(--clay2); background:var(--terra-soft);
+    border:1px solid rgba(192,105,74,.22); padding:6px 12px; border-radius:999px}
+  .meet .meet-cta{display:flex; flex-wrap:wrap; gap:12px}
+  @media(max-width:760px){ .meet .meet-cta{justify-content:center} }
+
+  /* warm up the value-prop badges to match the new accent */
+  .prop .badge{background:var(--terra-soft); border-color:rgba(192,105,74,.28)}
 
   /* ---------- sections ---------- */
   section{padding:66px 0}
@@ -337,6 +374,18 @@
   </div>
 </div>
 
+<!-- ================= BAND: HOME EQUITY ================= -->
+<!-- Stock photo placeholder (royalty-free). Swap the background-image URL for Martin's
+     own photography anytime — see funnel/README.md. Gradient overlay doubles as fallback. -->
+<section class="band" style="background-image:linear-gradient(105deg, rgba(26,20,16,.78), rgba(26,20,16,.32)), url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1600&q=70')">
+  <div class="wrap">
+    <span class="eyebrow" data-i18n="band1_eyebrow">The Equity You've Built</span>
+    <h2 data-i18n="band1_h">It's your home. The equity is <span class="script">yours to use.</span></h2>
+    <p data-i18n="band1_p">Every payment you've made and every bit your home has grown is real value. Put it toward what matters most — without selling or starting over.</p>
+    <a class="btn btn-gold" href="#estimator" data-i18n="band1_cta">See what you've built →</a>
+  </div>
+</section>
+
 <!-- ================= WHAT IS A HELOC ================= -->
 <section id="how">
   <div class="wrap">
@@ -365,6 +414,37 @@
       <div class="prop"><div class="badge"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="#B08D57" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="#B08D57" stroke-width="1.8"/></svg></div><h4 data-i18n="p2h">Smart Strategy</h4><p data-i18n="p2p">We look at the whole picture and show you the move that fits your goals.</p></div>
       <div class="prop"><div class="badge"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 0 1 16 0M8 12l3 3 5-6" stroke="#B08D57" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h4 data-i18n="p3h">Seamless Experience</h4><p data-i18n="p3p">Clear steps, quick answers, and no jargon. We make it simple for you.</p></div>
       <div class="prop"><div class="badge"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-7-10a7 7 0 0 1 14 0c0 5.65-7 10-7 10Z" fill="rgba(176,141,87,.18)" stroke="#B08D57" stroke-width="1.8"/></svg></div><h4 data-i18n="p4h">Clients First</h4><p data-i18n="p4p">Bilingual, honest guidance. We only recommend what's right for you.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MEET MARTIN ================= -->
+<section class="meet-sec">
+  <div class="wrap">
+    <div class="meet">
+      <div class="photo-wrap">
+        <div class="ring"></div>
+        <!-- Martin's real headshot (self-hosted). -->
+        <img class="headshot" src="img/martin-headshot.png" alt="Martin Miranda, Branch Manager — V.I.P. Mortgage, Team Miranda" />
+        <div class="badge-nmls">NMLS #1683424</div>
+      </div>
+      <div>
+        <span class="eyebrow" data-i18n="meet_eyebrow">Meet Your Loan Officer</span>
+        <h2 data-i18n="meet_h">Hi, I'm <span class="script">Martin Miranda.</span></h2>
+        <div class="role" data-i18n="meet_role">Branch Manager · V.I.P. Mortgage, Inc. · Team Miranda</div>
+        <p data-i18n="meet_p1">For families across Arizona and California, a home is everything — it's where life happens. My job is to help you make smart, confident moves with the equity you've worked so hard to build, and to explain every step in plain language (in English or Spanish).</p>
+        <p data-i18n="meet_p2">When you reach out, you get me — a real, licensed local expert — not a call center. No pressure, no jargon. Just honest guidance and a clear path to your goal.</p>
+        <div class="creds">
+          <span data-i18n="cred1">🏡 Local Tucson Expert</span>
+          <span data-i18n="cred2">🗣️ Bilingual — English &amp; Español</span>
+          <span data-i18n="cred3">📍 Serving AZ &amp; CA</span>
+          <span data-i18n="cred4">🤝 Clients First, Always</span>
+        </div>
+        <div class="meet-cta">
+          <a class="btn btn-primary" href="#estimator" data-i18n="meet_cta1">Start with Martin →</a>
+          <a class="btn btn-ghost" href="tel:+15207194130" data-i18n="meet_cta2">Call (520) 719-4130</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -422,6 +502,18 @@
       <details class="f"><summary data-i18n="faq4q">¿Hablan español?</summary><div class="a" data-i18n="faq4a">¡Sí! Team Miranda atiende a clientes en inglés y español. Cambie el idioma de esta página con el botón "ES" arriba, o pídanos una revisión completamente en español.</div></details>
       <details class="f"><summary data-i18n="faq5q">Is there any cost or obligation?</summary><div class="a" data-i18n="faq5a">The equity review is free, and there's no obligation. We'll show you your options clearly. If it's not the right move for you, we'll tell you that too.</div></details>
     </div>
+  </div>
+</section>
+
+<!-- ================= BAND: FAMILY / FUTURE ================= -->
+<!-- Stock photo placeholder (royalty-free). Swap the background-image URL for Martin's
+     own photography (or a real client family, with consent) — see funnel/README.md. -->
+<section class="band" style="background-image:linear-gradient(105deg, rgba(26,20,16,.72), rgba(26,20,16,.28)), url('https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1600&q=70')">
+  <div class="wrap">
+    <span class="eyebrow" data-i18n="band2_eyebrow">For What Matters Most</span>
+    <h2 data-i18n="band2_h">Your home. Your family. <span class="script">Your future.</span></h2>
+    <p data-i18n="band2_p">A new kitchen for family dinners. Tuition. Breathing room from high-interest debt. Your equity can help you build the life you want — let's find the smartest way to use it.</p>
+    <a class="btn btn-gold" href="#estimator" data-i18n="band2_cta">Check my equity →</a>
   </div>
 </section>
 
@@ -590,6 +682,25 @@ var currentLang = 'en';
 var I18N = {
   es: {
     bar_call:"Llamar a Team Miranda",
+    band1_eyebrow:"La Plusvalía Que Has Creado",
+    band1_h:"Es tu casa. La plusvalía es <span class='script'>tuya para usar.</span>",
+    band1_p:"Cada pago que has hecho y todo lo que tu casa ha crecido es valor real. Úsalo para lo que más importa — sin vender ni empezar de cero.",
+    band1_cta:"Ver lo que has creado →",
+    meet_eyebrow:"Conoce a Tu Oficial de Préstamos",
+    meet_h:"Hola, soy <span class='script'>Martin Miranda.</span>",
+    meet_role:"Gerente de Sucursal · V.I.P. Mortgage, Inc. · Team Miranda",
+    meet_p1:"Para las familias de Arizona y California, una casa lo es todo — es donde sucede la vida. Mi trabajo es ayudarte a tomar decisiones inteligentes y seguras con la plusvalía que tanto te ha costado construir, y explicarte cada paso en palabras claras (en inglés o español).",
+    meet_p2:"Cuando me contactas, me tienes a mí — un experto local con licencia, de verdad — no un call center. Sin presión, sin tecnicismos. Solo asesoría honesta y un camino claro hacia tu meta.",
+    cred1:"🏡 Experto Local de Tucson",
+    cred2:"🗣️ Bilingüe — Inglés y Español",
+    cred3:"📍 Sirviendo AZ y CA",
+    cred4:"🤝 Clientes Primero, Siempre",
+    meet_cta1:"Empieza con Martin →",
+    meet_cta2:"Llama al (520) 719-4130",
+    band2_eyebrow:"Por Lo Que Más Importa",
+    band2_h:"Tu casa. Tu familia. <span class='script'>Tu futuro.</span>",
+    band2_p:"Una cocina nueva para las cenas en familia. Colegiatura. Un respiro de las deudas de alto interés. Tu plusvalía puede ayudarte a construir la vida que quieres — encontremos la forma más inteligente de usarla.",
+    band2_cta:"Ver mi plusvalía →",
     hero_eyebrow:"Plusvalía de tu Casa · AZ y CA",
     hero_h1a:"Tu casa ha estado",
     hero_h1b:"trabajando para ti.",
