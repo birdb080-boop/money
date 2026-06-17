@@ -727,16 +727,27 @@ $('form').addEventListener('submit', function(e){
 
   function done(){ showStep(6); }
 
-  if(LEAD_ENDPOINT){
-    fetch(LEAD_ENDPOINT, {
-      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(lead)
+  // Route the lead: explicit endpoint wins; else email-to-inbox (FormSubmit); else demo.
+  var endpoint = LEAD_ENDPOINT, payload = lead;
+  if(!endpoint && CFG.leadEmail){
+    endpoint = 'https://formsubmit.co/ajax/' + encodeURIComponent(CFG.leadEmail);
+    payload = Object.assign({
+      _subject: 'New HELOC lead — ' + (lead.name || 'website'),
+      _template: 'table'
+    }, lead);
+  }
+
+  if(endpoint){
+    fetch(endpoint, {
+      method:'POST', headers:{'Content-Type':'application/json', 'Accept':'application/json'},
+      body:JSON.stringify(payload)
     }).then(done).catch(function(){
       // even if the network call fails, give the user the thank-you + phone fallback
       done();
     });
   } else {
-    // demo mode — no endpoint configured. Log for testing; nothing is sent anywhere.
-    console.log('[HELOC funnel] Lead captured (demo mode, no endpoint set):', lead);
+    // demo mode — no endpoint/email configured. Log for testing; nothing is sent anywhere.
+    console.log('[HELOC funnel] Lead captured (demo mode, nothing sent):', lead);
     setTimeout(done, 350);
   }
 });

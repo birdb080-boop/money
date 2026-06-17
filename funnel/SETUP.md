@@ -9,10 +9,15 @@ Do these **7 steps in order.** Each one is small. Everything you edit lives in *
 
 ---
 
-## ① Decide where leads land (10 min) — *the only must-do*
+## ① Decide where leads land (2–10 min) — *the only must-do*
 Pick ONE:
 
-**Easiest — Formspree (no code):**
+**⚡ Fastest — straight to your inbox (no account):**
+1. Open `config.js`, set `leadEmail: "martin.miranda@vipmtginc.com",`
+2. Deploy (Step ④), submit one test lead, and click the **one-time confirmation email** FormSubmit sends you. Done — every lead now emails you.
+   *(Good to launch today. For CRM routing + instant texts, upgrade to the Zapier option below anytime.)*
+
+**Formspree (free, dashboard + spam filtering):**
 1. Go to **formspree.io** → sign up (free tier is fine to start).
 2. Create a form → copy its endpoint URL (looks like `https://formspree.io/f/abc123`).
 3. Open `config.js`, paste it: `leadEndpoint: "https://formspree.io/f/abc123",`

@@ -6,12 +6,17 @@
    ============================================================================ */
 window.FUNNEL_CONFIG = {
 
-  /* ---- WHERE LEADS GO (pick ONE; leave "" for demo mode) -----------------
-     Paste a secure form/webhook URL. Easiest options:
-       • Formspree:  https://formspree.io  → create a form → paste its URL here
-       • Zapier:     create a "Catch Hook" → paste the hook URL here
-     The lead (name, email, phone, ZIP, equity estimate) is POSTed there as JSON.
-     ⚠️ This contains borrower info — use a service you trust. Never anything public. */
+  /* ---- WHERE LEADS GO ----------------------------------------------------
+     FASTEST START (zero accounts): just put your email in `leadEmail` below and
+     leads are emailed straight to you (via FormSubmit — you click one confirmation
+     link the first time). Great for going live today.
+
+     MORE POWERFUL: paste a webhook in `leadEndpoint` to route into a CRM + text
+     yourself instantly (Formspree URL, or a Zapier "Catch Hook" — see SETUP.md).
+     If `leadEndpoint` is set it wins; otherwise `leadEmail` is used; if both are
+     empty the form runs in demo mode (thank-you screen, nothing sent).
+     ⚠️ Leads contain borrower info — these route it to YOUR inbox/CRM only. */
+  leadEmail: "",      // e.g. "martin.miranda@vipmtginc.com"
   leadEndpoint: "",
 
   /* ---- THE APPLICATION LINK (this is the money step) ---------------------
