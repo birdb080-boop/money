@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;0,900;1,600&family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="config.js"></script>
 <style>
   :root{
     --cream:#F7F1E6; --cream2:#F0E7D6; --sand:#E7DAC6; --sand2:#DCCDB4;
@@ -224,6 +225,30 @@
   .eho span{font-size:11.5px; font-weight:600; letter-spacing:.06em; color:var(--ink2)}
   .legal{border-top:1px solid var(--line); padding-top:20px; line-height:1.7}
   .legal b{color:var(--ink2)}
+  .legal a, .foot-contact a#siteLink{text-decoration:underline}
+  .consent a{color:var(--clay2); text-decoration:underline}
+
+  /* ---------- sticky mobile CTA ---------- */
+  .sticky-cta{position:fixed; left:0; right:0; bottom:0; z-index:60; display:none;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom)); background:rgba(247,241,230,.96);
+    backdrop-filter:blur(8px); border-top:1px solid var(--line); box-shadow:0 -6px 20px rgba(26,26,26,.10)}
+  .sticky-cta a{display:flex; width:100%}
+  .sticky-cta .btn{flex:1; padding:15px}
+  @media(max-width:760px){ .sticky-cta{display:block} body{padding-bottom:78px} }
+
+  /* ---------- exit-intent modal ---------- */
+  .modal-bg{position:fixed; inset:0; z-index:100; background:rgba(26,20,16,.55); backdrop-filter:blur(3px);
+    display:none; align-items:center; justify-content:center; padding:22px; animation:fade .25s ease}
+  .modal-bg.show{display:flex}
+  .modal{background:var(--card); border-radius:22px; max-width:420px; width:100%; padding:30px 26px; text-align:center;
+    box-shadow:0 30px 70px rgba(0,0,0,.4); position:relative}
+  .modal .x{position:absolute; top:12px; right:14px; background:none; border:0; font-size:24px; color:var(--muted); cursor:pointer; line-height:1}
+  .modal .eyebrow{margin-bottom:8px}
+  .modal h3{font-family:"Playfair Display",serif; font-size:27px; font-weight:800; line-height:1.12; margin-bottom:8px}
+  .modal h3 .script{color:var(--gold)}
+  .modal p{font-size:14.5px; color:var(--ink2); margin-bottom:18px}
+  .modal .btn{width:100%}
+  .modal .tiny{font-size:11px; color:var(--muted); margin-top:12px}
 </style>
 </head>
 <body>
@@ -348,14 +373,14 @@
           <div class="gold-rule"></div>
           <div class="q" data-i18n="q5">Where should Martin send your equity review?</div>
           <div class="qsub" data-i18n="q5sub">A real, licensed loan officer — not a call center.</div>
-          <input class="txt" id="name" type="text" placeholder="Full name" data-i18n-ph="ph_name" style="margin-bottom:10px" />
-          <input class="txt" id="email" type="email" placeholder="Email" data-i18n-ph="ph_email" style="margin-bottom:10px" />
-          <input class="txt" id="phone" type="tel" placeholder="Phone" data-i18n-ph="ph_phone" style="margin-bottom:10px" />
-          <input class="txt" id="zip" type="text" inputmode="numeric" placeholder="ZIP code" data-i18n-ph="ph_zip" />
+          <input class="txt" id="name" type="text" autocomplete="name" placeholder="Full name" data-i18n-ph="ph_name" style="margin-bottom:10px" />
+          <input class="txt" id="email" type="email" autocomplete="email" placeholder="Email" data-i18n-ph="ph_email" style="margin-bottom:10px" />
+          <input class="txt" id="phone" type="tel" autocomplete="tel" placeholder="Phone" data-i18n-ph="ph_phone" style="margin-bottom:10px" />
+          <input class="txt" id="zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="ZIP code" data-i18n-ph="ph_zip" />
           <div class="err" id="err5" data-i18n="err_contact">Please add your name and a way to reach you.</div>
           <div class="consent">
             <label><input type="checkbox" id="consent" />
-              <span data-i18n="consent">By submitting, I agree that Team Miranda / V.I.P. Mortgage, Inc. may contact me at the number and email provided (including by phone, text, and email) about my inquiry. Consent is not a condition of any purchase. Message/data rates may apply.</span></label>
+              <span data-i18n="consent">By submitting, I agree that Team Miranda / V.I.P. Mortgage, Inc. may contact me at the number and email provided (including by phone, autodialed/prerecorded calls, and text) about my inquiry. Consent is not a condition of any purchase. Message frequency varies; message &amp; data rates may apply; reply STOP to opt out, HELP for help. See our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="terms.html" target="_blank" rel="noopener">Terms</a>.</span></label>
           </div>
           <div class="nav"><button type="button" class="back btn" onclick="prev(5)">←</button><button type="submit" class="btn btn-primary" id="submitBtn" data-i18n="btn_submit">Get my free review →</button></div>
         </div>
@@ -365,8 +390,15 @@
           <div class="thanks">
             <div class="check"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#B08D57" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <h3 data-i18n="ty_h">You're all set! 🎉</h3>
-            <p data-i18n="ty_p">Thank you — your request is in. Martin will personally review your numbers and reach out shortly with your options. Keep an eye on your phone and email.</p>
-            <p style="margin-top:14px"><a class="btn btn-gold" href="tel:+15207194130" data-i18n="ty_call">Or call now: (520) 719-4130</a></p>
+            <p data-i18n="ty_p">Thank you — your request is in. Martin will personally review your numbers and reach out shortly with your options.</p>
+            <!-- The money step: shows only when applicationUrl is set in config.js -->
+            <div id="applyWrap" style="display:none; margin-top:18px">
+              <p style="font-weight:600; color:var(--ink); margin-bottom:6px" data-i18n="ty_apply_lead">Want to move fast? You can start your secure application now:</p>
+              <a class="btn btn-gold" id="applyBtn" href="#" target="_blank" rel="noopener" data-i18n="ty_apply">Start my application →</a>
+              <div style="font-size:11px; color:var(--muted); margin-top:8px" data-i18n="ty_apply_note">🔒 Secure &amp; encrypted. Starting an application is not an obligation.</div>
+            </div>
+            <p style="margin-top:16px" data-i18n="ty_or">Prefer to talk first?</p>
+            <p style="margin-top:6px"><a class="btn btn-ghost" href="tel:+15207194130" data-i18n="ty_call">Call (520) 719-4130</a></p>
           </div>
         </div>
       </form>
@@ -548,32 +580,59 @@
         <b>Martin Miranda</b> — Branch Manager<br>
         V.I.P. Mortgage, Inc. · Team Miranda<br>
         5401 N Oracle Rd, Tucson, AZ 85704<br>
-        <a href="tel:+15207194130">Office (520) 719-4130</a> · <a href="tel:+15204615054">Mobile (520) 461-5054</a><br>
+        <a href="tel:+15207194130">Office (520) 719-4130</a> · <a href="tel:+15204615054" data-mobile>Mobile (520) 461-5054</a><br>
         <a href="mailto:martin.miranda@vipmtginc.com">martin.miranda@vipmtginc.com</a><br>
-        <a href="https://martinmiranda.vipmtginc.com" target="_blank" rel="noopener">martinmiranda.vipmtginc.com</a>
+        <a id="siteLink" href="https://martinmiranda.vipmtginc.com" target="_blank" rel="noopener" style="display:none">martinmiranda.vipmtginc.com</a>
       </div>
     </div>
     <div class="legal">
-      <p style="margin-bottom:10px"><b>Martin Miranda</b> — Individual NMLS #1683424 · <b>V.I.P. Mortgage, Inc.</b> Company NMLS #145502 · State Licenses: AZ #0945358 · CA #CA-DFPI1683424. Licensed to serve Arizona &amp; California.</p>
+      <p style="margin-bottom:10px"><b>Martin Miranda</b> — Individual NMLS #1683424 · <b>V.I.P. Mortgage, Inc.</b> Company NMLS #145502 · State Licenses: AZ #0945358 · CA #CA-DFPI1683424. Licensed to serve Arizona &amp; California.
+      <a href="https://www.nmlsconsumeraccess.org/EntityDetails.aspx/INDIVIDUAL/1683424" target="_blank" rel="noopener">Verify on NMLS Consumer Access</a>.</p>
       <p data-i18n="legal2">This is an advertisement and not a commitment to lend or an offer of credit. All loans are subject to credit approval, income and asset verification, property appraisal, and underwriting guidelines. The figures shown by the equity estimator are illustrative estimates only, are not an offer or pre-qualification, and do not reflect any specific loan terms, rate, or amount. Actual available equity and terms vary by program and are determined during a full application. Rates, terms, and availability are subject to change without notice. Not all applicants will qualify. Equal Housing Lender.</p>
-      <p style="margin-top:12px">© <span id="yr"></span> V.I.P. Mortgage, Inc. — Team Miranda. All rights reserved.</p>
+      <p style="margin-top:12px">
+        <a href="privacy.html" data-i18n="foot_privacy">Privacy Policy</a> ·
+        <a href="terms.html" data-i18n="foot_terms">Terms &amp; SMS Policy</a> ·
+        © <span id="yr"></span> V.I.P. Mortgage, Inc. — Team Miranda. All rights reserved.
+      </p>
     </div>
   </div>
 </footer>
 
+<!-- ================= STICKY MOBILE CTA ================= -->
+<div class="sticky-cta">
+  <a href="#estimator"><span class="btn btn-gold" data-i18n="sticky_cta">Check my equity — free →</span></a>
+</div>
+
+<!-- ================= EXIT-INTENT MODAL ================= -->
+<div class="modal-bg" id="exitModal">
+  <div class="modal">
+    <button class="x" aria-label="Close" onclick="closeExit()">×</button>
+    <span class="eyebrow" data-i18n="exit_eyebrow">Wait — one quick thing</span>
+    <h3 data-i18n="exit_h">See your number in <span class="script">60 seconds.</span></h3>
+    <p data-i18n="exit_p">No credit pull, no obligation — just a fast estimate of the equity you may be able to access. You've come this far.</p>
+    <a href="#estimator" onclick="closeExit()"><span class="btn btn-gold" data-i18n="exit_cta">Show me my estimate →</span></a>
+    <div class="tiny" data-i18n="exit_tiny">Free · Private · Takes about a minute</div>
+  </div>
+</div>
+
 <script>
-/* ---------------- CONFIG ----------------
-   Set LEAD_ENDPOINT to your secure form handler (e.g. a Formspree URL, a Zapier
-   catch hook, or your CRM webhook) to receive leads. Leave it as "" to run in
-   demo mode (shows the thank-you screen without sending anywhere).
-   NOTE: This form NEVER auto-replies to the borrower. Martin follows up personally.
------------------------------------------- */
-var LEAD_ENDPOINT = "";
+/* ---------------- CONFIG (everything is set in config.js) ----------------
+   This form NEVER auto-replies to the borrower. It captures + routes the lead;
+   Martin follows up personally. The borrower self-serves the application link. */
+var CFG = window.FUNNEL_CONFIG || {};
+var LEAD_ENDPOINT = CFG.leadEndpoint || "";
+
+/* ---------------- tracking (only fires if IDs are set in config.js) ------- */
+function track(event, params){
+  try { if(window.fbq) fbq('track', event, params||{}); } catch(e){}
+  try { if(window.gtag) gtag('event', event, params||{}); } catch(e){}
+}
 
 /* ---------------- state ---------------- */
 var state = { homeValue:0, balance:0, credit:"", goal:"", step:1 };
 var TOTAL = 5;
-var MAX_CLTV = 0.85; // illustrative combined loan-to-value used for the estimate only
+var MAX_CLTV = (CFG.maxCLTV && CFG.maxCLTV > 0 && CFG.maxCLTV <= 1) ? CFG.maxCLTV : 0.85;
+var startedQuiz = false;
 
 /* ---------------- helpers ---------------- */
 function $(id){ return document.getElementById(id); }
@@ -611,6 +670,7 @@ function next(n){
   if(n===1){
     state.homeValue = parseMoney($('homeValue').value);
     if(state.homeValue < 1000){ showErr(1); return; }
+    if(!startedQuiz){ startedQuiz = true; track('InitiateCheckout', {content_name:'equity_estimator'}); }
     clearErr(1); showStep(2); return;
   }
   if(n===2){
@@ -656,6 +716,9 @@ $('form').addEventListener('submit', function(e){
 
   var btn=$('submitBtn'); btn.disabled=true; btn.style.opacity=.6;
 
+  // Fire the conversion event (NO personal info sent to Meta/Google — just the event).
+  track('Lead', {content_name:'heloc_equity_review', content_category:state.goal});
+
   function done(){ showStep(6); }
 
   if(LEAD_ENDPOINT){
@@ -674,6 +737,63 @@ $('form').addEventListener('submit', function(e){
 
 /* ---------------- year ---------------- */
 $('yr').textContent = new Date().getFullYear();
+
+/* =================================================================
+   INIT — apply config.js (tracking, application link, contact, website)
+   ================================================================= */
+(function init(){
+  // Meta Pixel
+  if(CFG.metaPixelId){
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', CFG.metaPixelId); fbq('track', 'PageView');
+  }
+  // Google Analytics 4
+  if(CFG.ga4Id){
+    var g=document.createElement('script'); g.async=true;
+    g.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(CFG.ga4Id);
+    document.head.appendChild(g);
+    window.dataLayer=window.dataLayer||[]; window.gtag=function(){dataLayer.push(arguments);};
+    gtag('js', new Date()); gtag('config', CFG.ga4Id);
+  }
+  // Application link (the money step)
+  if(CFG.applicationUrl){
+    var aw=$('applyWrap'), ab=$('applyBtn');
+    if(aw) aw.style.display='block';
+    if(ab){ ab.href=CFG.applicationUrl; ab.addEventListener('click', function(){ track('SubmitApplication', {content_name:'heloc_application_start'}); }); }
+  }
+  // Contact — single source of truth from config.js
+  if(CFG.officePhone){ document.querySelectorAll('a[href^="tel:"]:not([data-mobile])').forEach(function(a){ a.href='tel:'+CFG.officePhone; }); }
+  if(CFG.mobilePhone){ document.querySelectorAll('a[data-mobile]').forEach(function(a){ a.href='tel:'+CFG.mobilePhone; }); }
+  if(CFG.email){ document.querySelectorAll('a[href^="mailto:"]').forEach(function(a){ a.href='mailto:'+CFG.email; }); }
+  // Footer website link (off by default — keeps visitors on the funnel)
+  var site=$('siteLink');
+  if(site){ if(CFG.showWebsiteLink && CFG.website){ site.href=CFG.website; site.style.display=''; } else { site.style.display='none'; } }
+})();
+
+/* ---------------- exit-intent (one-time per visit) ---------------- */
+var exitShown=false;
+function openExit(){
+  if(exitShown || state.step>=6) return;
+  exitShown=true; $('exitModal').classList.add('show'); track('ViewContent', {content_name:'exit_intent'});
+}
+function closeExit(){ $('exitModal').classList.remove('show'); }
+// Desktop: cursor leaves toward the top (closing/changing tab)
+document.addEventListener('mouseout', function(e){
+  if(!e.relatedTarget && e.clientY <= 0) openExit();
+});
+// Mobile: fire once on the first decisive upward scroll after engaging
+var lastY=window.scrollY, mobileArmed=false;
+setTimeout(function(){ mobileArmed=true; }, 6000);
+window.addEventListener('scroll', function(){
+  var y=window.scrollY;
+  if(mobileArmed && window.innerWidth<=760 && y < lastY-40 && y>300) openExit();
+  lastY=y;
+}, {passive:true});
+$('exitModal').addEventListener('click', function(e){ if(e.target===this) closeExit(); });
 
 /* =================================================================
    i18n — English / Spanish (toggle in the top bar)
@@ -701,6 +821,18 @@ var I18N = {
     band2_h:"Tu casa. Tu familia. <span class='script'>Tu futuro.</span>",
     band2_p:"Una cocina nueva para las cenas en familia. Colegiatura. Un respiro de las deudas de alto interés. Tu plusvalía puede ayudarte a construir la vida que quieres — encontremos la forma más inteligente de usarla.",
     band2_cta:"Ver mi plusvalía →",
+    sticky_cta:"Ver mi plusvalía — gratis →",
+    exit_eyebrow:"Espera — una cosa rápida",
+    exit_h:"Ve tu número en <span class='script'>60 segundos.</span>",
+    exit_p:"Sin revisión de crédito, sin compromiso — solo un estimado rápido de la plusvalía que podrías aprovechar. Ya llegaste hasta aquí.",
+    exit_cta:"Muéstrame mi estimado →",
+    exit_tiny:"Gratis · Privado · Toma como un minuto",
+    ty_apply_lead:"¿Quieres avanzar rápido? Puedes comenzar tu solicitud segura ahora:",
+    ty_apply:"Comenzar mi solicitud →",
+    ty_apply_note:"🔒 Segura y encriptada. Comenzar una solicitud no es una obligación.",
+    ty_or:"¿Prefieres hablar primero?",
+    foot_privacy:"Política de Privacidad",
+    foot_terms:"Términos y Política SMS",
     hero_eyebrow:"Plusvalía de tu Casa · AZ y CA",
     hero_h1a:"Tu casa ha estado",
     hero_h1b:"trabajando para ti.",
@@ -729,7 +861,7 @@ var I18N = {
     q5:"¿A dónde te envía Martin tu revisión?",
     q5sub:"Un oficial de préstamos con licencia — no un call center.",
     ph_name:"Nombre completo", ph_email:"Correo electrónico", ph_phone:"Teléfono", ph_zip:"Código postal",
-    consent:"Al enviar, acepto que Team Miranda / V.I.P. Mortgage, Inc. pueda contactarme al número y correo proporcionados (por teléfono, texto y correo) sobre mi solicitud. El consentimiento no es condición para ninguna compra. Pueden aplicar tarifas de mensajes/datos.",
+    consent:"Al enviar, acepto que Team Miranda / V.I.P. Mortgage, Inc. pueda contactarme al número y correo proporcionados (por teléfono, llamadas automáticas/pregrabadas y texto) sobre mi solicitud. El consentimiento no es condición para ninguna compra. La frecuencia de mensajes varía; pueden aplicar tarifas de mensajes y datos; responda STOP para cancelar, HELP para ayuda. Vea nuestra <a href='privacy.html' target='_blank' rel='noopener'>Política de Privacidad</a> y <a href='terms.html' target='_blank' rel='noopener'>Términos</a>.",
     btn_next:"Continuar →", btn_seeresult:"Ver mi estimado →", btn_submit:"Quiero mi revisión gratis →",
     err_value:"Por favor ingresa un valor estimado.",
     err_balance:"Por favor ingresa tu saldo (0 si está pagada).",

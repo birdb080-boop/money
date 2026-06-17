@@ -1,0 +1,58 @@
+/* ============================================================================
+   TEAM MIRANDA — HELOC FUNNEL CONFIG
+   ----------------------------------------------------------------------------
+   This is the ONE place to set things up. Edit the values, save, redeploy.
+   You do NOT need to touch index.html. Anything left as "" is simply skipped.
+   ============================================================================ */
+window.FUNNEL_CONFIG = {
+
+  /* ---- WHERE LEADS GO (pick ONE; leave "" for demo mode) -----------------
+     Paste a secure form/webhook URL. Easiest options:
+       • Formspree:  https://formspree.io  → create a form → paste its URL here
+       • Zapier:     create a "Catch Hook" → paste the hook URL here
+     The lead (name, email, phone, ZIP, equity estimate) is POSTed there as JSON.
+     ⚠️ This contains borrower info — use a service you trust. Never anything public. */
+  leadEndpoint: "",
+
+  /* ---- THE APPLICATION LINK (this is the money step) ---------------------
+     Your secure online application (1003 / point-of-sale). Examples:
+       • Floify, SimpleNexus/nCino, Encompass Consumer Connect, Blend, Arive, etc.
+     When set, the "thank you" screen shows a big "Start my application" button
+     that sends the borrower straight into your real app. Leave "" to hide it
+     and just drive calls instead. */
+  applicationUrl: "",
+
+  /* ---- FACEBOOK / META ADS TRACKING --------------------------------------
+     Your Meta Pixel ID (Events Manager → Data Sources). Powers ad optimization
+     so Facebook finds more people who actually submit. Leave "" to skip.
+     NOTE: we fire a "Lead" event with NO personal info — borrower PII is never
+     sent to Meta, only the fact that a lead happened. */
+  metaPixelId: "",
+
+  /* ---- GOOGLE ANALYTICS 4 (optional) -------------------------------------
+     Your GA4 Measurement ID, e.g. "G-XXXXXXX". Leave "" to skip. */
+  ga4Id: "",
+
+  /* ---- CONTACT (used by buttons + footer) -------------------------------- */
+  officePhone:        "+15207194130",
+  officePhoneDisplay: "(520) 719-4130",
+  mobilePhone:        "+15204615054",
+  email:              "martin.miranda@vipmtginc.com",
+
+  /* ---- FOOTER WEBSITE LINK ------------------------------------------------
+     Your site link forwards to your Lofty page. For a lead funnel it's usually
+     best to keep visitors ON this page, so this is OFF by default. Set to true
+     to show the website link in the footer again. */
+  showWebsiteLink: false,
+  website: "https://martinmiranda.vipmtginc.com",
+
+  /* ---- THE ESTIMATE MATH --------------------------------------------------
+     Illustrative max combined loan-to-value used by the estimator. 0.85 = 85%.
+     This is an ESTIMATE only (clearly disclaimed); underwriting sets the real number. */
+  maxCLTV: 0.85,
+
+  /* ---- HEADLINE A/B TEST --------------------------------------------------
+     "auto" randomly shows A or B per visitor (for testing which converts better).
+     Or force one: "A" or "B". Variants are defined in index.html. */
+  headlineVariant: "auto"
+};

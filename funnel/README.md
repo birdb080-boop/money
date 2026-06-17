@@ -4,13 +4,33 @@ A single-page home-equity (HELOC) lead funnel in Martin's **desert-lux** brand.
 Built to run the same way as the reference Facebook-ad page (`?fbclid=…`): one
 static page you can drop on Vercel, Netlify, or any host.
 
+## 👉 New here? Read `SETUP.md` — the 7-step go-live playbook.
+
 ## What's here
 ```
 funnel/
-  index.html               ← the whole landing page (HTML + CSS + JS, one file)
-  team-miranda-logo.png    ← logo used in the header + footer
+  index.html               ← the landing page (HTML + CSS + JS)
+  config.js                ← ⭐ the ONE place you edit: lead endpoint, app link, pixel, etc.
+  SETUP.md                 ← step-by-step go-live + Facebook ad + Zapier blueprint
+  privacy.html             ← privacy policy (Meta ads require it)
+  terms.html               ← terms + SMS/TCPA program policy
+  team-miranda-logo.png    ← logo
   img/martin-headshot.png  ← Martin's headshot (Meet Martin section)
 ```
+
+## What it does (the lead → application machine)
+- **Interactive equity estimator** — the highest-converting pattern there is (quizzes
+  convert far better than static forms). Value → balance → credit → goal → contact.
+- **Lead → application handoff** — the thank-you screen drives the hot lead straight
+  into your real online application (`applicationUrl` in `config.js`).
+- **Conversion mechanics** — exit-intent recovery popup, sticky mobile CTA, autofill,
+  trust signals (headshot, NMLS badge, "no credit pull"), and a fast one-question-at-a-time flow.
+- **Ad optimization** — fires a Meta Pixel `Lead` event (no PII) so Facebook learns who
+  to target; optional GA4. Captures `fbclid` for attribution.
+- **Compliance built in** — Equal Housing, NMLS + Consumer Access link, TCPA consent with
+  STOP/HELP, privacy + terms pages, "not a commitment to lend," and **no rates/APRs**.
+- **Directive Zero safe** — captures and routes leads only. **Never auto-contacts a
+  borrower.** Martin approves and sends every message himself.
 
 ## Photos & how to swap them
 - **Martin's headshot** is self-hosted at `img/martin-headshot.png` and shows in the
