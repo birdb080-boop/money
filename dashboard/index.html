@@ -189,25 +189,22 @@
     filter:blur(14px); animation:aurora 18s ease-in-out infinite alternate}
   @keyframes aurora{0%{transform:translate(0,0) scale(1)}50%{transform:translate(3%,-3%) scale(1.08)}100%{transform:translate(-3%,1%) scale(1.03)}}
   /* sweeping scanline over the whole screen */
-  body::after{content:""; position:fixed; left:0; right:0; height:34vh; z-index:1; pointer-events:none;
-    background:linear-gradient(180deg, transparent, rgba(95,230,255,.06), transparent); animation:scanY 6.5s linear infinite}
+  body::after{content:""; position:fixed; left:0; right:0; height:40vh; z-index:1; pointer-events:none;
+    background:linear-gradient(180deg, transparent, rgba(95,230,255,.03), transparent); animation:scanY 9s linear infinite}
   @keyframes scanY{0%{top:-34vh}100%{top:100vh}}
 
   /* holographic glass panels that float + glow */
-  .card{background:linear-gradient(180deg, rgba(20,27,42,.66), rgba(12,17,29,.66)); backdrop-filter:blur(9px) saturate(1.15);
-    border:1px solid rgba(230,194,90,.30); box-shadow:0 12px 38px rgba(0,0,0,.5), inset 0 0 24px rgba(230,194,90,.05);
-    animation:floaty 7s ease-in-out infinite; overflow:visible}
-  .card:nth-of-type(even){animation-duration:8.5s; animation-delay:-2.5s}
-  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-  .card::before{content:""; position:absolute; inset:0; border-radius:20px; padding:1px; pointer-events:none;
-    background:linear-gradient(120deg, transparent 20%, rgba(230,194,90,.65), rgba(95,230,255,.5), transparent 80%);
-    background-size:300% 100%; -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor; mask-composite:exclude; animation:bordr 5s linear infinite; opacity:.55}
-  @keyframes bordr{0%{background-position:0 0}100%{background-position:300% 0}}
-  .card::after{content:""; position:absolute; top:9px; right:9px; width:13px; height:13px;
-    border-right:1.5px solid rgba(95,230,255,.55); border-top:1.5px solid rgba(95,230,255,.55); pointer-events:none}
-  .label{text-shadow:0 0 12px rgba(230,194,90,.45)}
-  .now{box-shadow:0 12px 38px rgba(0,0,0,.5), 0 0 30px rgba(230,194,90,.18)}
+  .card{background:linear-gradient(180deg, rgba(18,24,38,.80), rgba(9,13,22,.84)); backdrop-filter:blur(16px) saturate(1.05);
+    border:1px solid rgba(230,194,90,.16); box-shadow:0 20px 54px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05);
+    animation:floaty 12s ease-in-out infinite; overflow:visible}
+  .card:nth-of-type(even){animation-duration:15s; animation-delay:-4s}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+  .card::before{content:""; position:absolute; inset:0; border-radius:20px; pointer-events:none;
+    background:linear-gradient(180deg, rgba(255,255,255,.06), transparent 26%)}
+  .card::after{content:""; position:absolute; top:11px; right:11px; width:10px; height:10px;
+    border-right:1px solid rgba(230,194,90,.35); border-top:1px solid rgba(230,194,90,.35); pointer-events:none}
+  .label{text-shadow:0 0 10px rgba(230,194,90,.3)}
+  .now{box-shadow:0 20px 54px rgba(0,0,0,.55), 0 0 26px rgba(230,194,90,.10)}
   .bigmoney{animation:moneyPulse 3s ease-in-out infinite}
   @keyframes moneyPulse{50%{text-shadow:0 0 34px rgba(93,255,160,.7)}}
   .hi{text-shadow:0 0 16px rgba(230,194,90,.5)}
@@ -217,11 +214,10 @@
   .core{width:96px; height:96px}
   .ring.r4{inset:31px; border-color:rgba(255,157,47,.55)}
   .core .sweep{position:absolute; inset:2px; border-radius:50%;
-    background:conic-gradient(from 0deg, rgba(95,230,255,0), rgba(95,230,255,.4) 18%, rgba(95,230,255,0) 42%);
-    animation:spin 3.4s linear infinite}
-  .glow{inset:34px; box-shadow:0 0 46px 11px rgba(230,194,90,.62), inset 0 0 22px rgba(255,255,255,.75)}
-  .core .spark{position:absolute; top:50%; left:50%; width:5px; height:5px; margin:-2.5px; border-radius:50%;
-    background:var(--gold-bright); box-shadow:0 0 12px var(--gold-bright)}
+    background:conic-gradient(from 0deg, rgba(230,194,90,0), rgba(230,194,90,.28) 14%, rgba(230,194,90,0) 38%);
+    animation:spin 6s linear infinite}
+  .glow{inset:33px; box-shadow:0 0 40px 9px rgba(230,194,90,.5), inset 0 0 20px rgba(255,255,255,.7)}
+  .core .spark{display:none}
   .core .spark.s1{animation:orb1 4s linear infinite}
   .core .spark.s2{animation:orb2 6s linear infinite; background:var(--cyan); box-shadow:0 0 12px var(--cyan)}
   .core .spark.s3{animation:orb1 5s linear infinite reverse; background:var(--amber); box-shadow:0 0 12px var(--amber)}
@@ -231,13 +227,14 @@
   .core.listening .glow{background:radial-gradient(circle,#cdf6ff,var(--cyan) 60%,transparent 78%); box-shadow:0 0 52px 14px rgba(95,230,255,.8)}
 
   /* live audio equalizer */
-  .eq{display:flex; align-items:flex-end; gap:3px; height:24px; margin-top:9px}
-  .eq i{flex:1; max-width:5px; border-radius:2px; height:22%;
-    background:linear-gradient(180deg,var(--cyan),var(--gold-bright)); box-shadow:0 0 8px rgba(95,230,255,.5);
-    animation:eqbar 1.1s ease-in-out infinite}
-  .eq i:nth-child(odd){animation-duration:.9s} .eq i:nth-child(3n){animation-duration:1.4s}
-  .eq.live i{animation-duration:.42s !important; box-shadow:0 0 12px rgba(95,230,255,.9)}
-  @keyframes eqbar{0%,100%{height:18%; opacity:.6}50%{height:90%; opacity:1}}
+  .eq{display:flex; align-items:flex-end; gap:3px; height:22px; margin-top:9px}
+  .eq i{flex:1; max-width:4px; border-radius:2px; height:14%; opacity:.45;
+    background:linear-gradient(180deg, var(--gold), rgba(230,194,90,.35)); animation:eqbar 2.6s ease-in-out infinite}
+  .eq i:nth-child(odd){animation-duration:2.1s} .eq i:nth-child(3n){animation-duration:3.1s}
+  .eq.live i{opacity:1; background:linear-gradient(180deg,var(--cyan),var(--gold-bright)); box-shadow:0 0 9px rgba(95,230,255,.7); animation:eqlive .42s ease-in-out infinite}
+  .eq.live i:nth-child(odd){animation-duration:.32s} .eq.live i:nth-child(3n){animation-duration:.52s}
+  @keyframes eqbar{0%,100%{height:12%}50%{height:32%}}
+  @keyframes eqlive{0%,100%{height:18%}50%{height:92%}}
 
   #boot{position:fixed; inset:0; z-index:60; background:var(--bg); display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:22px; cursor:pointer; text-align:center; padding:20px}
@@ -264,6 +261,11 @@
         <option value="claude-haiku-4-5">Haiku 4.5 — cheapest &amp; fastest</option>
         <option value="claude-sonnet-4-6">Sonnet 4.6 — balanced</option>
       </select>
+      <label>🎙️ CINEMATIC VOICE — ElevenLabs API key</label>
+      <input id="setEleven" type="password" placeholder="paste ElevenLabs key for the real JARVIS voice" autocomplete="off" />
+      <div class="hint">Free/cheap at elevenlabs.io. Blank = your phone's built-in voice. Pick a deep British voice for the true JARVIS.</div>
+      <label>Voice ID (optional)</label>
+      <input id="setVoice" placeholder="default: George (deep British)" autocomplete="off" />
       <label>Commission %</label>
       <input id="setComm" type="number" step="0.01" inputmode="decimal" />
       <label>Monthly goal (units)</label>
@@ -692,7 +694,7 @@
   }
   $("feedBtn").onclick=()=>$("shot").click();
   $("shot").onchange=e=>{const f=e.target.files&&e.target.files[0]; if(f)ocrImage(f); e.target.value="";};
-  $("settingsBtn").onclick=()=>{ $("setKey").value=D.apiKey||""; $("setModel").value=D.model||"claude-opus-4-8"; $("setComm").value=commPct(); $("setGoal").value=D.monthGoal||0; $("settings").classList.remove("hidden"); };
+  $("settingsBtn").onclick=()=>{ $("setKey").value=D.apiKey||""; $("setModel").value=D.model||"claude-opus-4-8"; $("setEleven").value=D.elevenKey||""; $("setVoice").value=D.voiceId||""; $("setComm").value=commPct(); $("setGoal").value=D.monthGoal||0; $("settings").classList.remove("hidden"); };
   $("setClose").onclick=()=>$("settings").classList.add("hidden");
   $("clClose").onclick=()=>$("client").classList.add("hidden");
   $("buildQ").onclick=buildQueue;
@@ -712,10 +714,12 @@
   window.useScript=k=>{const txt=SCRIPTS[k]; if(!txt)return; if(navigator.clipboard)navigator.clipboard.writeText(txt).catch(()=>{}); const el=$("scDetail"); el.style.display="block"; el.textContent=txt; toast("📋 Copied — paste into your text"); };
   $("scriptsBtn").onclick=()=>{ renderScripts(); $("scDetail").style.display="none"; $("scripts").classList.remove("hidden"); };
   $("scClose").onclick=()=>$("scripts").classList.add("hidden");
-  $("setSave").onclick=()=>{ const had=!!D.apiKey; D.apiKey=$("setKey").value.trim(); D.model=$("setModel").value;
+  $("setSave").onclick=()=>{ const had=!!D.apiKey, hadV=!!D.elevenKey; D.apiKey=$("setKey").value.trim(); D.model=$("setModel").value;
+    D.elevenKey=$("setEleven").value.trim(); D.voiceId=$("setVoice").value.trim()||"JBFqnCBsd6RMkjVDRZzb";
     const c=parseFloat($("setComm").value); if(!isNaN(c))D.commissionPct=c; const g=parseInt($("setGoal").value); if(!isNaN(g))D.monthGoal=g;
-    save(); render(); $("settings").classList.add("hidden");
-    if(D.apiKey){ toast("🧠 Genius Mode ON"); if(!had)say("Genius mode online. Ask me anything, or feed me a client text and I'll draft your reply."); }
+    save(); render(); unlockAudio(); $("settings").classList.add("hidden");
+    if(D.elevenKey&&!hadV){ say("Cinematic voice online."); toast("🎙️ Cinematic voice ON"); }
+    else if(D.apiKey){ toast("🧠 Genius Mode ON"); if(!had)say("Genius mode online. Ask me anything."); }
     else toast("Saved"); };
 
   /* free live 10-yr treasury (the number mortgage rates track) — best-effort, no key */
@@ -758,10 +762,27 @@
   function pickVoice(){const vs=speechSynthesis.getVoices();
     for(const n of ["Daniel","Google UK English Male","Arthur","Oliver","Microsoft Ryan","Alex"]){const v=vs.find(x=>x.name.includes(n)); if(v)return v;}
     return vs.find(v=>/en-GB/.test(v.lang))||vs.find(v=>/en/.test(v.lang))||vs[0];}
-  function say(text){if(!voiceOn||!("speechSynthesis"in window))return; speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text); const v=pickVoice(); if(v)u.voice=v; u.rate=.94; u.pitch=.8;
+  let aud=null;
+  function unlockAudio(){ if(!aud){ aud=new Audio(); } try{ aud.muted=true; aud.play().then(()=>{aud.pause();aud.muted=false;}).catch(()=>{aud.muted=false;}); }catch(e){} }
+  function browserSay(text){ if(!("speechSynthesis"in window))return; speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text); const v=pickVoice(); if(v)u.voice=v; u.rate=.94; u.pitch=.78;
     speaking=true; if(rec&&listening){try{rec.stop()}catch(e){}}
-    u.onend=()=>{speaking=false; if(listening){try{rec.start()}catch(e){}}}; speechSynthesis.speak(u);}
+    u.onend=()=>{speaking=false; if(listening){try{rec.start()}catch(e){}}}; speechSynthesis.speak(u); }
+  async function speakEleven(text){
+    try{ const vid=D.voiceId||"JBFqnCBsd6RMkjVDRZzb";
+      const res=await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${vid}`,{method:"POST",
+        headers:{"xi-api-key":D.elevenKey,"content-type":"application/json","accept":"audio/mpeg"},
+        body:JSON.stringify({text, model_id:"eleven_turbo_v2_5", voice_settings:{stability:0.45, similarity_boost:0.8, style:0.25, use_speaker_boost:true}})});
+      if(!res.ok) return false;
+      const url=URL.createObjectURL(await res.blob()); if(!aud)aud=new Audio(); aud.src=url;
+      speaking=true; if(rec&&listening){try{rec.stop()}catch(e){}}
+      aud.onended=()=>{speaking=false; URL.revokeObjectURL(url); if(listening){try{rec.start()}catch(e){}}};
+      await aud.play(); return true;
+    }catch(e){ return false; }
+  }
+  function say(text){ if(!voiceOn)return;
+    if(D.elevenKey){ speechSynthesis&&speechSynthesis.cancel(); speakEleven(text).then(ok=>{ if(!ok) browserSay(text); }); return; }
+    browserSay(text); }
   function jarvis(text,you){
     if(you){ D.history.push({you, jv:text, t:new Date().toLocaleString("en-US",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})});
       if(D.history.length>200) D.history=D.history.slice(-200); }
@@ -787,6 +808,7 @@
     const m=moneyStats(); const r=D.rates;
     return `You are JARVIS, the AI co-pilot for Martin Miranda, a licensed mortgage Loan Officer (NMLS 1683424) at V.I.P. Mortgage, Inc. — Team Miranda, Tucson AZ. Bilingual English/Spanish.
 Speak in a calm, confident, concise JARVIS voice — 1 to 3 sentences, meant to be spoken aloud, so no markdown, headings, or bullet lists. Be genuinely smart and useful.
+You are Martin's co-pilot for his WHOLE life, not only mortgage — business, money, family, health, fitness, ideas, learning, plans, errands, big decisions, anything he throws at you. Anticipate, organize, and think alongside him like the real JARVIS. The mortgage practice is one important domain, not the only one. You remember what he tells you (it's saved), so build on it.
 COMPLIANCE (hard rules, protect his license above all): never quote or confirm specific binding rates, APRs, fees, payments, or approval status — use "subject to underwriting" language; never give wiring instructions; never give legal or tax advice. For any borrower-facing message, follow the MARTY method: move first, ask one diagnostic question, reframe, give two or three clear options, end with a clear yes/no next step.
 LIVE CONTEXT: ${(D.deals||[]).filter(d=>d.stage!=="Closed").length} active files; ${m.proj?money(m.proj)+" projected commission in pipeline":"no loan amounts set"}; today's rates ${r?`30yr ${r.conv30}%, 15yr ${r.conv15}%, 10yr treasury ${r.tenYr}`:"not loaded"}. Top priorities: ${(D.priorities||[]).slice(0,3).join("; ")||"none set"}.
 If he asks you to do an in-app action (add a deal, set a reminder, set rates), give him the exact short phrase to say so the app logs it.`;
@@ -938,7 +960,7 @@ If he asks you to do an in-app action (add a deal, set a reminder, set rates), g
     const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="data.js"; document.body.appendChild(a); a.click(); a.remove();
     toast("💾 Exported data.js");}catch(e){toast("Export not supported here");}};
   function bootHidden(){return document.getElementById("boot").classList.contains("hidden");}
-  $("boot").onclick=()=>{$("boot").classList.add("hidden"); render(); fetchRates(); jarvis(briefing());
+  $("boot").onclick=()=>{$("boot").classList.add("hidden"); unlockAudio(); render(); fetchRates(); jarvis(briefing());
     if("speechSynthesis"in window)speechSynthesis.onvoiceschanged=()=>{};
     if("Notification"in window&&Notification.permission==="default"){try{Notification.requestPermission()}catch(e){}}
     let ok=[]; try{localStorage.setItem("_t","1");localStorage.removeItem("_t");ok.push("memory");}catch(e){}
@@ -955,20 +977,20 @@ If he asks you to do an in-app action (add a deal, set a reminder, set rates), g
     let W,H,DPR=Math.min(2,window.devicePixelRatio||1), pts=[];
     function size(){ W=c.width=innerWidth*DPR; H=c.height=innerHeight*DPR; c.style.width=innerWidth+"px"; c.style.height=innerHeight+"px"; }
     size(); addEventListener("resize",size);
-    const N=Math.max(26,Math.min(46,Math.round(innerWidth/14)));
-    for(let i=0;i<N;i++) pts.push({x:Math.random(),y:Math.random(),vx:(Math.random()-.5)*.0007,vy:(Math.random()-.5)*.0007});
-    let t=0, LINK=130*DPR;
+    const N=Math.max(18,Math.min(30,Math.round(innerWidth/22)));
+    for(let i=0;i<N;i++) pts.push({x:Math.random(),y:Math.random(),vx:(Math.random()-.5)*.00035,vy:(Math.random()-.5)*.00035});
+    let t=0, LINK=120*DPR;
     function frame(){ t+=0.016; x.clearRect(0,0,W,H);
-      const cx=W*0.5, cy=H*0.30, R=Math.max(W,H)*0.62, a=t*0.6;
+      const cx=W*0.5, cy=H*0.28, R=Math.max(W,H)*0.7, a=t*0.4;
       x.save(); x.translate(cx,cy);
       const grad=x.createLinearGradient(0,0,Math.cos(a)*R,Math.sin(a)*R);
-      grad.addColorStop(0,"rgba(95,230,255,0.12)"); grad.addColorStop(1,"rgba(95,230,255,0)");
-      x.beginPath(); x.moveTo(0,0); x.arc(0,0,R,a-0.2,a); x.closePath(); x.fillStyle=grad; x.fill(); x.restore();
+      grad.addColorStop(0,"rgba(95,230,255,0.05)"); grad.addColorStop(1,"rgba(95,230,255,0)");
+      x.beginPath(); x.moveTo(0,0); x.arc(0,0,R,a-0.16,a); x.closePath(); x.fillStyle=grad; x.fill(); x.restore();
       for(const p of pts){ p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>1)p.vx*=-1; if(p.y<0||p.y>1)p.vy*=-1; }
       for(let i=0;i<pts.length;i++){ const px=pts[i].x*W, py=pts[i].y*H;
         for(let j=i+1;j<pts.length;j++){ const bx=pts[j].x*W, by=pts[j].y*H, d=Math.hypot(px-bx,py-by);
-          if(d<LINK){ x.strokeStyle="rgba(230,194,90,"+(0.13*(1-d/LINK))+")"; x.lineWidth=1; x.beginPath(); x.moveTo(px,py); x.lineTo(bx,by); x.stroke(); } }
-        x.fillStyle="rgba(230,194,90,.5)"; x.beginPath(); x.arc(px,py,1.5*DPR,0,7); x.fill(); }
+          if(d<LINK){ x.strokeStyle="rgba(230,194,90,"+(0.07*(1-d/LINK))+")"; x.lineWidth=1; x.beginPath(); x.moveTo(px,py); x.lineTo(bx,by); x.stroke(); } }
+        x.fillStyle="rgba(230,194,90,.32)"; x.beginPath(); x.arc(px,py,1.3*DPR,0,7); x.fill(); }
       requestAnimationFrame(frame);
     } frame();
   })();
