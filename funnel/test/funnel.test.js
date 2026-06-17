@@ -56,7 +56,7 @@ const scripts = html.match(/<script>([\s\S]*?)<\/script>/g).map(s=>s.replace(/<\
 const appJs = scripts[scripts.length-1];
 
 // expose the funcs/state we want to drive by appending exports to the eval'd scope
-const harness = appJs + '\n;global.__T = { state, next, computeResult, form:document.getElementById("form") };';
+const harness = appJs + '\n;global.__T = { state, next, computeResult, scoreLead, form:document.getElementById("form") };';
 eval(harness);
 const T = global.__T;
 
@@ -99,6 +99,15 @@ submit.call(T.form, { preventDefault(){} });   // browser binds `this` to the fo
 ok('routes the lead to the configured email via FormSubmit',
    !!lastFetch && /formsubmit\.co\/ajax\/.*vipmtginc\.com/.test(lastFetch.url));
 ok('shows the thank-you step after submit', T.state.step === 6);
+
+// 4) lead scoring: $163k equity + good credit + phone -> HOT, tagged in subject
+const sent = JSON.parse(lastFetch.opts.body);
+ok('lead is scored HOT (big equity + good credit + phone)', sent.leadTier === 'HOT');
+ok('email subject is tagged with the tier for triage', /HOT HELOC lead/.test(sent._subject));
+
+// 5) scoreLead is exposed and tiers correctly at the boundaries
+ok('weak lead scores NURTURE', T.scoreLead({estimate:10000, creditBand:'unsure', phone:''}).tier === 'NURTURE');
+ok('mid lead scores WARM', T.scoreLead({estimate:80000, creditBand:'fair', phone:''}).tier === 'WARM');
 
 console.log('\n' + (fail? '❌ '+fail+' failed, ' : '✅ ') + pass + ' passed');
 process.exit(fail ? 1 : 0);

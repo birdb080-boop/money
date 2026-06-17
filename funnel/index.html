@@ -707,6 +707,19 @@ function computeResult(){
   state.estimate = avail;
 }
 
+/* Lead scoring — prioritize follow-up. Bigger accessible equity + stronger credit +
+   reachable by phone = hotter lead (more likely to fund, faster). Internal only;
+   the borrower never sees a score. */
+function scoreLead(l){
+  var s = 0;
+  if(l.estimate >= 150000) s += 3; else if(l.estimate >= 75000) s += 2; else if(l.estimate >= 25000) s += 1;
+  if(l.creditBand === 'excellent') s += 3; else if(l.creditBand === 'good') s += 2; else if(l.creditBand === 'fair') s += 1;
+  if(l.phone) s += 1;
+  var tier = s >= 5 ? 'HOT' : (s >= 3 ? 'WARM' : 'NURTURE');
+  var emoji = tier === 'HOT' ? '🔥' : (tier === 'WARM' ? '🟡' : '🌱');
+  return { score:s, tier:tier, emoji:emoji };
+}
+
 /* ---------------- submit ---------------- */
 $('form').addEventListener('submit', function(e){
   e.preventDefault();
@@ -725,11 +738,14 @@ $('form').addEventListener('submit', function(e){
     lang:currentLang, source:'heloc-funnel', submittedAt:new Date().toISOString(),
     fbclid:(new URLSearchParams(location.search)).get('fbclid') || ''
   };
+  // Lead scoring — so Martin knows who to call FIRST (speed-to-lead on the best ones).
+  var sc = scoreLead(lead);
+  lead.leadScore = sc.score; lead.leadTier = sc.tier;
 
   var btn=$('submitBtn'); btn.disabled=true; btn.style.opacity=.6;
 
   // Fire the conversion event (NO personal info sent to Meta/Google — just the event).
-  track('Lead', {content_name:'heloc_equity_review', content_category:state.goal});
+  track('Lead', {content_name:'heloc_equity_review', content_category:state.goal, value:sc.score});
 
   function done(){ showStep(6); }
 
@@ -738,7 +754,7 @@ $('form').addEventListener('submit', function(e){
   if(!endpoint && CFG.leadEmail){
     endpoint = 'https://formsubmit.co/ajax/' + encodeURIComponent(CFG.leadEmail);
     payload = Object.assign({
-      _subject: 'New HELOC lead — ' + (lead.name || 'website'),
+      _subject: sc.emoji + ' ' + sc.tier + ' HELOC lead — ' + (lead.name || 'website'),
       _template: 'table'
     }, lead);
   }

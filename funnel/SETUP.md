@@ -73,8 +73,11 @@ Drag-and-drop to Netlify works too. Copy your live URL (e.g. `https://your-funne
 ---
 
 ## ⑦ Work the leads (every day) — *where loans actually get funded*
+Every lead email is **auto-tagged by priority** so you know who to call first:
+🔥 **HOT** (big equity + strong credit) → call within minutes · 🟡 **WARM** → same day · 🌱 **NURTURE** → drip.
+
 When a lead comes in:
-1. **You** call/text fast (speed-to-lead is the #1 conversion factor — minutes beat hours).
+1. **You** call/text fast (speed-to-lead is the #1 conversion factor — minutes beat hours). Work 🔥 HOT first.
 2. Ask JARVIS to **draft** the follow-up text/email in your voice → you review → you send.
 3. Send them the **application link**; help them finish the 1003.
 4. Log it. Ask JARVIS `/pipeline` to keep every deal moving.
