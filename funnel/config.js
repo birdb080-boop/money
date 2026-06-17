@@ -16,7 +16,7 @@ window.FUNNEL_CONFIG = {
      If `leadEndpoint` is set it wins; otherwise `leadEmail` is used; if both are
      empty the form runs in demo mode (thank-you screen, nothing sent).
      ⚠️ Leads contain borrower info — these route it to YOUR inbox/CRM only. */
-  leadEmail: "",      // e.g. "martin.miranda@vipmtginc.com"
+  leadEmail: "martin.miranda@vipmtginc.com",   // leads email here; change/clear anytime
   leadEndpoint: "",
 
   /* ---- THE APPLICATION LINK (this is the money step) ---------------------
