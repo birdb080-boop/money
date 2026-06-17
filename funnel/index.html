@@ -96,9 +96,12 @@
   input.money:focus, input.txt:focus{outline:none; border-color:var(--gold); box-shadow:0 0 0 4px rgba(201,162,39,.14)}
   .opts{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:6px}
   .opts.one{grid-template-columns:1fr}
-  .opt{display:flex; align-items:center; gap:10px; background:#fff; border:1.5px solid var(--sand2); border-radius:14px; padding:14px 15px; cursor:pointer; font-weight:600; font-size:15px; transition:.15s}
+  .opt{display:flex; align-items:center; gap:10px; width:100%; text-align:left; font-family:inherit; color:var(--ink); background:#fff; border:1.5px solid var(--sand2); border-radius:14px; padding:14px 15px; cursor:pointer; font-weight:600; font-size:15px; transition:.15s}
   .opt:hover{border-color:var(--gold)}
   .opt.sel{border-color:var(--gold); background:rgba(201,162,39,.08); box-shadow:0 0 0 3px rgba(201,162,39,.12)}
+  /* keyboard accessibility — visible focus ring for all interactive elements */
+  .opt:focus-visible, .btn:focus-visible, input:focus-visible, .lang button:focus-visible,
+  a:focus-visible, summary:focus-visible, .del:focus-visible{outline:3px solid rgba(201,162,39,.55); outline-offset:2px}
   .opt .ico{font-size:20px}
   .nav{display:flex; gap:10px; margin-top:18px}
   .nav .btn{flex:1; font-size:15px; padding:15px 16px}
@@ -343,10 +346,10 @@
           <div class="q" data-i18n="q3">How's your credit, roughly?</div>
           <div class="qsub" data-i18n="q3sub">A ballpark is perfect — no credit check here.</div>
           <div class="opts" id="creditOpts">
-            <div class="opt" data-val="excellent" onclick="pick(this,'credit')"><span data-i18n="c_ex">Excellent (740+)</span></div>
-            <div class="opt" data-val="good" onclick="pick(this,'credit')"><span data-i18n="c_good">Good (680–739)</span></div>
-            <div class="opt" data-val="fair" onclick="pick(this,'credit')"><span data-i18n="c_fair">Fair (620–679)</span></div>
-            <div class="opt" data-val="unsure" onclick="pick(this,'credit')"><span data-i18n="c_unsure">Not sure</span></div>
+            <button type="button" class="opt" data-val="excellent" aria-pressed="false" onclick="pick(this,'credit')"><span data-i18n="c_ex">Excellent (740+)</span></button>
+            <button type="button" class="opt" data-val="good" aria-pressed="false" onclick="pick(this,'credit')"><span data-i18n="c_good">Good (680–739)</span></button>
+            <button type="button" class="opt" data-val="fair" aria-pressed="false" onclick="pick(this,'credit')"><span data-i18n="c_fair">Fair (620–679)</span></button>
+            <button type="button" class="opt" data-val="unsure" aria-pressed="false" onclick="pick(this,'credit')"><span data-i18n="c_unsure">Not sure</span></button>
           </div>
           <div class="err" id="err3" data-i18n="err_pick">Please pick one.</div>
           <div class="nav"><button type="button" class="back btn" onclick="prev(3)">←</button><button type="button" class="btn btn-gold" onclick="next(3)" data-i18n="btn_next">Continue →</button></div>
@@ -357,10 +360,10 @@
           <div class="q" data-i18n="q4">What would you use it for?</div>
           <div class="qsub" data-i18n="q4sub">This helps us tailor your options.</div>
           <div class="opts" id="goalOpts">
-            <div class="opt" data-val="renovate" onclick="pick(this,'goal')"><span class="ico">🛠️</span><span data-i18n="g_reno">Home renovation</span></div>
-            <div class="opt" data-val="debt" onclick="pick(this,'goal')"><span class="ico">💳</span><span data-i18n="g_debt">Pay off debt</span></div>
-            <div class="opt" data-val="invest" onclick="pick(this,'goal')"><span class="ico">🏘️</span><span data-i18n="g_invest">Buy / invest</span></div>
-            <div class="opt" data-val="other" onclick="pick(this,'goal')"><span class="ico">✨</span><span data-i18n="g_other">Something else</span></div>
+            <button type="button" class="opt" data-val="renovate" aria-pressed="false" onclick="pick(this,'goal')"><span class="ico">🛠️</span><span data-i18n="g_reno">Home renovation</span></button>
+            <button type="button" class="opt" data-val="debt" aria-pressed="false" onclick="pick(this,'goal')"><span class="ico">💳</span><span data-i18n="g_debt">Pay off debt</span></button>
+            <button type="button" class="opt" data-val="invest" aria-pressed="false" onclick="pick(this,'goal')"><span class="ico">🏘️</span><span data-i18n="g_invest">Buy / invest</span></button>
+            <button type="button" class="opt" data-val="other" aria-pressed="false" onclick="pick(this,'goal')"><span class="ico">✨</span><span data-i18n="g_other">Something else</span></button>
           </div>
           <div class="err" id="err4" data-i18n="err_pick">Please pick one.</div>
           <div class="nav"><button type="button" class="back btn" onclick="prev(4)">←</button><button type="button" class="btn btn-gold" onclick="next(4)" data-i18n="btn_seeresult">See my estimate →</button></div>
@@ -666,10 +669,13 @@ function showErr(n){ var e=$('err'+n); if(e) e.classList.add('show'); }
 
 function pick(el, key){
   var parent = el.parentNode;
-  parent.querySelectorAll('.opt').forEach(function(o){ o.classList.remove('sel'); });
-  el.classList.add('sel');
+  parent.querySelectorAll('.opt').forEach(function(o){ o.classList.remove('sel'); o.setAttribute('aria-pressed','false'); });
+  el.classList.add('sel'); el.setAttribute('aria-pressed','true');
   state[key] = el.getAttribute('data-val');
-  clearErr(key==='credit'?3:4);
+  var stepNow = key==='credit' ? 3 : 4;
+  clearErr(stepNow);
+  // auto-advance after a beat so the selection registers visually (fewer taps = higher completion)
+  setTimeout(function(){ if(state.step === stepNow) next(stepNow); }, 280);
 }
 
 function next(n){
