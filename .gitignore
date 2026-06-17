@@ -2,6 +2,9 @@
 inbox/*
 !inbox/README.md
 
+# Generated standalone previews (logo inlined) — regenerable, don't commit
+funnel/preview-standalone.html
+
 # OS / editor noise
 .DS_Store
 Thumbs.db
