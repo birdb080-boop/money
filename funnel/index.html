@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Tap Into Your Home Equity | Team Miranda — V.I.P. Mortgage</title>
+<meta name="description" content="See how much you may be able to access from your home's equity. A free, no-pressure equity review with Team Miranda — local experts serving Arizona & California. Bilingual: English & Spanish." />
+<meta name="robots" content="index,follow" />
+<meta property="og:title" content="Put Your Home Equity to Work — Team Miranda" />
+<meta property="og:description" content="A free, no-pressure home equity review. Local experts. Real people, real results. Serving AZ & CA, English & Spanish." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="team-miranda-logo.png" />
+<meta name="theme-color" content="#1A1A1A" />
+<link rel="icon" href="team-miranda-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;0,900;1,600&family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<style>
+  :root{
+    --cream:#F7F1E6; --cream2:#F0E7D6; --sand:#E7DAC6; --sand2:#DCCDB4;
+    --gold:#B08D57; --gold2:#C9A227; --bronze:#9A7B45;
+    --clay:#C0694A; --clay2:#9d4f34; --terra-soft:rgba(192,105,74,.10);
+    --ink:#1A1A1A; --ink2:#2c2a27; --muted:#6f675c; --line:rgba(26,26,26,.10);
+    --card:#FBF7F0; --shadow:0 16px 40px rgba(26,26,26,.10);
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--cream); color:var(--ink);
+    font-family:"Inter",-apple-system,"Segoe UI",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased; line-height:1.5; overflow-x:hidden;
+  }
+  .serif{font-family:"Playfair Display",Georgia,serif}
+  .script{font-family:"Great Vibes",cursive; color:var(--gold); font-weight:400}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 22px}
+  .eyebrow{font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:var(--clay); font-weight:700}
+  .gold-rule{height:1px; width:64px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:18px auto}
+  a{color:inherit}
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:9px; cursor:pointer;
+    font-family:"Inter",sans-serif; font-weight:700; font-size:16px; letter-spacing:.02em;
+    padding:16px 30px; border-radius:999px; border:0; transition:transform .15s, box-shadow .15s, background .15s; text-decoration:none}
+  .btn-primary{background:linear-gradient(180deg,var(--ink2),var(--ink)); color:var(--cream); box-shadow:0 10px 26px rgba(26,26,26,.28)}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 14px 32px rgba(26,26,26,.34)}
+  .btn-gold{background:linear-gradient(180deg,var(--gold2),var(--gold)); color:#fff; box-shadow:0 10px 24px rgba(176,141,87,.4)}
+  .btn-gold:hover{transform:translateY(-2px)}
+  .btn-ghost{background:transparent; border:1.5px solid var(--ink); color:var(--ink); padding:14px 26px}
+  .btn-ghost:hover{background:var(--ink); color:var(--cream)}
+
+  /* ---------- top bar ---------- */
+  header.bar{position:sticky; top:0; z-index:50; background:rgba(245,239,230,.92);
+    backdrop-filter:saturate(140%) blur(10px); border-bottom:1px solid var(--line)}
+  .bar-in{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:11px 22px; max-width:1080px; margin:0 auto}
+  .bar img{height:42px; width:auto; object-fit:contain}
+  .bar-right{display:flex; align-items:center; gap:10px}
+  .lang{display:flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; font-size:12px; font-weight:700}
+  .lang button{background:transparent; border:0; padding:7px 13px; cursor:pointer; color:var(--muted); font-family:inherit; font-weight:700; letter-spacing:.04em}
+  .lang button.on{background:var(--ink); color:var(--cream)}
+  .bar .callbtn{display:inline-flex; align-items:center; gap:7px; font-weight:700; font-size:14px; text-decoration:none; color:var(--ink);
+    border:1.5px solid var(--gold); padding:9px 16px; border-radius:999px}
+  .bar .callbtn:hover{background:var(--gold); color:#fff}
+  @media(max-width:620px){ .bar .callbtn span.lbl{display:none} .bar img{height:36px} }
+
+  /* ---------- hero ---------- */
+  .hero{position:relative; padding:64px 0 40px; overflow:hidden;
+    background:radial-gradient(900px 480px at 70% -10%, rgba(201,162,39,.16), transparent 60%), linear-gradient(180deg,var(--cream),var(--cream2))}
+  .desert{position:absolute; left:0; right:0; bottom:0; width:100%; height:200px; z-index:0; opacity:.5; pointer-events:none}
+  .hero-in{position:relative; z-index:2; display:grid; grid-template-columns:1.15fr .85fr; gap:46px; align-items:center}
+  @media(max-width:880px){ .hero-in{grid-template-columns:1fr; gap:30px} }
+  .hero h1{font-size:clamp(38px,6vw,62px); line-height:1.04; font-weight:800; letter-spacing:-.01em; margin:14px 0 6px}
+  .hero h1 .script{font-size:1.15em; display:inline-block; line-height:1; margin-top:6px}
+  .hero p.lede{font-size:18px; color:var(--ink2); max-width:30em; margin:16px 0 26px}
+  .hero-cta{display:flex; flex-wrap:wrap; gap:14px; align-items:center}
+  .trust{display:flex; flex-wrap:wrap; gap:18px 26px; margin-top:30px}
+  .trust div{display:flex; align-items:center; gap:9px; font-size:13.5px; font-weight:600; color:var(--ink2)}
+  .trust svg{flex:0 0 auto}
+
+  /* ---------- estimator card ---------- */
+  .card-est{background:var(--card); border:1px solid var(--line); border-radius:24px; box-shadow:var(--shadow); padding:26px 24px 24px; position:relative}
+  .card-est .kicker{font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--bronze); font-weight:700}
+  .card-est h3{font-size:23px; font-weight:800; margin:6px 0 4px}
+  .card-est .free{font-size:13px; color:var(--muted); margin-bottom:16px}
+  .progress{height:6px; background:var(--sand); border-radius:999px; overflow:hidden; margin:4px 0 22px}
+  .progress > i{display:block; height:100%; width:20%; background:linear-gradient(90deg,var(--gold),var(--gold2)); border-radius:999px; transition:width .35s}
+  .step{display:none; animation:fade .35s ease}
+  .step.on{display:block}
+  @keyframes fade{from{opacity:0; transform:translateY(6px)}to{opacity:1; transform:none}}
+  .q{font-size:18px; font-weight:700; margin-bottom:4px}
+  .qsub{font-size:13px; color:var(--muted); margin-bottom:16px}
+  .field{position:relative; margin-bottom:8px}
+  .field .pre{position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:20px; font-weight:700; color:var(--gold); pointer-events:none}
+  input.money, input.txt{width:100%; font-family:inherit; font-size:18px; font-weight:600; color:var(--ink);
+    background:#fff; border:1.5px solid var(--sand2); border-radius:14px; padding:15px 16px}
+  input.money{padding-left:34px}
+  input.txt::placeholder{color:#b7ad9d; font-weight:500}
+  input.money:focus, input.txt:focus{outline:none; border-color:var(--gold); box-shadow:0 0 0 4px rgba(201,162,39,.14)}
+  .opts{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:6px}
+  .opts.one{grid-template-columns:1fr}
+  .opt{display:flex; align-items:center; gap:10px; width:100%; text-align:left; font-family:inherit; color:var(--ink); background:#fff; border:1.5px solid var(--sand2); border-radius:14px; padding:14px 15px; cursor:pointer; font-weight:600; font-size:15px; transition:.15s}
+  .opt:hover{border-color:var(--gold)}
+  .opt.sel{border-color:var(--gold); background:rgba(201,162,39,.08); box-shadow:0 0 0 3px rgba(201,162,39,.12)}
+  /* keyboard accessibility — visible focus ring for all interactive elements */
+  .opt:focus-visible, .btn:focus-visible, input:focus-visible, .lang button:focus-visible,
+  a:focus-visible, summary:focus-visible, .del:focus-visible{outline:3px solid rgba(201,162,39,.55); outline-offset:2px}
+  .opt .ico{font-size:20px}
+  .nav{display:flex; gap:10px; margin-top:18px}
+  .nav .btn{flex:1; font-size:15px; padding:15px 16px}
+  .back{background:transparent; border:1.5px solid var(--line); color:var(--muted); flex:0 0 auto; padding:15px 18px}
+  .back:hover{border-color:var(--ink); color:var(--ink)}
+  .err{color:#b3402f; font-size:12.5px; font-weight:600; margin-top:7px; display:none}
+  .err.show{display:block}
+  .consent{font-size:11px; color:var(--muted); line-height:1.5; margin-top:14px}
+  .consent label{display:flex; gap:9px; align-items:flex-start; cursor:pointer}
+  .consent input{margin-top:3px; flex:0 0 auto; width:16px; height:16px; accent-color:var(--gold)}
+  .hp{position:absolute; left:-9999px; opacity:0; height:0; width:0}
+
+  /* result */
+  .result{text-align:center; padding:6px 2px}
+  .result .num{font-family:"Playfair Display",serif; font-size:clamp(40px,9vw,56px); font-weight:800; color:var(--gold); line-height:1; letter-spacing:-.01em}
+  .result .upto{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--bronze); font-weight:700; margin-bottom:6px}
+  .result .rsub{font-size:14px; color:var(--ink2); max-width:30em; margin:14px auto 0}
+  .result .est-note{font-size:11px; color:var(--muted); margin-top:14px; line-height:1.5}
+  .thanks{text-align:center; padding:14px 6px}
+  .thanks .check{width:64px; height:64px; margin:0 auto 14px; border-radius:50%; background:rgba(201,162,39,.14); display:flex; align-items:center; justify-content:center}
+  .thanks h3{font-size:26px; font-weight:800; margin-bottom:8px}
+  .thanks p{color:var(--ink2); max-width:30em; margin:0 auto 8px}
+
+  /* ---------- photo bands ---------- */
+  .band{position:relative; padding:96px 0; color:var(--cream); background-color:var(--clay2);
+    background-size:cover; background-position:center; background-repeat:no-repeat}
+  .band .wrap{position:relative; z-index:2}
+  .band .eyebrow{color:var(--gold2)}
+  .band h2{font-family:"Playfair Display",serif; font-size:clamp(28px,4.8vw,46px); font-weight:800; line-height:1.08; max-width:13em; margin:10px 0 14px}
+  .band h2 .script{color:var(--gold2)}
+  .band p{font-size:17px; max-width:30em; color:rgba(247,241,230,.92); margin-bottom:24px}
+  .band .btn-ghost{border-color:var(--cream); color:var(--cream)}
+  .band .btn-ghost:hover{background:var(--cream); color:var(--ink)}
+
+  /* ---------- meet martin ---------- */
+  .meet-sec{background:linear-gradient(180deg,var(--cream2),var(--cream))}
+  .meet{display:grid; grid-template-columns:.72fr 1.28fr; gap:46px; align-items:center}
+  @media(max-width:760px){ .meet{grid-template-columns:1fr; gap:26px; text-align:center} }
+  .meet .photo-wrap{position:relative; justify-self:center; width:240px; height:240px; flex:0 0 auto}
+  .meet .headshot{width:240px; height:240px; border-radius:50%; object-fit:cover; object-position:center top;
+    border:5px solid #fff; box-shadow:0 18px 44px rgba(26,26,26,.24); background:var(--sand); display:block}
+  .meet .ring{position:absolute; inset:-14px; border-radius:50%; border:1.5px dashed var(--gold); opacity:.55; pointer-events:none}
+  .meet .badge-nmls{position:absolute; bottom:8px; right:-4px; background:var(--ink); color:var(--cream);
+    font-size:10px; font-weight:700; letter-spacing:.06em; padding:8px 13px; border-radius:999px; box-shadow:var(--shadow); white-space:nowrap}
+  .meet h2{font-family:"Playfair Display",serif; font-size:clamp(26px,3.8vw,40px); font-weight:800; line-height:1.1; margin:4px 0 4px}
+  .meet h2 .script{color:var(--gold)}
+  .meet .role{font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--clay); font-weight:700; margin-bottom:16px}
+  .meet p{color:var(--ink2); font-size:15.5px; margin-bottom:14px; max-width:42em}
+  @media(max-width:760px){ .meet p{margin-left:auto; margin-right:auto} }
+  .meet .creds{display:flex; flex-wrap:wrap; gap:8px 9px; margin:6px 0 22px}
+  @media(max-width:760px){ .meet .creds{justify-content:center} }
+  .meet .creds span{font-size:11.5px; font-weight:600; color:var(--clay2); background:var(--terra-soft);
+    border:1px solid rgba(192,105,74,.22); padding:6px 12px; border-radius:999px}
+  .meet .meet-cta{display:flex; flex-wrap:wrap; gap:12px}
+  @media(max-width:760px){ .meet .meet-cta{justify-content:center} }
+
+  /* warm up the value-prop badges to match the new accent */
+  .prop .badge{background:var(--terra-soft); border-color:rgba(192,105,74,.28)}
+
+  /* ---------- sections ---------- */
+  section{padding:66px 0}
+  .sec-head{text-align:center; max-width:640px; margin:0 auto 42px}
+  .sec-head h2{font-size:clamp(28px,4.4vw,42px); font-weight:800; line-height:1.1; margin-top:8px}
+  .sec-head p{color:var(--ink2); font-size:16.5px; margin-top:12px}
+
+  .alt{background:linear-gradient(180deg,var(--cream2),var(--cream))}
+
+  /* value props */
+  .props{display:grid; grid-template-columns:repeat(4,1fr); gap:18px}
+  @media(max-width:820px){ .props{grid-template-columns:1fr 1fr} }
+  .prop{background:var(--card); border:1px solid var(--line); border-radius:20px; padding:26px 20px; text-align:center; box-shadow:var(--shadow)}
+  .prop .badge{width:54px; height:54px; margin:0 auto 14px; border-radius:50%; background:rgba(176,141,87,.12); border:1px solid rgba(176,141,87,.3); display:flex; align-items:center; justify-content:center}
+  .prop h4{font-size:17px; font-weight:700; margin-bottom:6px}
+  .prop p{font-size:13.5px; color:var(--muted)}
+
+  /* uses grid */
+  .uses{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+  @media(max-width:760px){ .uses{grid-template-columns:1fr 1fr} }
+  @media(max-width:460px){ .uses{grid-template-columns:1fr} }
+  .use{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px 18px; display:flex; gap:13px; align-items:flex-start}
+  .use .e{font-size:24px; line-height:1}
+  .use b{display:block; font-size:15.5px; margin-bottom:3px}
+  .use span{font-size:13px; color:var(--muted)}
+
+  /* steps */
+  .steps3{display:grid; grid-template-columns:repeat(3,1fr); gap:24px; counter-reset:s}
+  @media(max-width:760px){ .steps3{grid-template-columns:1fr} }
+  .s3{position:relative; padding:8px 6px}
+  .s3 .n{font-family:"Playfair Display",serif; font-size:46px; font-weight:800; color:var(--gold); opacity:.55; line-height:1}
+  .s3 h4{font-size:19px; font-weight:700; margin:8px 0 6px}
+  .s3 p{color:var(--ink2); font-size:14.5px}
+
+  /* reviews */
+  .reviews{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+  @media(max-width:820px){ .reviews{grid-template-columns:1fr} }
+  .rev{background:var(--card); border:1px solid var(--line); border-radius:20px; padding:24px 22px; box-shadow:var(--shadow)}
+  .stars{color:var(--gold2); font-size:15px; letter-spacing:2px; margin-bottom:10px}
+  .rev p{font-size:14.5px; color:var(--ink2); font-style:italic}
+  .rev .by{margin-top:14px; font-size:12.5px; font-weight:700; color:var(--bronze); font-style:normal; letter-spacing:.04em}
+
+  /* faq */
+  .faq{max-width:760px; margin:0 auto}
+  details.f{background:var(--card); border:1px solid var(--line); border-radius:14px; margin-bottom:12px; overflow:hidden}
+  details.f summary{list-style:none; cursor:pointer; padding:18px 20px; font-weight:700; font-size:16px; display:flex; justify-content:space-between; gap:14px; align-items:center}
+  details.f summary::-webkit-details-marker{display:none}
+  details.f summary::after{content:"+"; color:var(--gold); font-size:22px; font-weight:400; line-height:1}
+  details.f[open] summary::after{content:"–"}
+  details.f .a{padding:0 20px 18px; color:var(--ink2); font-size:14.5px; line-height:1.6}
+
+  /* final cta */
+  .final{background:linear-gradient(160deg,var(--ink2),var(--ink)); color:var(--cream); text-align:center; border-radius:28px; padding:56px 26px; position:relative; overflow:hidden}
+  .final h2{font-size:clamp(28px,4.6vw,42px); font-weight:800; line-height:1.1}
+  .final .script{color:var(--gold2)}
+  .final p{color:rgba(245,239,230,.82); max-width:34em; margin:16px auto 26px; font-size:16.5px}
+  .final .btn-gold{font-size:17px; padding:17px 34px}
+  .final .ph{display:block; margin-top:18px; font-size:14px; color:rgba(245,239,230,.7); letter-spacing:.04em}
+  .final .ph a{color:var(--gold2); font-weight:700; text-decoration:none}
+
+  /* footer */
+  footer{background:var(--cream2); border-top:1px solid var(--line); padding:48px 0 40px; font-size:12.5px; color:var(--muted)}
+  .foot-top{display:flex; flex-wrap:wrap; justify-content:space-between; gap:28px; align-items:flex-start; margin-bottom:26px}
+  .foot-top img{height:46px; filter:none}
+  .foot-contact{font-size:13px; color:var(--ink2); line-height:1.7}
+  .foot-contact a{color:var(--ink2); text-decoration:none}
+  .eho{display:flex; align-items:center; gap:10px; margin:14px 0}
+  .eho svg{flex:0 0 auto}
+  .eho span{font-size:11.5px; font-weight:600; letter-spacing:.06em; color:var(--ink2)}
+  .legal{border-top:1px solid var(--line); padding-top:20px; line-height:1.7}
+  .legal b{color:var(--ink2)}
+  .legal a, .foot-contact a#siteLink{text-decoration:underline}
+  .consent a{color:var(--clay2); text-decoration:underline}
+
+  /* ---------- sticky mobile CTA ---------- */
+  .sticky-cta{position:fixed; left:0; right:0; bottom:0; z-index:60; display:none;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom)); background:rgba(247,241,230,.96);
+    backdrop-filter:blur(8px); border-top:1px solid var(--line); box-shadow:0 -6px 20px rgba(26,26,26,.10)}
+  .sticky-cta a{display:flex; width:100%}
+  .sticky-cta .btn{flex:1; padding:15px}
+  @media(max-width:760px){ .sticky-cta{display:block} body{padding-bottom:78px} }
+
+  /* ---------- exit-intent modal ---------- */
+  .modal-bg{position:fixed; inset:0; z-index:100; background:rgba(26,20,16,.55); backdrop-filter:blur(3px);
+    display:none; align-items:center; justify-content:center; padding:22px; animation:fade .25s ease}
+  .modal-bg.show{display:flex}
+  .modal{background:var(--card); border-radius:22px; max-width:420px; width:100%; padding:30px 26px; text-align:center;
+    box-shadow:0 30px 70px rgba(0,0,0,.4); position:relative}
+  .modal .x{position:absolute; top:12px; right:14px; background:none; border:0; font-size:24px; color:var(--muted); cursor:pointer; line-height:1}
+  .modal .eyebrow{margin-bottom:8px}
+  .modal h3{font-family:"Playfair Display",serif; font-size:27px; font-weight:800; line-height:1.12; margin-bottom:8px}
+  .modal h3 .script{color:var(--gold)}
+  .modal p{font-size:14.5px; color:var(--ink2); margin-bottom:18px}
+  .modal .btn{width:100%}
+  .modal .tiny{font-size:11px; color:var(--muted); margin-top:12px}
+</style>
+</head>
+<body>
+
+<!-- ================= TOP BAR ================= -->
+<header class="bar">
+  <div class="bar-in">
+    <img src="team-miranda-logo.png" alt="Team Miranda — V.I.P. Mortgage" />
+    <div class="bar-right">
+      <div class="lang" role="group" aria-label="Language">
+        <button id="langEN" class="on" onclick="setLang('en')">EN</button>
+        <button id="langES" onclick="setLang('es')">ES</button>
+      </div>
+      <a class="callbtn" href="tel:+15207194130">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="lbl" data-i18n="bar_call">Call Team Miranda</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<div class="hero">
+  <!-- desert silhouette -->
+  <svg class="desert" viewBox="0 0 1200 200" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 200 L0 150 Q120 90 260 130 Q380 165 520 120 Q680 70 840 125 Q980 170 1120 115 L1200 95 L1200 200 Z" fill="#E7DAC6"/>
+    <g fill="#D8C7AB">
+      <path d="M150 200 v-70 q0-12 12-12 t12 12 v16 q0-16 14-16 t14 16 v-26 q0-12 12-12 t12 12 v90 z"/>
+      <path d="M980 200 v-54 q0-10 10-10 t10 10 v10 q0-12 12-12 t12 12 v44 z"/>
+    </g>
+  </svg>
+  <div class="wrap hero-in">
+    <div>
+      <span class="eyebrow" data-i18n="hero_eyebrow">Home Equity · AZ &amp; CA</span>
+      <h1 class="serif">
+        <span data-i18n="hero_h1a">Your home has been</span><br>
+        <span data-i18n="hero_h1b">working for you.</span>
+        <span class="script" data-i18n="hero_script">Now let it.</span>
+      </h1>
+      <p class="lede" data-i18n="hero_lede">See how much of your home's equity you may be able to access — for a renovation, debt payoff, or your next move. Free, fast, and no pressure.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#estimator" data-i18n="hero_cta">Check my equity →</a>
+        <a class="btn btn-ghost" href="#how" data-i18n="hero_cta2">How it works</a>
+      </div>
+      <div class="trust">
+        <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#B08D57" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="trust1">No-pressure review</span></div>
+        <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#B08D57" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="trust2">Local experts, AZ &amp; CA</span></div>
+        <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#B08D57" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="trust3">English &amp; Español</span></div>
+      </div>
+    </div>
+
+    <!-- estimator -->
+    <div id="estimator" class="card-est">
+      <div class="kicker" data-i18n="est_kicker">Free Equity Estimator</div>
+      <h3 data-i18n="est_title">How much can I tap?</h3>
+      <div class="free" data-i18n="est_free">Takes about 60 seconds. No credit pull.</div>
+      <div class="progress"><i id="bar"></i></div>
+
+      <form id="form" autocomplete="on" novalidate>
+        <!-- honeypot -->
+        <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+        <!-- STEP 1: home value -->
+        <div class="step on" data-step="1">
+          <div class="q" data-i18n="q1">What's your home worth today?</div>
+          <div class="qsub" data-i18n="q1sub">Your best estimate is fine.</div>
+          <div class="field">
+            <span class="pre">$</span>
+            <input class="money" id="homeValue" inputmode="numeric" placeholder="450,000" />
+          </div>
+          <div class="err" id="err1" data-i18n="err_value">Please enter an estimated value.</div>
+          <div class="nav"><button type="button" class="btn btn-gold" onclick="next(1)" data-i18n="btn_next">Continue →</button></div>
+        </div>
+
+        <!-- STEP 2: mortgage balance -->
+        <div class="step" data-step="2">
+          <div class="q" data-i18n="q2">About how much do you still owe?</div>
+          <div class="qsub" data-i18n="q2sub">Remaining balance on your mortgage. Enter 0 if it's paid off.</div>
+          <div class="field">
+            <span class="pre">$</span>
+            <input class="money" id="balance" inputmode="numeric" placeholder="220,000" />
+          </div>
+          <div class="err" id="err2" data-i18n="err_balance">Please enter your balance (0 if paid off).</div>
+          <div class="nav"><button type="button" class="back btn" onclick="prev(2)">←</button><button type="button" class="btn btn-gold" onclick="next(2)" data-i18n="btn_next">Continue →</button></div>
+        </div>
+
+        <!-- STEP 3: credit band -->
+        <div class="step" data-step="3">
+          <div class="q" data-i18n="q3">How's your credit, roughly?</div>
+          <div class="qsub" data-i18n="q3sub">A ballpark is perfect — no credit check here.</div>
+          <div class="opts" id="creditOpts">
+            <button type="button" class="opt" data-val="excellent" aria-pressed="false" onclick="pick(this,'credit')"><span data-i18n="c_ex">Excellent (740+)</span></button>
+            <button type="button" class="opt" data-val="good" aria-pressed="false" onclick="pick(this,'credit')"><span data-i18n="c_good">Good (680–739)</span></button>
+            <button type="button" class="opt" data-val="fair" aria-pressed="false" onclick="pick(this,'credit')"><span data-i18n="c_fair">Fair (620–679)</span></button>
+            <button type="button" class="opt" data-val="unsure" aria-pressed="false" onclick="pick(this,'credit')"><span data-i18n="c_unsure">Not sure</span></button>
+          </div>
+          <div class="err" id="err3" data-i18n="err_pick">Please pick one.</div>
+          <div class="nav"><button type="button" class="back btn" onclick="prev(3)">←</button><button type="button" class="btn btn-gold" onclick="next(3)" data-i18n="btn_next">Continue →</button></div>
+        </div>
+
+        <!-- STEP 4: goal -->
+        <div class="step" data-step="4">
+          <div class="q" data-i18n="q4">What would you use it for?</div>
+          <div class="qsub" data-i18n="q4sub">This helps us tailor your options.</div>
+          <div class="opts" id="goalOpts">
+            <button type="button" class="opt" data-val="renovate" aria-pressed="false" onclick="pick(this,'goal')"><span class="ico">🛠️</span><span data-i18n="g_reno">Home renovation</span></button>
+            <button type="button" class="opt" data-val="debt" aria-pressed="false" onclick="pick(this,'goal')"><span class="ico">💳</span><span data-i18n="g_debt">Pay off debt</span></button>
+            <button type="button" class="opt" data-val="invest" aria-pressed="false" onclick="pick(this,'goal')"><span class="ico">🏘️</span><span data-i18n="g_invest">Buy / invest</span></button>
+            <button type="button" class="opt" data-val="other" aria-pressed="false" onclick="pick(this,'goal')"><span class="ico">✨</span><span data-i18n="g_other">Something else</span></button>
+          </div>
+          <div class="err" id="err4" data-i18n="err_pick">Please pick one.</div>
+          <div class="nav"><button type="button" class="back btn" onclick="prev(4)">←</button><button type="button" class="btn btn-gold" onclick="next(4)" data-i18n="btn_seeresult">See my estimate →</button></div>
+        </div>
+
+        <!-- STEP 5: result + contact -->
+        <div class="step" data-step="5">
+          <div class="result">
+            <div class="upto" data-i18n="res_upto">You may be able to access up to</div>
+            <div class="num" id="equityNum">$0</div>
+            <p class="rsub" data-i18n="res_sub">This is an early estimate. The exact amount depends on a full review of your credit, income, and property. Get your personalized number below — it's free.</p>
+          </div>
+          <div class="gold-rule"></div>
+          <div class="q" data-i18n="q5">Where should Martin send your equity review?</div>
+          <div class="qsub" data-i18n="q5sub">A real, licensed loan officer — not a call center.</div>
+          <input class="txt" id="name" type="text" autocomplete="name" placeholder="Full name" data-i18n-ph="ph_name" style="margin-bottom:10px" />
+          <input class="txt" id="email" type="email" autocomplete="email" placeholder="Email" data-i18n-ph="ph_email" style="margin-bottom:10px" />
+          <input class="txt" id="phone" type="tel" autocomplete="tel" placeholder="Phone" data-i18n-ph="ph_phone" style="margin-bottom:10px" />
+          <input class="txt" id="zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="ZIP code" data-i18n-ph="ph_zip" />
+          <div class="err" id="err5" data-i18n="err_contact">Please add your name and a way to reach you.</div>
+          <div class="consent">
+            <label><input type="checkbox" id="consent" />
+              <span data-i18n="consent">By submitting, I agree that Team Miranda / V.I.P. Mortgage, Inc. may contact me at the number and email provided (including by phone, autodialed/prerecorded calls, and text) about my inquiry. Consent is not a condition of any purchase. Message frequency varies; message &amp; data rates may apply; reply STOP to opt out, HELP for help. See our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="terms.html" target="_blank" rel="noopener">Terms</a>.</span></label>
+          </div>
+          <div class="nav"><button type="button" class="back btn" onclick="prev(5)">←</button><button type="submit" class="btn btn-primary" id="submitBtn" data-i18n="btn_submit">Get my free review →</button></div>
+        </div>
+
+        <!-- THANK YOU -->
+        <div class="step" data-step="6">
+          <div class="thanks">
+            <div class="check"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#B08D57" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h3 data-i18n="ty_h">You're all set! 🎉</h3>
+            <p data-i18n="ty_p">Thank you — your request is in. Martin will personally review your numbers and reach out shortly with your options.</p>
+            <!-- The money step: shows only when applicationUrl is set in config.js -->
+            <div id="applyWrap" style="display:none; margin-top:18px">
+              <p style="font-weight:600; color:var(--ink); margin-bottom:6px" data-i18n="ty_apply_lead">Want to move fast? You can start your secure application now:</p>
+              <a class="btn btn-gold" id="applyBtn" href="#" target="_blank" rel="noopener" data-i18n="ty_apply">Start my application →</a>
+              <div style="font-size:11px; color:var(--muted); margin-top:8px" data-i18n="ty_apply_note">🔒 Secure &amp; encrypted. Starting an application is not an obligation.</div>
+            </div>
+            <p style="margin-top:16px" data-i18n="ty_or">Prefer to talk first?</p>
+            <p style="margin-top:6px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center">
+              <a class="btn btn-ghost" id="bookBtn" href="#" target="_blank" rel="noopener" style="display:none" data-i18n="ty_book">📅 Book a quick call</a>
+              <a class="btn btn-ghost" href="tel:+15207194130" data-i18n="ty_call">Call (520) 719-4130</a>
+            </p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ================= BAND: HOME EQUITY ================= -->
+<!-- Stock photo placeholder (royalty-free). Swap the background-image URL for Martin's
+     own photography anytime — see funnel/README.md. Gradient overlay doubles as fallback. -->
+<section class="band" style="background-image:linear-gradient(105deg, rgba(26,20,16,.78), rgba(26,20,16,.32)), url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1600&q=70')">
+  <div class="wrap">
+    <span class="eyebrow" data-i18n="band1_eyebrow">The Equity You've Built</span>
+    <h2 data-i18n="band1_h">It's your home. The equity is <span class="script">yours to use.</span></h2>
+    <p data-i18n="band1_p">Every payment you've made and every bit your home has grown is real value. Put it toward what matters most — without selling or starting over.</p>
+    <a class="btn btn-gold" href="#estimator" data-i18n="band1_cta">See what you've built →</a>
+  </div>
+</section>
+
+<!-- ================= WHAT IS A HELOC ================= -->
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="how_eyebrow">The Simple Version</span>
+      <h2 class="serif" data-i18n="how_h">Equity, <span class="script">made simple.</span></h2>
+      <p data-i18n="how_p">Your home equity is the part of your home you actually own — its value minus what you still owe. A home equity line of credit (HELOC) lets qualified homeowners borrow against that equity and pay interest only on what they use.</p>
+    </div>
+    <div class="steps3">
+      <div class="s3"><div class="n">1</div><h4 class="serif" data-i18n="s1h">Tell us about your home</h4><p data-i18n="s1p">A few quick questions — value, balance, and your goal. No documents, no credit pull.</p></div>
+      <div class="s3"><div class="n">2</div><h4 class="serif" data-i18n="s2h">Get a real review</h4><p data-i18n="s2p">Martin looks at your numbers personally and walks you through 2–3 clear options.</p></div>
+      <div class="s3"><div class="n">3</div><h4 class="serif" data-i18n="s3h">You decide</h4><p data-i18n="s3p">No pressure, ever. If it's a fit, we make it simple. If it's not, you'll know why.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHY TEAM MIRANDA ================= -->
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="why_eyebrow">Real People. Real Results.</span>
+      <h2 class="serif" data-i18n="why_h">Why homeowners choose <span class="script">Team Miranda</span></h2>
+    </div>
+    <div class="props">
+      <div class="prop"><div class="badge"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-7-10a7 7 0 0 1 14 0c0 5.65-7 10-7 10Z" stroke="#B08D57" stroke-width="1.8"/><circle cx="12" cy="11" r="2.5" stroke="#B08D57" stroke-width="1.8"/></svg></div><h4 data-i18n="p1h">Local Experts</h4><p data-i18n="p1p">Arizona &amp; California homeowners are our neighbors — we know these markets.</p></div>
+      <div class="prop"><div class="badge"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="#B08D57" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="#B08D57" stroke-width="1.8"/></svg></div><h4 data-i18n="p2h">Smart Strategy</h4><p data-i18n="p2p">We look at the whole picture and show you the move that fits your goals.</p></div>
+      <div class="prop"><div class="badge"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 0 1 16 0M8 12l3 3 5-6" stroke="#B08D57" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h4 data-i18n="p3h">Seamless Experience</h4><p data-i18n="p3p">Clear steps, quick answers, and no jargon. We make it simple for you.</p></div>
+      <div class="prop"><div class="badge"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-7-10a7 7 0 0 1 14 0c0 5.65-7 10-7 10Z" fill="rgba(176,141,87,.18)" stroke="#B08D57" stroke-width="1.8"/></svg></div><h4 data-i18n="p4h">Clients First</h4><p data-i18n="p4p">Bilingual, honest guidance. We only recommend what's right for you.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MEET MARTIN ================= -->
+<section class="meet-sec">
+  <div class="wrap">
+    <div class="meet">
+      <div class="photo-wrap">
+        <div class="ring"></div>
+        <!-- Martin's real headshot (self-hosted). -->
+        <img class="headshot" src="img/martin-headshot.png" alt="Martin Miranda, Branch Manager — V.I.P. Mortgage, Team Miranda" />
+        <div class="badge-nmls">NMLS #1683424</div>
+      </div>
+      <div>
+        <span class="eyebrow" data-i18n="meet_eyebrow">Meet Your Loan Officer</span>
+        <h2 data-i18n="meet_h">Hi, I'm <span class="script">Martin Miranda.</span></h2>
+        <div class="role" data-i18n="meet_role">Branch Manager · V.I.P. Mortgage, Inc. · Team Miranda</div>
+        <p data-i18n="meet_p1">For families across Arizona and California, a home is everything — it's where life happens. My job is to help you make smart, confident moves with the equity you've worked so hard to build, and to explain every step in plain language (in English or Spanish).</p>
+        <p data-i18n="meet_p2">When you reach out, you get me — a real, licensed local expert — not a call center. No pressure, no jargon. Just honest guidance and a clear path to your goal.</p>
+        <div class="creds">
+          <span data-i18n="cred1">🏡 Local Tucson Expert</span>
+          <span data-i18n="cred2">🗣️ Bilingual — English &amp; Español</span>
+          <span data-i18n="cred3">📍 Serving AZ &amp; CA</span>
+          <span data-i18n="cred4">🤝 Clients First, Always</span>
+        </div>
+        <div class="meet-cta">
+          <a class="btn btn-primary" href="#estimator" data-i18n="meet_cta1">Start with Martin →</a>
+          <a class="btn btn-ghost" href="tel:+15207194130" data-i18n="meet_cta2">Call (520) 719-4130</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= USES ================= -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="uses_eyebrow">What It's For</span>
+      <h2 class="serif" data-i18n="uses_h">One source of funds, <span class="script">many possibilities</span></h2>
+    </div>
+    <div class="uses">
+      <div class="use"><span class="e">🛠️</span><div><b data-i18n="u1h">Renovate &amp; add value</b><span data-i18n="u1p">Kitchens, additions, a pool — reinvest in your biggest asset.</span></div></div>
+      <div class="use"><span class="e">💳</span><div><b data-i18n="u2h">Consolidate debt</b><span data-i18n="u2p">Roll higher-interest balances into one simpler payment.</span></div></div>
+      <div class="use"><span class="e">🎓</span><div><b data-i18n="u3h">Tuition &amp; big goals</b><span data-i18n="u3p">Fund education or a life milestone on your terms.</span></div></div>
+      <div class="use"><span class="e">🏘️</span><div><b data-i18n="u4h">Invest or buy</b><span data-i18n="u4p">Use equity toward a second property or opportunity.</span></div></div>
+      <div class="use"><span class="e">🛟</span><div><b data-i18n="u5h">Safety net</b><span data-i18n="u5p">Keep funds available for whatever life brings — borrow only what you use.</span></div></div>
+      <div class="use"><span class="e">✨</span><div><b data-i18n="u6h">Something else</b><span data-i18n="u6p">Tell us your goal and we'll map out the smartest path.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= REVIEWS ================= -->
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="rev_eyebrow">★★★★★ Trusted Locally</span>
+      <h2 class="serif" data-i18n="rev_h">Real people. <span class="script">Real results.</span></h2>
+    </div>
+    <!--
+      ⚠️ COMPLIANCE NOTE FOR MARTIN: Replace the cards below with REAL, verifiable client
+      reviews (e.g. from Google / Zillow) before this page goes live. Get the client's
+      consent to use their words and first name + last initial. Do NOT publish fabricated
+      testimonials — that's a UDAAP / advertising-rules risk. These are placeholders.
+    -->
+    <div class="reviews" id="reviews">
+      <div class="rev"><div class="stars">★★★★★</div><p data-i18n="rev1">"[Add a real client review here — Martin to insert with the client's consent.]"</p><div class="by" data-i18n="rev1by">— Client Name, City</div></div>
+      <div class="rev"><div class="stars">★★★★★</div><p data-i18n="rev2">"[Add a real client review here — Martin to insert with the client's consent.]"</p><div class="by" data-i18n="rev2by">— Client Name, City</div></div>
+      <div class="rev"><div class="stars">★★★★★</div><p data-i18n="rev3">"[Add a real client review here — Martin to insert with the client's consent.]"</p><div class="by" data-i18n="rev3by">— Client Name, City</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="faq_eyebrow">Good Questions</span>
+      <h2 class="serif" data-i18n="faq_h">Before you ask, <span class="script">we've got you.</span></h2>
+    </div>
+    <div class="faq">
+      <details class="f"><summary data-i18n="faq1q">Will this affect my credit score?</summary><div class="a" data-i18n="faq1a">No. The estimator and your initial review involve no credit pull. If you decide to move forward later, we'll always tell you before any credit check happens.</div></details>
+      <details class="f"><summary data-i18n="faq2q">How much can I actually borrow?</summary><div class="a" data-i18n="faq2a">It depends on your home's value, your remaining mortgage balance, your credit, and income. Many programs allow qualified homeowners to access a large share of their equity, but the exact amount is determined during underwriting. Your free review gives you a personalized number.</div></details>
+      <details class="f"><summary data-i18n="faq3q">What's the difference between a HELOC and a cash-out refinance?</summary><div class="a" data-i18n="faq3a">A HELOC is a line of credit you draw from as needed, paying interest only on what you use. A cash-out refinance replaces your existing mortgage with a larger one and gives you the difference in cash. Martin will walk you through which fits your situation.</div></details>
+      <details class="f"><summary data-i18n="faq4q">¿Hablan español?</summary><div class="a" data-i18n="faq4a">¡Sí! Team Miranda atiende a clientes en inglés y español. Cambie el idioma de esta página con el botón "ES" arriba, o pídanos una revisión completamente en español.</div></details>
+      <details class="f"><summary data-i18n="faq5q">Is there any cost or obligation?</summary><div class="a" data-i18n="faq5a">The equity review is free, and there's no obligation. We'll show you your options clearly. If it's not the right move for you, we'll tell you that too.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BAND: FAMILY / FUTURE ================= -->
+<!-- Stock photo placeholder (royalty-free). Swap the background-image URL for Martin's
+     own photography (or a real client family, with consent) — see funnel/README.md. -->
+<section class="band" style="background-image:linear-gradient(105deg, rgba(26,20,16,.72), rgba(26,20,16,.28)), url('https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1600&q=70')">
+  <div class="wrap">
+    <span class="eyebrow" data-i18n="band2_eyebrow">For What Matters Most</span>
+    <h2 data-i18n="band2_h">Your home. Your family. <span class="script">Your future.</span></h2>
+    <p data-i18n="band2_p">A new kitchen for family dinners. Tuition. Breathing room from high-interest debt. Your equity can help you build the life you want — let's find the smartest way to use it.</p>
+    <a class="btn btn-gold" href="#estimator" data-i18n="band2_cta">Check my equity →</a>
+  </div>
+</section>
+
+<!-- ================= FINAL CTA ================= -->
+<section>
+  <div class="wrap">
+    <div class="final">
+      <h2 class="serif" data-i18n="final_h">Let's get you your <span class="script">number.</span></h2>
+      <p data-i18n="final_p">A free, no-pressure equity review with a licensed local expert. See what your home can do for you.</p>
+      <a class="btn btn-gold" href="#estimator" data-i18n="final_cta">Check my equity →</a>
+      <span class="ph" data-i18n="final_ph">Prefer to talk? Call or text Martin at <a href="tel:+15207194130">(520) 719-4130</a></span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <img src="team-miranda-logo.png" alt="Team Miranda — V.I.P. Mortgage" />
+        <div class="eho">
+          <!-- Equal Housing Opportunity symbol -->
+          <svg width="30" height="30" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+            <path d="M24 8 6 22h5v16h26V22h5L24 8Z" stroke="#1A1A1A" stroke-width="2.2" stroke-linejoin="round"/>
+            <path d="M17 28h14M17 33h14" stroke="#1A1A1A" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+          <span data-i18n="eho">Equal Housing Lender</span>
+        </div>
+      </div>
+      <div class="foot-contact">
+        <b>Martin Miranda</b> — Branch Manager<br>
+        V.I.P. Mortgage, Inc. · Team Miranda<br>
+        5401 N Oracle Rd, Tucson, AZ 85704<br>
+        <a href="tel:+15207194130">Office (520) 719-4130</a> · <a href="tel:+15204615054" data-mobile>Mobile (520) 461-5054</a><br>
+        <a href="mailto:martin.miranda@vipmtginc.com">martin.miranda@vipmtginc.com</a><br>
+        <a id="siteLink" href="https://martinmiranda.vipmtginc.com" target="_blank" rel="noopener" style="display:none">martinmiranda.vipmtginc.com</a>
+      </div>
+    </div>
+    <div class="legal">
+      <p style="margin-bottom:10px"><b>Martin Miranda</b> — Individual NMLS #1683424 · <b>V.I.P. Mortgage, Inc.</b> Company NMLS #145502 · State Licenses: AZ #0945358 · CA #CA-DFPI1683424. Licensed to serve Arizona &amp; California.
+      <a href="https://www.nmlsconsumeraccess.org/EntityDetails.aspx/INDIVIDUAL/1683424" target="_blank" rel="noopener">Verify on NMLS Consumer Access</a>.</p>
+      <p data-i18n="legal2">This is an advertisement and not a commitment to lend or an offer of credit. All loans are subject to credit approval, income and asset verification, property appraisal, and underwriting guidelines. The figures shown by the equity estimator are illustrative estimates only, are not an offer or pre-qualification, and do not reflect any specific loan terms, rate, or amount. Actual available equity and terms vary by program and are determined during a full application. Rates, terms, and availability are subject to change without notice. Not all applicants will qualify. Equal Housing Lender.</p>
+      <p style="margin-top:12px">
+        <a href="privacy.html" data-i18n="foot_privacy">Privacy Policy</a> ·
+        <a href="terms.html" data-i18n="foot_terms">Terms &amp; SMS Policy</a> ·
+        © <span id="yr"></span> V.I.P. Mortgage, Inc. — Team Miranda. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= STICKY MOBILE CTA ================= -->
+<div class="sticky-cta">
+  <a href="#estimator"><span class="btn btn-gold" data-i18n="sticky_cta">Check my equity — free →</span></a>
+</div>
+
+<!-- ================= EXIT-INTENT MODAL ================= -->
+<div class="modal-bg" id="exitModal">
+  <div class="modal">
+    <button class="x" aria-label="Close" onclick="closeExit()">×</button>
+    <span class="eyebrow" data-i18n="exit_eyebrow">Wait — one quick thing</span>
+    <h3 data-i18n="exit_h">See your number in <span class="script">60 seconds.</span></h3>
+    <p data-i18n="exit_p">No credit pull, no obligation — just a fast estimate of the equity you may be able to access. You've come this far.</p>
+    <a href="#estimator" onclick="closeExit()"><span class="btn btn-gold" data-i18n="exit_cta">Show me my estimate →</span></a>
+    <div class="tiny" data-i18n="exit_tiny">Free · Private · Takes about a minute</div>
+  </div>
+</div>
+
+<script>
+/* ---------------- CONFIG (everything is set in config.js) ----------------
+   This form NEVER auto-replies to the borrower. It captures + routes the lead;
+   Martin follows up personally. The borrower self-serves the application link. */
+var CFG = window.FUNNEL_CONFIG || {};
+var LEAD_ENDPOINT = CFG.leadEndpoint || "";
+
+/* ---------------- tracking (only fires if IDs are set in config.js) ------- */
+function track(event, params){
+  try { if(window.fbq) fbq('track', event, params||{}); } catch(e){}
+  try { if(window.gtag) gtag('event', event, params||{}); } catch(e){}
+}
+
+/* ---------------- state ---------------- */
+var state = { homeValue:0, balance:0, credit:"", goal:"", step:1 };
+var TOTAL = 5;
+var MAX_CLTV = (CFG.maxCLTV && CFG.maxCLTV > 0 && CFG.maxCLTV <= 1) ? CFG.maxCLTV : 0.85;
+var startedQuiz = false;
+
+/* ---------------- helpers ---------------- */
+function $(id){ return document.getElementById(id); }
+function showStep(n){
+  document.querySelectorAll('.step').forEach(function(s){ s.classList.remove('on'); });
+  var el = document.querySelector('.step[data-step="'+n+'"]');
+  if(el) el.classList.add('on');
+  state.step = n;
+  var pct = Math.min(n, TOTAL) / TOTAL * 100;
+  $('bar').style.width = pct + '%';
+  if(n <= TOTAL){ document.getElementById('estimator').scrollIntoView({behavior:'smooth', block:'start'}); }
+}
+function parseMoney(v){ return parseInt((v||"").toString().replace(/[^0-9]/g,''), 10) || 0; }
+function fmt(n){ return '$' + (n||0).toLocaleString('en-US'); }
+function fmtInput(el){
+  var n = parseMoney(el.value);
+  el.value = n ? n.toLocaleString('en-US') : '';
+}
+['homeValue','balance'].forEach(function(id){
+  $(id).addEventListener('input', function(){ fmtInput(this); });
+});
+
+function clearErr(n){ var e=$('err'+n); if(e) e.classList.remove('show'); }
+function showErr(n){ var e=$('err'+n); if(e) e.classList.add('show'); }
+
+function pick(el, key){
+  var parent = el.parentNode;
+  parent.querySelectorAll('.opt').forEach(function(o){ o.classList.remove('sel'); o.setAttribute('aria-pressed','false'); });
+  el.classList.add('sel'); el.setAttribute('aria-pressed','true');
+  state[key] = el.getAttribute('data-val');
+  var stepNow = key==='credit' ? 3 : 4;
+  clearErr(stepNow);
+  // auto-advance after a beat so the selection registers visually (fewer taps = higher completion)
+  setTimeout(function(){ if(state.step === stepNow) next(stepNow); }, 280);
+}
+
+function next(n){
+  if(n===1){
+    state.homeValue = parseMoney($('homeValue').value);
+    if(state.homeValue < 1000){ showErr(1); return; }
+    if(!startedQuiz){ startedQuiz = true; track('InitiateCheckout', {content_name:'equity_estimator'}); }
+    clearErr(1); showStep(2); return;
+  }
+  if(n===2){
+    state.balance = parseMoney($('balance').value);
+    if($('balance').value.trim()===''){ showErr(2); return; }
+    clearErr(2); showStep(3); return;
+  }
+  if(n===3){
+    if(!state.credit){ showErr(3); return; }
+    clearErr(3); showStep(4); return;
+  }
+  if(n===4){
+    if(!state.goal){ showErr(4); return; }
+    clearErr(4); computeResult(); showStep(5); return;
+  }
+}
+function prev(n){ showStep(n-1); }
+
+function computeResult(){
+  var avail = Math.max(0, Math.round((state.homeValue * MAX_CLTV - state.balance) / 1000) * 1000);
+  $('equityNum').textContent = fmt(avail);
+  state.estimate = avail;
+}
+
+/* Lead scoring — prioritize follow-up. Bigger accessible equity + stronger credit +
+   reachable by phone = hotter lead (more likely to fund, faster). Internal only;
+   the borrower never sees a score. */
+function scoreLead(l){
+  var s = 0;
+  if(l.estimate >= 150000) s += 3; else if(l.estimate >= 75000) s += 2; else if(l.estimate >= 25000) s += 1;
+  if(l.creditBand === 'excellent') s += 3; else if(l.creditBand === 'good') s += 2; else if(l.creditBand === 'fair') s += 1;
+  if(l.phone) s += 1;
+  var tier = s >= 5 ? 'HOT' : (s >= 3 ? 'WARM' : 'NURTURE');
+  var emoji = tier === 'HOT' ? '🔥' : (tier === 'WARM' ? '🟡' : '🌱');
+  return { score:s, tier:tier, emoji:emoji };
+}
+
+/* ---------------- submit ---------------- */
+$('form').addEventListener('submit', function(e){
+  e.preventDefault();
+  // honeypot: silently drop bots
+  if(this.querySelector('input[name="company"]').value){ showStep(6); return; }
+
+  var name=$('name').value.trim(), email=$('email').value.trim(), phone=$('phone').value.trim();
+  var hasContact = email || phone;
+  if(!name || !hasContact || !$('consent').checked){ showErr(5); return; }
+  clearErr(5);
+
+  var lead = {
+    name:name, email:email, phone:phone, zip:$('zip').value.trim(),
+    homeValue:state.homeValue, mortgageBalance:state.balance,
+    creditBand:state.credit, goal:state.goal, estimate:state.estimate,
+    lang:currentLang, source:'heloc-funnel', submittedAt:new Date().toISOString(),
+    fbclid:(new URLSearchParams(location.search)).get('fbclid') || ''
+  };
+  // Lead scoring — so Martin knows who to call FIRST (speed-to-lead on the best ones).
+  var sc = scoreLead(lead);
+  lead.leadScore = sc.score; lead.leadTier = sc.tier;
+
+  var btn=$('submitBtn'); btn.disabled=true; btn.style.opacity=.6;
+
+  // Fire the conversion event (NO personal info sent to Meta/Google — just the event).
+  track('Lead', {content_name:'heloc_equity_review', content_category:state.goal, value:sc.score});
+
+  function done(){ showStep(6); }
+
+  // Route the lead: explicit endpoint wins; else email-to-inbox (FormSubmit); else demo.
+  var endpoint = LEAD_ENDPOINT, payload = lead;
+  if(!endpoint && CFG.leadEmail){
+    endpoint = 'https://formsubmit.co/ajax/' + encodeURIComponent(CFG.leadEmail);
+    payload = Object.assign({
+      _subject: sc.emoji + ' ' + sc.tier + ' HELOC lead — ' + (lead.name || 'website'),
+      _template: 'table'
+    }, lead);
+  }
+
+  if(endpoint){
+    fetch(endpoint, {
+      method:'POST', headers:{'Content-Type':'application/json', 'Accept':'application/json'},
+      body:JSON.stringify(payload)
+    }).then(done).catch(function(){
+      // even if the network call fails, give the user the thank-you + phone fallback
+      done();
+    });
+  } else {
+    // demo mode — no endpoint/email configured. Log for testing; nothing is sent anywhere.
+    console.log('[HELOC funnel] Lead captured (demo mode, nothing sent):', lead);
+    setTimeout(done, 350);
+  }
+});
+
+/* ---------------- year ---------------- */
+$('yr').textContent = new Date().getFullYear();
+
+/* =================================================================
+   INIT — apply config.js (tracking, application link, contact, website)
+   ================================================================= */
+(function init(){
+  // Meta Pixel
+  if(CFG.metaPixelId){
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', CFG.metaPixelId); fbq('track', 'PageView');
+  }
+  // Google Analytics 4
+  if(CFG.ga4Id){
+    var g=document.createElement('script'); g.async=true;
+    g.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(CFG.ga4Id);
+    document.head.appendChild(g);
+    window.dataLayer=window.dataLayer||[]; window.gtag=function(){dataLayer.push(arguments);};
+    gtag('js', new Date()); gtag('config', CFG.ga4Id);
+  }
+  // Application link (the money step)
+  if(CFG.applicationUrl){
+    var aw=$('applyWrap'), ab=$('applyBtn');
+    if(aw) aw.style.display='block';
+    if(ab){ ab.href=CFG.applicationUrl; ab.addEventListener('click', function(){ track('SubmitApplication', {content_name:'heloc_application_start'}); }); }
+  }
+  // Book-a-call link (speed-to-lead)
+  if(CFG.bookingUrl){
+    var bb=$('bookBtn');
+    if(bb){ bb.href=CFG.bookingUrl; bb.style.display=''; bb.addEventListener('click', function(){ track('Schedule', {content_name:'book_call'}); }); }
+  }
+  // Contact — single source of truth from config.js
+  if(CFG.officePhone){ document.querySelectorAll('a[href^="tel:"]:not([data-mobile])').forEach(function(a){ a.href='tel:'+CFG.officePhone; }); }
+  if(CFG.mobilePhone){ document.querySelectorAll('a[data-mobile]').forEach(function(a){ a.href='tel:'+CFG.mobilePhone; }); }
+  if(CFG.email){ document.querySelectorAll('a[href^="mailto:"]').forEach(function(a){ a.href='mailto:'+CFG.email; }); }
+  // Footer website link (off by default — keeps visitors on the funnel)
+  var site=$('siteLink');
+  if(site){ if(CFG.showWebsiteLink && CFG.website){ site.href=CFG.website; site.style.display=''; } else { site.style.display='none'; } }
+})();
+
+/* ---------------- exit-intent (one-time per visit) ---------------- */
+var exitShown=false;
+function openExit(){
+  if(exitShown || state.step>=6) return;
+  exitShown=true; $('exitModal').classList.add('show'); track('ViewContent', {content_name:'exit_intent'});
+}
+function closeExit(){ $('exitModal').classList.remove('show'); }
+// Desktop: cursor leaves toward the top (closing/changing tab)
+document.addEventListener('mouseout', function(e){
+  if(!e.relatedTarget && e.clientY <= 0) openExit();
+});
+// Mobile: fire once on the first decisive upward scroll after engaging
+var lastY=window.scrollY, mobileArmed=false;
+setTimeout(function(){ mobileArmed=true; }, 6000);
+window.addEventListener('scroll', function(){
+  var y=window.scrollY;
+  if(mobileArmed && window.innerWidth<=760 && y < lastY-40 && y>300) openExit();
+  lastY=y;
+}, {passive:true});
+$('exitModal').addEventListener('click', function(e){ if(e.target===this) closeExit(); });
+
+/* =================================================================
+   i18n — English / Spanish (toggle in the top bar)
+   ================================================================= */
+var currentLang = 'en';
+var I18N = {
+  es: {
+    bar_call:"Llamar a Team Miranda",
+    band1_eyebrow:"La Plusvalía Que Has Creado",
+    band1_h:"Es tu casa. La plusvalía es <span class='script'>tuya para usar.</span>",
+    band1_p:"Cada pago que has hecho y todo lo que tu casa ha crecido es valor real. Úsalo para lo que más importa — sin vender ni empezar de cero.",
+    band1_cta:"Ver lo que has creado →",
+    meet_eyebrow:"Conoce a Tu Oficial de Préstamos",
+    meet_h:"Hola, soy <span class='script'>Martin Miranda.</span>",
+    meet_role:"Gerente de Sucursal · V.I.P. Mortgage, Inc. · Team Miranda",
+    meet_p1:"Para las familias de Arizona y California, una casa lo es todo — es donde sucede la vida. Mi trabajo es ayudarte a tomar decisiones inteligentes y seguras con la plusvalía que tanto te ha costado construir, y explicarte cada paso en palabras claras (en inglés o español).",
+    meet_p2:"Cuando me contactas, me tienes a mí — un experto local con licencia, de verdad — no un call center. Sin presión, sin tecnicismos. Solo asesoría honesta y un camino claro hacia tu meta.",
+    cred1:"🏡 Experto Local de Tucson",
+    cred2:"🗣️ Bilingüe — Inglés y Español",
+    cred3:"📍 Sirviendo AZ y CA",
+    cred4:"🤝 Clientes Primero, Siempre",
+    meet_cta1:"Empieza con Martin →",
+    meet_cta2:"Llama al (520) 719-4130",
+    band2_eyebrow:"Por Lo Que Más Importa",
+    band2_h:"Tu casa. Tu familia. <span class='script'>Tu futuro.</span>",
+    band2_p:"Una cocina nueva para las cenas en familia. Colegiatura. Un respiro de las deudas de alto interés. Tu plusvalía puede ayudarte a construir la vida que quieres — encontremos la forma más inteligente de usarla.",
+    band2_cta:"Ver mi plusvalía →",
+    sticky_cta:"Ver mi plusvalía — gratis →",
+    exit_eyebrow:"Espera — una cosa rápida",
+    exit_h:"Ve tu número en <span class='script'>60 segundos.</span>",
+    exit_p:"Sin revisión de crédito, sin compromiso — solo un estimado rápido de la plusvalía que podrías aprovechar. Ya llegaste hasta aquí.",
+    exit_cta:"Muéstrame mi estimado →",
+    exit_tiny:"Gratis · Privado · Toma como un minuto",
+    ty_apply_lead:"¿Quieres avanzar rápido? Puedes comenzar tu solicitud segura ahora:",
+    ty_apply:"Comenzar mi solicitud →",
+    ty_apply_note:"🔒 Segura y encriptada. Comenzar una solicitud no es una obligación.",
+    ty_or:"¿Prefieres hablar primero?",
+    ty_book:"📅 Agenda una llamada rápida",
+    foot_privacy:"Política de Privacidad",
+    foot_terms:"Términos y Política SMS",
+    hero_eyebrow:"Plusvalía de tu Casa · AZ y CA",
+    hero_h1a:"Tu casa ha estado",
+    hero_h1b:"trabajando para ti.",
+    hero_script:"Ahora aprovéchala.",
+    hero_lede:"Descubre cuánta plusvalía de tu casa podrías aprovechar — para una remodelación, pagar deudas o tu próximo paso. Gratis, rápido y sin presión.",
+    hero_cta:"Ver mi plusvalía →",
+    hero_cta2:"Cómo funciona",
+    trust1:"Revisión sin presión",
+    trust2:"Expertos locales, AZ y CA",
+    trust3:"English y Español",
+    est_kicker:"Estimador de Plusvalía Gratis",
+    est_title:"¿Cuánto puedo aprovechar?",
+    est_free:"Toma unos 60 segundos. Sin revisión de crédito.",
+    q1:"¿Cuánto vale tu casa hoy?",
+    q1sub:"Tu mejor estimado está bien.",
+    q2:"¿Cuánto debes aproximadamente?",
+    q2sub:"Saldo restante de tu hipoteca. Pon 0 si está pagada.",
+    q3:"¿Cómo está tu crédito, más o menos?",
+    q3sub:"Un aproximado es perfecto — aquí no revisamos crédito.",
+    c_ex:"Excelente (740+)", c_good:"Bueno (680–739)", c_fair:"Regular (620–679)", c_unsure:"No estoy seguro",
+    q4:"¿Para qué lo usarías?",
+    q4sub:"Esto nos ayuda a personalizar tus opciones.",
+    g_reno:"Remodelar la casa", g_debt:"Pagar deudas", g_invest:"Comprar / invertir", g_other:"Otra cosa",
+    res_upto:"Podrías aprovechar hasta",
+    res_sub:"Este es un estimado inicial. El monto exacto depende de una revisión completa de tu crédito, ingresos y propiedad. Obtén tu número personalizado abajo — es gratis.",
+    q5:"¿A dónde te envía Martin tu revisión?",
+    q5sub:"Un oficial de préstamos con licencia — no un call center.",
+    ph_name:"Nombre completo", ph_email:"Correo electrónico", ph_phone:"Teléfono", ph_zip:"Código postal",
+    consent:"Al enviar, acepto que Team Miranda / V.I.P. Mortgage, Inc. pueda contactarme al número y correo proporcionados (por teléfono, llamadas automáticas/pregrabadas y texto) sobre mi solicitud. El consentimiento no es condición para ninguna compra. La frecuencia de mensajes varía; pueden aplicar tarifas de mensajes y datos; responda STOP para cancelar, HELP para ayuda. Vea nuestra <a href='privacy.html' target='_blank' rel='noopener'>Política de Privacidad</a> y <a href='terms.html' target='_blank' rel='noopener'>Términos</a>.",
+    btn_next:"Continuar →", btn_seeresult:"Ver mi estimado →", btn_submit:"Quiero mi revisión gratis →",
+    err_value:"Por favor ingresa un valor estimado.",
+    err_balance:"Por favor ingresa tu saldo (0 si está pagada).",
+    err_pick:"Por favor elige una opción.",
+    err_contact:"Por favor agrega tu nombre y una forma de contactarte.",
+    ty_h:"¡Todo listo! 🎉",
+    ty_p:"Gracias — recibimos tu solicitud. Martin revisará personalmente tus números y te contactará pronto con tus opciones. Mantente atento a tu teléfono y correo.",
+    ty_call:"O llama ahora: (520) 719-4130",
+    how_eyebrow:"La Versión Simple",
+    how_h:"Plusvalía, <span class='script'>fácil de entender.</span>",
+    how_p:"La plusvalía es la parte de tu casa que realmente es tuya — su valor menos lo que aún debes. Una línea de crédito sobre el valor de la vivienda (HELOC) permite a propietarios calificados pedir prestado sobre esa plusvalía y pagar intereses solo sobre lo que usan.",
+    s1h:"Cuéntanos de tu casa", s1p:"Unas preguntas rápidas — valor, saldo y tu meta. Sin documentos ni revisión de crédito.",
+    s2h:"Recibe una revisión real", s2p:"Martin revisa tus números personalmente y te explica 2–3 opciones claras.",
+    s3h:"Tú decides", s3p:"Sin presión, nunca. Si es buena idea, lo hacemos simple. Si no, te decimos por qué.",
+    why_eyebrow:"Gente Real. Resultados Reales.",
+    why_h:"Por qué los propietarios eligen <span class='script'>Team Miranda</span>",
+    p1h:"Expertos Locales", p1p:"Los propietarios de Arizona y California son nuestros vecinos — conocemos estos mercados.",
+    p2h:"Estrategia Inteligente", p2p:"Vemos el panorama completo y te mostramos el paso que encaja con tus metas.",
+    p3h:"Experiencia Sencilla", p3p:"Pasos claros, respuestas rápidas y sin tecnicismos. Lo hacemos simple para ti.",
+    p4h:"Clientes Primero", p4p:"Asesoría bilingüe y honesta. Solo recomendamos lo que es correcto para ti.",
+    uses_eyebrow:"Para Qué Sirve",
+    uses_h:"Una fuente de fondos, <span class='script'>muchas posibilidades</span>",
+    u1h:"Remodela y agrega valor", u1p:"Cocinas, ampliaciones, una alberca — reinvierte en tu mayor activo.",
+    u2h:"Consolida deudas", u2p:"Junta saldos de alto interés en un solo pago más simple.",
+    u3h:"Colegiatura y metas grandes", u3p:"Financia educación o una meta de vida en tus términos.",
+    u4h:"Invierte o compra", u4p:"Usa tu plusvalía para una segunda propiedad u oportunidad.",
+    u5h:"Red de seguridad", u5p:"Mantén fondos disponibles para lo que la vida traiga — usa solo lo que necesites.",
+    u6h:"Otra cosa", u6p:"Cuéntanos tu meta y trazamos el camino más inteligente.",
+    rev_eyebrow:"★★★★★ De Confianza Local",
+    rev_h:"Gente real. <span class='script'>Resultados reales.</span>",
+    rev1:"\"[Agregar una reseña real de cliente aquí — Martin la insertará con el consentimiento del cliente.]\"",
+    rev1by:"— Nombre del Cliente, Ciudad",
+    rev2:"\"[Agregar una reseña real de cliente aquí — Martin la insertará con el consentimiento del cliente.]\"",
+    rev2by:"— Nombre del Cliente, Ciudad",
+    rev3:"\"[Agregar una reseña real de cliente aquí — Martin la insertará con el consentimiento del cliente.]\"",
+    rev3by:"— Nombre del Cliente, Ciudad",
+    faq_eyebrow:"Buenas Preguntas",
+    faq_h:"Antes de que preguntes, <span class='script'>te tenemos.</span>",
+    faq1q:"¿Esto afecta mi puntaje de crédito?",
+    faq1a:"No. El estimador y tu revisión inicial no incluyen revisión de crédito. Si decides avanzar más adelante, siempre te avisaremos antes de cualquier revisión de crédito.",
+    faq2q:"¿Cuánto puedo pedir prestado realmente?",
+    faq2a:"Depende del valor de tu casa, tu saldo hipotecario, tu crédito y tus ingresos. Muchos programas permiten a propietarios calificados aprovechar una gran parte de su plusvalía, pero el monto exacto se determina durante el proceso de aprobación. Tu revisión gratis te da un número personalizado.",
+    faq3q:"¿Cuál es la diferencia entre un HELOC y un refinanciamiento con retiro de efectivo?",
+    faq3a:"Un HELOC es una línea de crédito de la que dispones según la necesites, pagando intereses solo sobre lo que usas. Un refinanciamiento con retiro reemplaza tu hipoteca actual por una mayor y te da la diferencia en efectivo. Martin te explicará cuál encaja con tu situación.",
+    faq4q:"¿Hablan español?",
+    faq4a:"¡Sí! Team Miranda atiende a clientes en inglés y español. Cambia el idioma de esta página con el botón \"ES\" arriba, o pídenos una revisión completamente en español.",
+    faq5q:"¿Hay algún costo u obligación?",
+    faq5a:"La revisión de plusvalía es gratis y no hay obligación. Te mostramos tus opciones con claridad. Si no es el paso correcto para ti, también te lo diremos.",
+    final_h:"Vamos a darte tu <span class='script'>número.</span>",
+    final_p:"Una revisión de plusvalía gratis y sin presión con un experto local con licencia. Descubre lo que tu casa puede hacer por ti.",
+    final_cta:"Ver mi plusvalía →",
+    final_ph:"¿Prefieres hablar? Llama o textea a Martin al <a href='tel:+15207194130'>(520) 719-4130</a>",
+    eho:"Prestamista de Igualdad de Vivienda",
+    legal2:"Este es un anuncio y no un compromiso de préstamo ni una oferta de crédito. Todos los préstamos están sujetos a aprobación de crédito, verificación de ingresos y activos, avalúo de la propiedad y pautas de aprobación. Las cifras del estimador de plusvalía son solo estimaciones ilustrativas, no son una oferta ni precalificación, y no reflejan términos, tasa o monto de ningún préstamo específico. La plusvalía y los términos disponibles varían según el programa y se determinan durante una solicitud completa. Las tasas, términos y disponibilidad están sujetos a cambio sin previo aviso. No todos los solicitantes calificarán. Prestamista de Igualdad de Vivienda."
+  }
+};
+
+function setLang(lang){
+  currentLang = lang;
+  $('langEN').classList.toggle('on', lang==='en');
+  $('langES').classList.toggle('on', lang==='es');
+  document.documentElement.lang = lang;
+  if(lang==='en'){
+    // restore originals
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      if(el.dataset.en !== undefined) el.innerHTML = el.dataset.en;
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+      if(el.dataset.enPh !== undefined) el.placeholder = el.dataset.enPh;
+    });
+    return;
+  }
+  var dict = I18N[lang] || {};
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    if(el.dataset.en === undefined) el.dataset.en = el.innerHTML; // stash English once
+    var k = el.getAttribute('data-i18n');
+    if(dict[k] !== undefined) el.innerHTML = dict[k];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+    if(el.dataset.enPh === undefined) el.dataset.enPh = el.placeholder;
+    var k = el.getAttribute('data-i18n-ph');
+    if(dict[k] !== undefined) el.placeholder = dict[k];
+  });
+}
+
+// auto-pick Spanish for browsers set to ES
+if((navigator.language||'').toLowerCase().indexOf('es')===0){ setLang('es'); }
+</script>
+</body>
+</html>

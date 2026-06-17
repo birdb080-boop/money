@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Budget &amp; ROI Tracker — Team Miranda HELOC</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E6; --cream2:#F0E7D6; --sand:#E7DAC6; --sand2:#DCCDB4;
+    --gold:#B08D57; --gold2:#C9A227; --bronze:#9A7B45; --clay:#C0694A; --clay2:#9d4f34;
+    --ink:#1A1A1A; --ink2:#2c2a27; --muted:#6f675c; --line:rgba(26,26,26,.12);
+    --card:#FBF7F0; --ok:#2e7d52; --warn:#b3402f; --shadow:0 14px 36px rgba(26,26,26,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{background:var(--cream);color:var(--ink2);font-family:"Inter",system-ui,sans-serif;line-height:1.5;
+    padding:max(14px,env(safe-area-inset-top)) 16px 60px}
+  .wrap{max-width:1000px;margin:0 auto}
+  .serif{font-family:"Playfair Display",serif}
+  h1{font-size:26px;color:var(--ink);font-weight:800;line-height:1.1}
+  a{color:var(--clay2)}
+  header{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:8px 0 18px;flex-wrap:wrap}
+  header img{height:40px}
+  .sub{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--clay);font-weight:700}
+  .note{font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-bottom:16px}
+
+  /* hero number */
+  .goalcard{background:linear-gradient(160deg,var(--ink2),var(--ink));color:var(--cream);border-radius:22px;padding:24px;box-shadow:var(--shadow);margin-bottom:14px}
+  .goalcard .lab{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(247,241,230,.65);font-weight:700}
+  .goalcard .big{font-family:"Playfair Display",serif;font-size:clamp(34px,8vw,52px);font-weight:800;color:var(--gold2);line-height:1;margin:4px 0 2px}
+  .goalcard .of{font-size:14px;color:rgba(247,241,230,.8)}
+  .pbar{height:12px;background:rgba(255,255,255,.14);border-radius:99px;overflow:hidden;margin:14px 0 6px}
+  .pbar>i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:99px;transition:width .4s}
+  .goalcard .pace{font-size:12.5px;color:rgba(247,241,230,.82);margin-top:8px}
+
+  /* kpi grid */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+  @media(max-width:680px){.kpis{grid-template-columns:1fr 1fr}}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;text-align:center}
+  .kpi b{display:block;font-size:22px;font-weight:800;color:var(--ink);line-height:1.1}
+  .kpi span{font-size:10.5px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+  .kpi.good b{color:var(--ok)} .kpi.warn b{color:var(--warn)}
+
+  /* reinvest card */
+  .reinvest{background:linear-gradient(150deg,rgba(201,162,39,.16),rgba(192,105,74,.06));border:1.5px solid rgba(201,162,39,.4);
+    border-radius:18px;padding:18px 20px;margin-bottom:18px}
+  .reinvest .sub{margin-bottom:6px}
+  .reinvest .rec{font-size:17px;font-weight:700;color:var(--ink);line-height:1.4}
+  .reinvest .rec b{color:var(--clay2)}
+  .reinvest ul{margin:10px 0 0 18px;font-size:13.5px;color:var(--ink2)}
+  .reinvest li{margin:3px 0}
+
+  /* settings */
+  details.set{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:18px}
+  details.set summary{cursor:pointer;padding:13px 16px;font-weight:700;font-size:14px;list-style:none}
+  details.set summary::-webkit-details-marker{display:none}
+  details.set summary::after{content:" ▾";color:var(--gold)}
+  details.set[open] summary::after{content:" ▴"}
+  .setgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:4px 16px 16px}
+  @media(max-width:680px){.setgrid{grid-template-columns:1fr 1fr}}
+  .fld label{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:4px}
+  .fld input{width:100%;font-family:inherit;font-size:15px;font-weight:600;padding:10px 11px;border:1.5px solid var(--sand2);border-radius:10px;background:#fff;color:var(--ink)}
+  .fld input:focus{outline:none;border-color:var(--gold)}
+
+  /* table */
+  .tablecard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:6px 6px 16px;box-shadow:var(--shadow);overflow-x:auto}
+  .tablehead{display:flex;justify-content:space-between;align-items:center;padding:12px 12px 8px}
+  .tablehead h2{font-size:16px;font-weight:800;color:var(--ink)}
+  table{width:100%;border-collapse:collapse;min-width:760px}
+  th{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:right;padding:8px 9px;border-bottom:2px solid var(--line)}
+  th:first-child,th:nth-child(2){text-align:left}
+  td{padding:5px 6px;border-bottom:1px solid rgba(26,26,26,.06);text-align:right}
+  td:first-child,td:nth-child(2){text-align:left}
+  td input{width:100%;font-family:inherit;font-size:14px;font-weight:600;padding:8px 8px;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--ink);text-align:right}
+  td:first-child input,td:nth-child(2) input{text-align:left}
+  td input:focus{outline:none;border-color:var(--gold);background:#fff}
+  td.calc{font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+  td.best{color:var(--ok)} td.worst{color:var(--warn)}
+  .del{background:none;border:0;color:var(--muted);cursor:pointer;font-size:16px;padding:4px 8px}
+  .del:hover{color:var(--warn)}
+  tfoot td{border-top:2px solid var(--line);font-weight:800;color:var(--ink);padding-top:10px}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;padding:14px 12px 0}
+  .btn{font-family:inherit;font-weight:700;font-size:13.5px;padding:11px 16px;border-radius:10px;border:0;cursor:pointer}
+  .btn.add{background:var(--ink);color:var(--cream)}
+  .btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink2)}
+  .foot{font-size:11px;color:var(--muted);margin-top:18px;line-height:1.6;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="sub">Team Miranda · HELOC Campaign</div>
+      <h1 class="serif">Budget &amp; ROI Tracker</h1>
+    </div>
+    <img src="team-miranda-logo.png" alt="Team Miranda" onerror="this.style.display='none'" />
+  </header>
+
+  <div class="note">🔒 This lives only in <b>this browser</b> (nothing is sent anywhere, nothing is committed to git).
+  Enter <b>campaign totals only</b> — never client names or personal info here. Numbers auto-save as you type.</div>
+
+  <!-- GOAL -->
+  <div class="goalcard">
+    <div class="lab">Funded toward goal</div>
+    <div class="big" id="fundedTotal">$0</div>
+    <div class="of">of <span id="goalLabel">$5,000,000</span> · <span id="pctLabel">0%</span></div>
+    <div class="pbar"><i id="goalBar" style="width:0%"></i></div>
+    <div class="pace" id="pace">Set your numbers below to see your pace.</div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpis">
+    <div class="kpi"><b id="kSpend">$0</b><span>Ad spend</span></div>
+    <div class="kpi"><b id="kLeads">0</b><span>Leads</span></div>
+    <div class="kpi"><b id="kCPL">—</b><span>Cost / lead</span></div>
+    <div class="kpi" id="roasCard"><b id="kROAS">—</b><span>ROAS (rev ÷ spend)</span></div>
+  </div>
+
+  <!-- REINVEST -->
+  <div class="reinvest">
+    <div class="sub">Where to put your next dollar</div>
+    <div class="rec" id="recText">Add a campaign or two below and I'll tell you what's working and where to reinvest.</div>
+    <ul id="recList"></ul>
+  </div>
+
+  <!-- SETTINGS -->
+  <details class="set">
+    <summary>⚙️ Goal &amp; assumptions</summary>
+    <div class="setgrid">
+      <div class="fld"><label>Funding goal ($)</label><input id="sGoal" type="text" inputmode="numeric" value="5,000,000"></div>
+      <div class="fld"><label>Target end date</label><input id="sDate" type="date"></div>
+      <div class="fld"><label>Your comp per funded ($ %)</label><input id="sComp" type="text" inputmode="decimal" value="1.0"></div>
+    </div>
+    <div class="note" style="margin:0 16px 16px">Comp % turns funded volume into your revenue so ROAS is real. Example: 1.0% of a $100,000 cash-out = $1,000 to you. Set it to your actual comp.</div>
+  </details>
+
+  <!-- TABLE -->
+  <div class="tablecard">
+    <div class="tablehead"><h2>Campaigns</h2><span style="font-size:11px;color:var(--muted)">tap any cell to edit</span></div>
+    <table>
+      <thead>
+        <tr>
+          <th>Campaign</th><th>Channel</th><th>Spend</th><th>Leads</th><th>Apps</th>
+          <th>Funded #</th><th>Funded $</th><th>$/Lead</th><th>$/Funded</th><th>ROAS</th><th></th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+      <tfoot>
+        <tr>
+          <td>Total</td><td></td>
+          <td class="calc" id="tSpend">$0</td><td class="calc" id="tLeads">0</td><td class="calc" id="tApps">0</td>
+          <td class="calc" id="tFundedN">0</td><td class="calc" id="tFunded">$0</td>
+          <td class="calc" id="tCPL">—</td><td class="calc" id="tCPF">—</td><td class="calc" id="tROAS">—</td><td></td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="btnrow">
+      <button class="btn add" onclick="addRow()">＋ Add campaign</button>
+      <button class="btn ghost" onclick="resetAll()">Reset</button>
+    </div>
+  </div>
+
+  <div class="foot">
+    Planning tool for Martin Miranda · V.I.P. Mortgage, Inc. — Team Miranda. Figures are your inputs and
+    estimates for budgeting only; not loan terms or a commitment to lend. NMLS 1683424 / 145502 · Equal Housing Lender.
+  </div>
+</div>
+
+<script>
+var KEY='tm_heloc_budget_v1';
+var $=function(id){return document.getElementById(id);};
+function num(v){return parseFloat((v||'').toString().replace(/[^0-9.]/g,''))||0;}
+function money(n){return '$'+Math.round(n||0).toLocaleString('en-US');}
+function pct(n){return (n*100).toFixed(n<0.1?1:0)+'%';}
+
+var data;
+function load(){
+  try{ data=JSON.parse(localStorage.getItem(KEY)); }catch(e){}
+  if(!data || !data.rows){
+    data={ goal:5000000, comp:1.0, endDate:'', rows:[
+      {name:'FB — Equity A', ch:'FB/IG', spend:0, leads:0, apps:0, fundedN:0, fundedV:0},
+      {name:'FB — Debt payoff', ch:'FB/IG', spend:0, leads:0, apps:0, fundedN:0, fundedV:0}
+    ]};
+  }
+  $('sGoal').value=Number(data.goal).toLocaleString('en-US');
+  $('sComp').value=data.comp;
+  $('sDate').value=data.endDate||'';
+}
+function save(){ localStorage.setItem(KEY, JSON.stringify(data)); }
+
+function rowHtml(r,i){
+  return '<tr data-i="'+i+'">'+
+    '<td><input data-f="name" value="'+(r.name||'').replace(/"/g,'&quot;')+'" placeholder="Campaign"></td>'+
+    '<td><input data-f="ch" value="'+(r.ch||'').replace(/"/g,'&quot;')+'" placeholder="FB/IG"></td>'+
+    '<td><input data-f="spend" inputmode="decimal" value="'+(r.spend||'')+'" placeholder="0"></td>'+
+    '<td><input data-f="leads" inputmode="numeric" value="'+(r.leads||'')+'" placeholder="0"></td>'+
+    '<td><input data-f="apps" inputmode="numeric" value="'+(r.apps||'')+'" placeholder="0"></td>'+
+    '<td><input data-f="fundedN" inputmode="numeric" value="'+(r.fundedN||'')+'" placeholder="0"></td>'+
+    '<td><input data-f="fundedV" inputmode="decimal" value="'+(r.fundedV||'')+'" placeholder="0"></td>'+
+    '<td class="calc" data-c="cpl">—</td><td class="calc" data-c="cpf">—</td><td class="calc" data-c="roas">—</td>'+
+    '<td><button class="del" title="Delete" onclick="delRow('+i+')">✕</button></td></tr>';
+}
+function render(){
+  $('rows').innerHTML=data.rows.map(rowHtml).join('');
+  recalc();
+}
+function readInputs(){
+  data.goal=num($('sGoal').value)||5000000;
+  data.comp=num($('sComp').value);
+  data.endDate=$('sDate').value;
+  document.querySelectorAll('#rows tr').forEach(function(tr){
+    var i=+tr.getAttribute('data-i'); var r=data.rows[i]; if(!r)return;
+    tr.querySelectorAll('input').forEach(function(inp){
+      var f=inp.getAttribute('data-f');
+      r[f]=(f==='name'||f==='ch')?inp.value:num(inp.value);
+    });
+  });
+}
+function recalc(){
+  var tot={spend:0,leads:0,apps:0,fundedN:0,fundedV:0};
+  var scored=[];
+  document.querySelectorAll('#rows tr').forEach(function(tr){
+    var i=+tr.getAttribute('data-i'); var r=data.rows[i]; if(!r)return;
+    tot.spend+=r.spend; tot.leads+=r.leads; tot.apps+=r.apps; tot.fundedN+=r.fundedN; tot.fundedV+=r.fundedV;
+    var cpl=r.leads?r.spend/r.leads:0;
+    var cpf=r.fundedN?r.spend/r.fundedN:0;
+    var rev=r.fundedV*(data.comp/100);
+    var roas=r.spend?rev/r.spend:0;
+    tr.querySelector('[data-c="cpl"]').textContent=r.leads?money(cpl):'—';
+    tr.querySelector('[data-c="cpf"]').textContent=r.fundedN?money(cpf):'—';
+    tr.querySelector('[data-c="roas"]').textContent=r.spend?roas.toFixed(2)+'x':'—';
+    scored.push({name:r.name||('Campaign '+(i+1)), spend:r.spend, leads:r.leads, fundedN:r.fundedN, cpl:cpl, cpf:cpf, roas:roas});
+  });
+  // totals
+  $('tSpend').textContent=money(tot.spend); $('tLeads').textContent=tot.leads;
+  $('tApps').textContent=tot.apps; $('tFundedN').textContent=tot.fundedN; $('tFunded').textContent=money(tot.fundedV);
+  $('tCPL').textContent=tot.leads?money(tot.spend/tot.leads):'—';
+  $('tCPF').textContent=tot.fundedN?money(tot.spend/tot.fundedN):'—';
+  var totRev=tot.fundedV*(data.comp/100);
+  $('tROAS').textContent=tot.spend?(totRev/tot.spend).toFixed(2)+'x':'—';
+
+  // hero
+  $('fundedTotal').textContent=money(tot.fundedV);
+  $('goalLabel').textContent=money(data.goal);
+  var p=data.goal?Math.min(1,tot.fundedV/data.goal):0;
+  $('pctLabel').textContent=pct(p);
+  $('goalBar').style.width=(p*100)+'%';
+
+  // KPIs
+  $('kSpend').textContent=money(tot.spend);
+  $('kLeads').textContent=tot.leads;
+  $('kCPL').textContent=tot.leads?money(tot.spend/tot.leads):'—';
+  var roasCard=$('roasCard'); var blended=tot.spend?totRev/tot.spend:0;
+  $('kROAS').textContent=tot.spend?blended.toFixed(2)+'x':'—';
+  roasCard.className='kpi '+(tot.spend?(blended>=1?'good':'warn'):'');
+
+  // pace
+  pace(tot);
+  // reinvest recommendation
+  recommend(scored, tot);
+  // highlight best/worst $/funded
+  highlight();
+  save();
+}
+function pace(tot){
+  var remaining=Math.max(0,data.goal-tot.fundedV);
+  var el=$('pace');
+  if(!data.endDate){ el.textContent='Remaining to goal: '+money(remaining)+'. Set a target end date for weekly pace.'; return; }
+  var days=Math.ceil((new Date(data.endDate)-new Date())/(1000*60*60*24));
+  if(days<=0){ el.textContent='Remaining to goal: '+money(remaining)+'. Target date reached — set a new one.'; return; }
+  var perWeek=remaining/(days/7);
+  el.textContent='Remaining: '+money(remaining)+' · '+days+' days left · need ~'+money(perWeek)+'/week funded to hit goal.';
+}
+function recommend(scored, tot){
+  var rec=$('recText'), list=$('recList'); list.innerHTML='';
+  var active=scored.filter(function(s){return s.spend>0;});
+  if(!active.length){ rec.innerHTML='Add a campaign or two below and I\'ll tell you what\'s working and where to reinvest.'; return; }
+  var funded=active.filter(function(s){return s.fundedN>0;});
+  var best,basis;
+  if(funded.length){
+    funded.sort(function(a,b){return a.cpf-b.cpf;}); best=funded[0]; basis='lowest cost-per-funded ('+money(best.cpf)+')';
+  } else {
+    var withLeads=active.filter(function(s){return s.leads>0;});
+    if(withLeads.length){ withLeads.sort(function(a,b){return a.cpl-b.cpl;}); best=withLeads[0]; basis='lowest cost-per-lead ('+money(best.cpl)+')'; }
+  }
+  if(best){
+    rec.innerHTML='Put your next dollar into <b>'+esc(best.name)+'</b> — '+basis+'.';
+  } else {
+    rec.innerHTML='Spend logged but no leads yet. Give it a few days; if cost-per-lead stays high, refresh the ad creative or audience.';
+  }
+  // flags
+  if(funded.length>1){
+    var worst=funded[funded.length-1];
+    if(worst.cpf>best.cpf*1.5) list.innerHTML+='<li>⚠️ <b>'+esc(worst.name)+'</b> costs '+money(worst.cpf)+' per funded — trim or fix it.</li>';
+  }
+  var noLead=active.filter(function(s){return s.leads===0 && s.spend>50;});
+  noLead.forEach(function(s){ list.innerHTML+='<li>⚠️ <b>'+esc(s.name)+'</b>: '+money(s.spend)+' spent, 0 leads — pause and rework.</li>'; });
+  if(tot.leads>0 && tot.apps===0) list.innerHTML+='<li>📞 Leads coming in but 0 applications — speed-to-lead + the follow-up scripts are your fix.</li>';
+}
+function highlight(){
+  var trs=[].slice.call(document.querySelectorAll('#rows tr'));
+  var vals=trs.map(function(tr){var r=data.rows[+tr.getAttribute('data-i')];return r&&r.fundedN?r.spend/r.fundedN:null;});
+  var valid=vals.filter(function(v){return v!==null;});
+  if(valid.length<2)return;
+  var min=Math.min.apply(null,valid),max=Math.max.apply(null,valid);
+  trs.forEach(function(tr,k){var c=tr.querySelector('[data-c="cpf"]');c.classList.remove('best','worst');
+    if(vals[k]===min)c.classList.add('best'); else if(vals[k]===max)c.classList.add('worst');});
+}
+function esc(s){return (s||'').replace(/[<>&]/g,function(c){return{'<':'&lt;','>':'&gt;','&':'&amp;'}[c];});}
+
+function addRow(){ readInputs(); data.rows.push({name:'',ch:'FB/IG',spend:0,leads:0,apps:0,fundedN:0,fundedV:0}); render(); }
+function delRow(i){ readInputs(); data.rows.splice(i,1); if(!data.rows.length)data.rows.push({name:'',ch:'',spend:0,leads:0,apps:0,fundedN:0,fundedV:0}); render(); }
+function resetAll(){ if(confirm('Clear all campaign data on this device?')){ localStorage.removeItem(KEY); data=null; load(); render(); } }
+
+document.addEventListener('input', function(e){
+  if(e.target.matches('#rows input, #sGoal, #sComp, #sDate')){ readInputs(); recalc(); }
+});
+load(); render();
+</script>
+</body>
+</html>
