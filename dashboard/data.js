@@ -9,6 +9,7 @@ window.JARVIS_DATA = {
   model: "claude-opus-4-8",
   elevenKey: "",          // ElevenLabs key for the cinematic JARVIS voice
   voiceId: "JBFqnCBsd6RMkjVDRZzb",  // George — deep British (change in Settings)
+  theme: "stark",         // look: stark | platinum | arc | onyx (flip in Settings)
 
   commissionPct: 1.0,   // your commission % — say "set commission to 1.25"
   monthVolume: 1150000, // closed loan volume this month (for earned $)

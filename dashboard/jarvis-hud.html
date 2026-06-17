@@ -14,6 +14,13 @@
     --bg:#070a12; --bg2:#0c111d; --card:#121826; --card2:#161d2e;
     --line:rgba(230,194,90,.18); --txt:#f4ecd8; --dim:#8b93a7;
   }
+  /* ── alternate looks (flip in ⚙️ Settings) ── */
+  body[data-theme="platinum"]{ --gold:#e6ecf5; --gold-bright:#ffffff; --cyan:#bcd2ec; --amber:#cfd9ea;
+    --bg:#05070c; --card:#10141d; --card2:#141a24; --line:rgba(220,230,245,.15); --txt:#eef2f8; --dim:#8a93a6; }
+  body[data-theme="arc"]{ --gold:#8ad8ff; --gold-bright:#dcf4ff; --cyan:#5fe6ff; --amber:#5fb8ff;
+    --bg:#040810; --card:#0a1322; --card2:#0e1a30; --line:rgba(95,200,255,.18); --txt:#e8f3ff; --dim:#85a1be; }
+  body[data-theme="onyx"]{ --gold:#cfd3da; --gold-bright:#ffffff; --cyan:#9aa3b2; --amber:#cfd3da;
+    --bg:#0a0a0c; --card:#141417; --card2:#17171b; --line:rgba(255,255,255,.11); --txt:#eef0f3; --dim:#8a8d96; }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
   html{scroll-behavior:smooth}
   body{
@@ -261,6 +268,13 @@
         <option value="claude-haiku-4-5">Haiku 4.5 — cheapest &amp; fastest</option>
         <option value="claude-sonnet-4-6">Sonnet 4.6 — balanced</option>
       </select>
+      <label>🎨 LOOK</label>
+      <select id="setTheme">
+        <option value="stark">Stark — gold &amp; cyan</option>
+        <option value="platinum">Platinum — cool silver luxe</option>
+        <option value="arc">Arc — Tron blue</option>
+        <option value="onyx">Onyx — minimal mono</option>
+      </select>
       <label>🎙️ CINEMATIC VOICE — ElevenLabs API key</label>
       <input id="setEleven" type="password" placeholder="paste ElevenLabs key for the real JARVIS voice" autocomplete="off" />
       <div class="hint">Free/cheap at elevenlabs.io. Blank = your phone's built-in voice. Pick a deep British voice for the true JARVIS.</div>
@@ -407,6 +421,7 @@ window.JARVIS_DATA = {
   model: "claude-opus-4-8",
   elevenKey: "",          // ElevenLabs key for the cinematic JARVIS voice
   voiceId: "JBFqnCBsd6RMkjVDRZzb",  // George — deep British (change in Settings)
+  theme: "stark",         // look: stark | platinum | arc | onyx (flip in Settings)
 
   commissionPct: 1.0,   // your commission % — say "set commission to 1.25"
   monthVolume: 1150000, // closed loan volume this month (for earned $)
@@ -747,7 +762,7 @@ window.JARVIS_DATA = {
   }
   $("feedBtn").onclick=()=>$("shot").click();
   $("shot").onchange=e=>{const f=e.target.files&&e.target.files[0]; if(f)ocrImage(f); e.target.value="";};
-  $("settingsBtn").onclick=()=>{ $("setKey").value=D.apiKey||""; $("setModel").value=D.model||"claude-opus-4-8"; $("setEleven").value=D.elevenKey||""; $("setVoice").value=D.voiceId||""; $("setComm").value=commPct(); $("setGoal").value=D.monthGoal||0; $("settings").classList.remove("hidden"); };
+  $("settingsBtn").onclick=()=>{ $("setKey").value=D.apiKey||""; $("setModel").value=D.model||"claude-opus-4-8"; $("setTheme").value=D.theme||"stark"; $("setEleven").value=D.elevenKey||""; $("setVoice").value=D.voiceId||""; $("setComm").value=commPct(); $("setGoal").value=D.monthGoal||0; $("settings").classList.remove("hidden"); };
   $("setClose").onclick=()=>$("settings").classList.add("hidden");
   $("clClose").onclick=()=>$("client").classList.add("hidden");
   $("buildQ").onclick=buildQueue;
@@ -769,6 +784,7 @@ window.JARVIS_DATA = {
   $("scClose").onclick=()=>$("scripts").classList.add("hidden");
   $("setSave").onclick=()=>{ const had=!!D.apiKey, hadV=!!D.elevenKey; D.apiKey=$("setKey").value.trim(); D.model=$("setModel").value;
     D.elevenKey=$("setEleven").value.trim(); D.voiceId=$("setVoice").value.trim()||"JBFqnCBsd6RMkjVDRZzb";
+    D.theme=$("setTheme").value; applyTheme(D.theme);
     const c=parseFloat($("setComm").value); if(!isNaN(c))D.commissionPct=c; const g=parseInt($("setGoal").value); if(!isNaN(g))D.monthGoal=g;
     save(); render(); unlockAudio(); $("settings").classList.add("hidden");
     if(D.elevenKey&&!hadV){ say("Cinematic voice online."); toast("🎙️ Cinematic voice ON"); }
@@ -1024,9 +1040,16 @@ If he asks you to do an in-app action (add a deal, set a reminder, set rates), g
   setInterval(()=>{ if(bootHidden()) render(); }, 30000);  // real-time refresh (countdowns + money)
   setInterval(()=>{ if(bootHidden()) showPopup("✨", motivate()); }, 45*60*1000); // gentle motivation
 
+  /* ===== theme / look ===== */
+  const THEMES={ stark:{g:"230,194,90",c:"95,230,255"}, platinum:{g:"223,230,240",c:"188,210,236"}, arc:{g:"95,200,255",c:"95,230,255"}, onyx:{g:"207,211,218",c:"154,163,178"} };
+  function applyTheme(t){ t=t||"stark"; if(t==="stark")document.body.removeAttribute("data-theme"); else document.body.dataset.theme=t;
+    const cc=THEMES[t]||THEMES.stark; window.FXC=window.FXC||{}; window.FXC.g=cc.g; window.FXC.c=cc.c; }
+  applyTheme(D.theme);
+
   /* ===== canvas FX: particle network + radar sweep ===== */
   (function(){
     const c=document.getElementById("fx"); if(!c)return; const x=c.getContext("2d");
+    const FXC=window.FXC||(window.FXC={g:"230,194,90",c:"95,230,255"});
     let W,H,DPR=Math.min(2,window.devicePixelRatio||1), pts=[];
     function size(){ W=c.width=innerWidth*DPR; H=c.height=innerHeight*DPR; c.style.width=innerWidth+"px"; c.style.height=innerHeight+"px"; }
     size(); addEventListener("resize",size);
@@ -1037,13 +1060,13 @@ If he asks you to do an in-app action (add a deal, set a reminder, set rates), g
       const cx=W*0.5, cy=H*0.28, R=Math.max(W,H)*0.7, a=t*0.4;
       x.save(); x.translate(cx,cy);
       const grad=x.createLinearGradient(0,0,Math.cos(a)*R,Math.sin(a)*R);
-      grad.addColorStop(0,"rgba(95,230,255,0.05)"); grad.addColorStop(1,"rgba(95,230,255,0)");
+      grad.addColorStop(0,`rgba(${FXC.c},0.05)`); grad.addColorStop(1,`rgba(${FXC.c},0)`);
       x.beginPath(); x.moveTo(0,0); x.arc(0,0,R,a-0.16,a); x.closePath(); x.fillStyle=grad; x.fill(); x.restore();
       for(const p of pts){ p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>1)p.vx*=-1; if(p.y<0||p.y>1)p.vy*=-1; }
       for(let i=0;i<pts.length;i++){ const px=pts[i].x*W, py=pts[i].y*H;
         for(let j=i+1;j<pts.length;j++){ const bx=pts[j].x*W, by=pts[j].y*H, d=Math.hypot(px-bx,py-by);
-          if(d<LINK){ x.strokeStyle="rgba(230,194,90,"+(0.07*(1-d/LINK))+")"; x.lineWidth=1; x.beginPath(); x.moveTo(px,py); x.lineTo(bx,by); x.stroke(); } }
-        x.fillStyle="rgba(230,194,90,.32)"; x.beginPath(); x.arc(px,py,1.3*DPR,0,7); x.fill(); }
+          if(d<LINK){ x.strokeStyle=`rgba(${FXC.g},${0.07*(1-d/LINK)})`; x.lineWidth=1; x.beginPath(); x.moveTo(px,py); x.lineTo(bx,by); x.stroke(); } }
+        x.fillStyle=`rgba(${FXC.g},.32)`; x.beginPath(); x.arc(px,py,1.3*DPR,0,7); x.fill(); }
       requestAnimationFrame(frame);
     } frame();
   })();
