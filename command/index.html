@@ -96,9 +96,10 @@
   </div>
   <div class="panel" id="statPanel" data-depth="15">
     <h2>PIPELINE</h2>
-    <div class="stat"><span>ACTIVE FILES</span><b>4</b></div>
-    <div class="stat"><span>NEEDS YOU</span><b style="color:#ff6b6b">2</b></div>
-    <div class="stat"><span>COMMISSION · LIVE</span><b>$10K</b></div>
+    <div class="stat"><span>ACTIVE FILES</span><b id="s1">—</b></div>
+    <div class="stat"><span>NEEDS YOU</span><b id="s2" style="color:#ff6b6b">—</b></div>
+    <div class="stat"><span>COMMISSION · LIVE</span><b id="s3">—</b></div>
+    <div class="stat"><span>FOLLOW-UPS DUE</span><b id="s4">—</b></div>
   </div>
   <div class="convo"><div class="you" id="youL"></div><div class="jv" id="jvL">Tap the mic and talk to me, or type below.</div></div>
   <div class="dock"><button class="mic" id="mic">🎤</button><input id="say" placeholder="Ask me anything…" /><button class="gear" id="gear">⚙</button></div>
@@ -126,6 +127,21 @@
     $('eq').classList.toggle('live', s==='listen'||s==='speak'); $('mic').classList.toggle('on', s==='listen'); }
   function youL(x){ $('youL').innerHTML=x?'<b>You:</b> '+x:''; } function jv(x){ $('jvL').textContent=x; }
   function greeting(){ var h=new Date().getHours(); return h<12?'Good morning':h<18?'Good afternoon':'Good evening'; }
+
+  /* ===== shared brain: reads the same data the HUD manages ===== */
+  function getData(){ try{ return JSON.parse(localStorage.getItem('JARVIS_DATA')||'{}'); }catch(e){ return {}; } }
+  function money(n){ n=+n||0; if(n>=1e6)return '$'+(n/1e6).toFixed(n%1e6?1:0)+'M'; if(n>=1e3)return '$'+Math.round(n/1e3)+'K'; return '$'+Math.round(n); }
+  function summary(){ var d=getData(); var deals=d.deals||[]; var active=deals.filter(function(x){return x.stage!=='Closed';});
+    var risk=active.filter(function(x){return x.flag==='risk';}); var pct=(d.commissionPct!=null?d.commissionPct:1);
+    var vol=active.reduce(function(s,x){return s+(+x.amount||0);},0); var fups=(d.followups||[]).filter(function(f){return !f.done;});
+    return {active:active.length, risk:risk.length, proj:vol*pct/100, vol:vol, fups:fups.length, closed:d.monthClosed||0, goal:d.monthGoal||0,
+      prio:(d.priorities||[])[0]||'', hasData:!!deals.length}; }
+  function renderPanels(){ var s=summary();
+    if($('s1'))$('s1').textContent=s.hasData?s.active:'0';
+    if($('s2'))$('s2').textContent=s.hasData?s.risk:'0';
+    if($('s3'))$('s3').textContent=s.proj?money(s.proj):'—';
+    if($('s4'))$('s4').textContent=s.fups||'0'; }
+  setInterval(renderPanels, 4000); renderPanels();
 
   /* clock */
   function fmt(){ var n=new Date(); $('clk').textContent=n.toLocaleTimeString('en-US',{hour12:false});
@@ -161,14 +177,24 @@
   /* brain */
   function basic(t){ var s=t.toLowerCase();
     if(/time|clock/.test(s)) return "It's "+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})+".";
-    if(/hello|hey|^hi|jarvis|you there/.test(s)) return greeting()+", Martin. I'm here. Add a brain key in settings and I can talk about anything.";
-    if(/who are you|what can you do/.test(s)) return "I'm JARVIS, your command center. Right now I'm in basic mode — tap the gear, paste your Claude key, and I become your full whole-life AI.";
-    return "Heard you. I'm in basic mode — tap the gear, add your Claude key, and I'll actually think with you about anything.";
+    if(/pipeline|deals|files|brief|plate|going on|^status|update me|how am i/.test(s)){ var x=summary();
+      if(!x.hasData) return "Your board's empty right now. Open the JARVIS HUD on your phone, add your deals, and they'll appear here live.";
+      return "You've got "+x.active+" active file"+(x.active!==1?'s':'')+", "+x.risk+" need you, about "+money(x.proj)+" in commission, and "+x.fups+" follow-up"+(x.fups!==1?'s':'')+" pending."+(x.prio?(" Priority: "+x.prio+"."):""); }
+    if(/money|commission|worth|income/.test(s)){ var m=summary(); return m.proj?("About "+money(m.proj)+" of commission in your live pipeline, "+money(m.vol)+" in volume. You've closed "+m.closed+" of "+m.goal+" this month."):"No loan amounts set yet — add them in the HUD and I'll track the money for you."; }
+    if(/follow|waiting|chase/.test(s)){ var f=summary(); return f.fups?(f.fups+" follow-up"+(f.fups!==1?'s':'')+" pending. Keep them moving."):"No follow-ups pending. Clean board."; }
+    if(/payment|p ?& ?i/.test(s)&&/\d/.test(s)){ var am=t.match(/([\d,]{3,})\s*(k)?/i); var a=am?parseFloat(am[1].replace(/,/g,'')):0; if(am&&am[2])a*=1000; var rm=t.match(/(\d{1,2}\.\d+)/); var rate=rm?parseFloat(rm[1]):0;
+      if(a&&rate){ var r=rate/100/12,n=360; var pay=a*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1); return "On "+money(a)+" at "+rate+"%, principal and interest runs about $"+Math.round(pay).toLocaleString()+" a month, before taxes and insurance and subject to underwriting."; }
+      return "Give me the amount and rate — like, payment on 400k at 6.5."; }
+    if(/hello|hey|^hi\b|jarvis|you there/.test(s)) return greeting()+", Martin. I'm here. Ask me about your pipeline, your money, or your day.";
+    if(/who are you|what can you do/.test(s)) return "I'm JARVIS, your command center. I track your pipeline, money, and follow-ups, and answer about your day. Add a Claude key in the gear and I can talk about anything in your world.";
+    return "Heard you. For free chat about anything, tap the gear and add a Claude key — otherwise ask me about your pipeline, money, follow-ups, or a payment.";
   }
-  function claude(text){ return fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+  function claude(text){ var x=summary();
+    var ctx=x.hasData?(" LIVE CONTEXT: "+x.active+" active files, "+x.risk+" need attention, "+money(x.proj)+" pipeline commission, "+x.fups+" follow-ups pending, "+x.closed+" of "+x.goal+" closed this month."+(x.prio?(" Priority: "+x.prio+"."):"")):" (No pipeline data loaded yet.)";
+    return fetch('https://api.anthropic.com/v1/messages',{method:'POST',
       headers:{'content-type':'application/json','x-api-key':cfg.claude,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-opus-4-8',max_tokens:500,
-        system:"You are JARVIS, Martin's whole-life AI command center (he's a mortgage loan officer at V.I.P. Mortgage, Tucson, but help with his ENTIRE world). Speak like the real JARVIS: calm, brilliant, warm, concise — 1 to 3 sentences, spoken aloud, no markdown or lists. For mortgage topics never quote binding rates or give legal advice; protect his license.",
+        system:"You are JARVIS, Martin's whole-life AI command center (he's a mortgage loan officer at V.I.P. Mortgage, Tucson, but help with his ENTIRE world — business, money, family, health, ideas, decisions). Speak like the real JARVIS: calm, brilliant, warm, concise — 1 to 3 sentences, spoken aloud, no markdown or lists. For mortgage topics never quote binding rates or give legal advice; protect his license."+ctx,
         messages:hist.slice(-8)})})
     .then(function(r){ if(!r.ok) return 'My brain returned an error '+r.status+'. Check the key in settings.'; return r.json().then(function(j){ return (j.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join(' ').trim()||'…'; }); })
     .catch(function(){ return 'I could not reach my brain. Check your connection or key.'; }); }
@@ -202,8 +228,10 @@
     var ps=document.querySelectorAll('.panel'); for(var i=0;i<ps.length;i++){ var dp=+ps[i].dataset.depth||10; ps[i].style.transform='translate3d('+(tmx*dp)+'px,'+(tmy*dp)+'px,0) rotateY('+(tmx*5)+'deg) rotateX('+(-tmy*5)+'deg)'; } });
 
   $('boot').addEventListener('click',function(){ if(booted)return; booted=true; ensureCtx();
-    $('boot').classList.add('hidden'); $('greet').textContent=greeting()+', Martin.'; setState('idle');
-    speak(greeting()+', Martin. JARVIS Command online. Tap the mic and talk to me.'); });
+    $('boot').classList.add('hidden'); $('greet').textContent=greeting()+', Martin.'; setState('idle'); renderPanels();
+    var sx=summary(); var line=greeting()+', Martin. JARVIS Command online.';
+    if(sx.hasData){ line+=' You have '+sx.active+' active file'+(sx.active!==1?'s':'')+(sx.risk?', '+sx.risk+' need you today':'')+'.'; }
+    line+=' Tap the mic and talk to me.'; speak(line); });
 
   /* if the 3D layer doesn't come up in 2.5s, switch to the CSS fallback core */
   setTimeout(function(){ if(!window.__3d) document.body.classList.add('no3d'); }, 2500);
