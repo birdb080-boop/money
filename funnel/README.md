@@ -28,9 +28,15 @@ funnel/
   SETUP.md                 ← step-by-step go-live + Facebook ad + Zapier blueprint
   privacy.html             ← privacy policy (Meta ads require it)
   terms.html               ← terms + SMS/TCPA program policy
+  budget.html              ← 💰 budget & ROI tracker — hyper-tracks spend, shows where to reinvest
+  APPROVAL-CHECKLIST.md    ← ✅ sign-off gate — nothing goes live until you approve every box
   team-miranda-logo.png    ← logo
   img/martin-headshot.png  ← Martin's headshot (Meet Martin section)
 ```
+
+> ⛔ **Approval gate:** the funnel stays in private preview until `APPROVAL-CHECKLIST.md`
+> is fully signed off (by you + compliance). Open `budget.html` in your browser to track
+> ad spend, cost-per-lead, ROAS, and get a "put your next dollar here" recommendation.
 
 ## What it does (the lead → application machine)
 - **Interactive equity estimator** — the highest-converting pattern there is (quizzes

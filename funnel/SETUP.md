@@ -1,5 +1,9 @@
 # 🚀 Go-Live Playbook — HELOC Funnel (Team Miranda)
 
+> ⛔ **STOP — approval gate first.** Do **not** deploy to a public URL until every box in
+> `APPROVAL-CHECKLIST.md` is signed off by you (and V.I.P. compliance). Until then it stays
+> in private preview. This is what protects your license.
+
 **The goal:** turn ad clicks → leads → applications → funded HELOC cash-outs.
 **Your rule (Directive Zero):** the funnel captures and routes leads and *drafts*
 follow-ups. **It never texts, emails, or calls a borrower on its own.** You approve

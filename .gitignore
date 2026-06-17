@@ -9,3 +9,6 @@ funnel/preview-standalone.html
 .DS_Store
 Thumbs.db
 *.swp
+
+# Generated standalone previews (regenerable)
+funnel/preview-budget.html
