@@ -22,6 +22,12 @@ window.FUNNEL_CONFIG = {
      and just drive calls instead. */
   applicationUrl: "",
 
+  /* ---- BOOK-A-CALL LINK (speed-to-lead = more funded loans) --------------
+     Your scheduling link (Calendly, Acuity, Google Appointments, etc.). When set,
+     the "thank you" screen offers "Book a quick call" so a hot lead locks in time
+     with you immediately. Leave "" to hide it. */
+  bookingUrl: "",
+
   /* ---- FACEBOOK / META ADS TRACKING --------------------------------------
      Your Meta Pixel ID (Events Manager → Data Sources). Powers ad optimization
      so Facebook finds more people who actually submit. Leave "" to skip.
@@ -49,10 +55,5 @@ window.FUNNEL_CONFIG = {
   /* ---- THE ESTIMATE MATH --------------------------------------------------
      Illustrative max combined loan-to-value used by the estimator. 0.85 = 85%.
      This is an ESTIMATE only (clearly disclaimed); underwriting sets the real number. */
-  maxCLTV: 0.85,
-
-  /* ---- HEADLINE A/B TEST --------------------------------------------------
-     "auto" randomly shows A or B per visitor (for testing which converts better).
-     Or force one: "A" or "B". Variants are defined in index.html. */
-  headlineVariant: "auto"
+  maxCLTV: 0.85
 };

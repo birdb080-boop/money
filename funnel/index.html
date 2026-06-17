@@ -9,6 +9,9 @@
 <meta property="og:title" content="Put Your Home Equity to Work — Team Miranda" />
 <meta property="og:description" content="A free, no-pressure home equity review. Local experts. Real people, real results. Serving AZ & CA, English & Spanish." />
 <meta property="og:type" content="website" />
+<meta property="og:image" content="team-miranda-logo.png" />
+<meta name="theme-color" content="#1A1A1A" />
+<link rel="icon" href="team-miranda-logo.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;0,900;1,600&family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -398,7 +401,10 @@
               <div style="font-size:11px; color:var(--muted); margin-top:8px" data-i18n="ty_apply_note">🔒 Secure &amp; encrypted. Starting an application is not an obligation.</div>
             </div>
             <p style="margin-top:16px" data-i18n="ty_or">Prefer to talk first?</p>
-            <p style="margin-top:6px"><a class="btn btn-ghost" href="tel:+15207194130" data-i18n="ty_call">Call (520) 719-4130</a></p>
+            <p style="margin-top:6px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center">
+              <a class="btn btn-ghost" id="bookBtn" href="#" target="_blank" rel="noopener" style="display:none" data-i18n="ty_book">📅 Book a quick call</a>
+              <a class="btn btn-ghost" href="tel:+15207194130" data-i18n="ty_call">Call (520) 719-4130</a>
+            </p>
           </div>
         </div>
       </form>
@@ -765,6 +771,11 @@ $('yr').textContent = new Date().getFullYear();
     if(aw) aw.style.display='block';
     if(ab){ ab.href=CFG.applicationUrl; ab.addEventListener('click', function(){ track('SubmitApplication', {content_name:'heloc_application_start'}); }); }
   }
+  // Book-a-call link (speed-to-lead)
+  if(CFG.bookingUrl){
+    var bb=$('bookBtn');
+    if(bb){ bb.href=CFG.bookingUrl; bb.style.display=''; bb.addEventListener('click', function(){ track('Schedule', {content_name:'book_call'}); }); }
+  }
   // Contact — single source of truth from config.js
   if(CFG.officePhone){ document.querySelectorAll('a[href^="tel:"]:not([data-mobile])').forEach(function(a){ a.href='tel:'+CFG.officePhone; }); }
   if(CFG.mobilePhone){ document.querySelectorAll('a[data-mobile]').forEach(function(a){ a.href='tel:'+CFG.mobilePhone; }); }
@@ -831,6 +842,7 @@ var I18N = {
     ty_apply:"Comenzar mi solicitud →",
     ty_apply_note:"🔒 Segura y encriptada. Comenzar una solicitud no es una obligación.",
     ty_or:"¿Prefieres hablar primero?",
+    ty_book:"📅 Agenda una llamada rápida",
     foot_privacy:"Política de Privacidad",
     foot_terms:"Términos y Política SMS",
     hero_eyebrow:"Plusvalía de tu Casa · AZ y CA",
