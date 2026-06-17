@@ -6,6 +6,20 @@ static page you can drop on Vercel, Netlify, or any host.
 
 ## 👉 New here? Read `SETUP.md` — the 7-step go-live playbook.
 
+## Go live in one click
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/birdb080-boop/money&project-name=team-miranda-heloc&root-directory=funnel)
+
+Or from this folder: `npx vercel --prod`. Lead capture is pre-wired to Martin's
+inbox (`config.js` → `leadEmail`); click FormSubmit's one-time confirmation on the
+first test lead and you're collecting leads.
+
+## Verify it works
+The funnel logic is covered by an end-to-end test (runs in CI on every push):
+```bash
+node funnel/test/funnel.test.js
+```
+It drives the real code through step gating, the equity math, and lead routing.
+
 ## What's here
 ```
 funnel/
